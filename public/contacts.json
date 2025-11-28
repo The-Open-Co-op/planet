@@ -1,0 +1,2628 @@
+[
+  {
+    "@id": "contact:1",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "Alex Lion Yes!",
+        "source": "linkedin"
+      },
+      {
+        "value": "Alex",
+        "source": "Android Phone"
+      }
+    ],
+    "email": [
+      {
+        "value": "alex.chen@techstartup.com",
+        "source": "linkedin"
+      },
+      {
+        "value": "random@email.com",
+        "source": "Android Phone"
+      },
+      {
+        "value": "random@email.com",
+        "source": "Gmail"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15551234568",
+        "source": "GreenCheck"
+      },
+      {
+        "value": "+1555333444",
+        "source": "iPhone"
+      }
+    ],
+    "organization": [
+      {
+        "value": "Innovation Labs",
+        "position": "Chief Technology Officer",
+        "source": "linkedin"
+      },
+      {
+        "value": "NoInnovation Labs",
+        "position": "CTO",
+        "source": "Android Phone"
+      }
+    ],
+    "photo": [
+      {
+        "value": "images/Alex.jpg",
+        "source": "linkedin"
+      }
+    ],
+    "url": [
+      {
+        "value": "https://linkedin.com/in/alexchen",
+        "type2": {
+          "@id": "linkedIn"
+        },
+        "source": "linkedin"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Met at AI conference 2024",
+        "source": "linkedin"
+      }
+    ],
+    "headline": [
+      {
+        "value": "Chief Technology Officer at Innovation Labs",
+        "source": "linkedin"
+      }
+    ],
+    "tag": [
+      {
+        "value": "ai",
+        "source": "linkedin"
+      },
+      {
+        "value": "technology",
+        "source": "linkedin"
+      },
+      {
+        "value": "leadership",
+        "source": "linkedin"
+      }
+    ],
+    "naoStatus": {
+      "value": "member",
+      "source": "system"
+    },
+    "address": [
+      {
+        "city": "San Francisco",
+        "country": "USA",
+        "coordLat": 37.7749,
+        "coordLng": -122.4194,
+        "region": "CA",
+        "source": "linkedin"
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2024-01-01T10:00:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-07-20T14:30:00Z",
+      "source": "system"
+    },
+    "joinedAt": {
+      "valueDateTime": "2024-01-15T10:00:00Z",
+      "source": "system"
+    },
+    "internalGroup": [
+      {
+        "value": "1",
+        "source": "system"
+      },
+      {
+        "value": "2",
+        "source": "system"
+      }
+    ],
+    "relationshipCategory": "business",
+    "lastInteractionAt": "2024-07-28T14:30:00Z",
+    "humanityConfidenceScore": 3,
+    "account": [
+      {
+        "value": "alexchen_tech",
+        "protocol": "linkedin",
+        "source": "linkedin"
+      }
+    ]
+  },
+  {
+    "@id": "contact:2",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "Ariana Bahrami",
+        "source": "linkedin"
+      }
+    ],
+    "email": [
+      {
+        "value": "anna.rodriguez@designstudio.com",
+        "source": "linkedin"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15559876543",
+        "source": "linkedin"
+      }
+    ],
+    "organization": [
+      {
+        "value": "Creative Studio",
+        "position": "Creative Director",
+        "source": "linkedin"
+      }
+    ],
+    "photo": [
+      {
+        "value": "images/Anna.jpg",
+        "source": "linkedin"
+      }
+    ],
+    "url": [
+      {
+        "value": "https://linkedin.com/in/annarodriguez",
+        "type2": {
+          "@id": "linkedIn"
+        },
+        "source": "linkedin"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Brilliant creative mind and design leader",
+        "source": "linkedin"
+      }
+    ],
+    "tag": [
+      {
+        "value": "design",
+        "source": "linkedin"
+      },
+      {
+        "value": "creative",
+        "source": "linkedin"
+      },
+      {
+        "value": "branding",
+        "source": "linkedin"
+      }
+    ],
+    "naoStatus": {
+      "value": "member",
+      "source": "system"
+    },
+    "address": [
+      {
+        "city": "New York",
+        "country": "USA",
+        "coordLat": 40.7128,
+        "coordLng": -74.006,
+        "region": "NY",
+        "source": "linkedin"
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2024-01-20T09:00:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-07-22T16:45:00Z",
+      "source": "system"
+    },
+    "joinedAt": {
+      "valueDateTime": "2024-02-10T09:00:00Z",
+      "source": "system"
+    },
+    "internalGroup": [
+      {
+        "value": "1",
+        "source": "system"
+      }
+    ],
+    "relationshipCategory": "friends",
+    "lastInteractionAt": "2024-07-25T16:45:00Z",
+    "humanityConfidenceScore": 2,
+    "account": [
+      {
+        "value": "arianabahrami_creative",
+        "protocol": "linkedin",
+        "source": "linkedin"
+      },
+      {
+        "value": "@ari_design",
+        "protocol": "twitter",
+        "source": "twitter"
+      }
+    ]
+  },
+  {
+    "@id": "contact:3",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "Aza Mafi",
+        "source": "Android Phone"
+      }
+    ],
+    "email": [
+      {
+        "value": "aza.raskin@humantech.org",
+        "source": "Android Phone"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15554567890",
+        "source": "Android Phone"
+      }
+    ],
+    "organization": [
+      {
+        "source": "Android Phone",
+        "value": "Human Technology Institute",
+        "position": "Co-Founder & President"
+      }
+    ],
+    "photo": [
+      {
+        "value": "images/Aza.jpg",
+        "source": "Android Phone"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Expert in human-centered technology design",
+        "source": "Android Phone"
+      }
+    ],
+    "tag": [
+      {
+        "value": "humane-tech",
+        "source": "Android Phone"
+      },
+      {
+        "value": "design",
+        "source": "Android Phone"
+      },
+      {
+        "value": "ethics",
+        "source": "Android Phone"
+      }
+    ],
+    "naoStatus": {
+      "value": "member",
+      "source": "system"
+    },
+    "address": [
+      {
+        "source": "Android Phone",
+        "city": "Los Angeles",
+        "country": "USA",
+        "region": "CA",
+        "coordLat": 34.0522,
+        "coordLng": -118.2437
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2023-12-15T11:30:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-07-25T13:15:00Z",
+      "source": "system"
+    },
+    "joinedAt": {
+      "valueDateTime": "2024-01-05T15:30:00Z",
+      "source": "system"
+    },
+    "internalGroup": [
+      {
+        "value": "2",
+        "source": "system"
+      },
+      {
+        "value": "3",
+        "source": "system"
+      }
+    ],
+    "lastInteractionAt": "2024-07-30T09:15:00Z",
+    "humanityConfidenceScore": 4,
+    "account": [
+      {
+        "value": "azamafi_humantech",
+        "protocol": "linkedin",
+        "source": "linkedin"
+      },
+      {
+        "value": "aza_raskin",
+        "protocol": "github",
+        "source": "github"
+      }
+    ]
+  },
+  {
+    "@id": "contact:4",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "Brad de Graf",
+        "source": "linkedin"
+      }
+    ],
+    "email": [
+      {
+        "value": "brad.fitzpatrick@livejournal.com",
+        "source": "linkedin"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15552345678",
+        "source": "linkedin"
+      }
+    ],
+    "organization": [
+      {
+        "source": "linkedin",
+        "value": "Tailscale",
+        "position": "Co-Founder & CTO"
+      }
+    ],
+    "photo": [
+      {
+        "value": "images/Brad.jpg",
+        "source": "linkedin"
+      }
+    ],
+    "url": [
+      {
+        "value": "https://linkedin.com/in/bradfitz",
+        "type2": {
+          "@id": "linkedIn"
+        },
+        "source": "linkedin"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Created LiveJournal, Go contributor, networking expert",
+        "source": "linkedin"
+      }
+    ],
+    "tag": [
+      {
+        "value": "networking",
+        "source": "linkedin"
+      },
+      {
+        "value": "golang",
+        "source": "linkedin"
+      },
+      {
+        "value": "infrastructure",
+        "source": "linkedin"
+      }
+    ],
+    "naoStatus": {
+      "value": "invited",
+      "source": "system"
+    },
+    "address": [
+      {
+        "source": "linkedin",
+        "city": "Seattle",
+        "country": "USA",
+        "region": "WA",
+        "coordLat": 47.6062,
+        "coordLng": -122.3321
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2024-06-20T08:00:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-07-10T10:20:00Z",
+      "source": "system"
+    },
+    "invitedAt": {
+      "valueDateTime": "2024-07-01T15:30:00Z",
+      "source": "system"
+    },
+    "lastInteractionAt": "2024-07-15T11:00:00Z",
+    "humanityConfidenceScore": 1,
+    "account": [
+      {
+        "value": "bradfitz",
+        "protocol": "github",
+        "source": "github"
+      },
+      {
+        "value": "@bradfitz",
+        "protocol": "twitter",
+        "source": "twitter"
+      }
+    ]
+  },
+  {
+    "@id": "contact:5",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "Tim Bansemer",
+        "source": "Android Phone"
+      }
+    ],
+    "email": [
+      {
+        "value": "bram.cohen@chia.net",
+        "source": "Android Phone"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15553456789",
+        "source": "Android Phone"
+      }
+    ],
+    "organization": [
+      {
+        "source": "Android Phone",
+        "value": "Chia Network",
+        "position": "Founder & CEO"
+      }
+    ],
+    "photo": [
+      {
+        "value": "images/Tim.jpg",
+        "source": "Android Phone"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Creator of BitTorrent protocol",
+        "source": "Android Phone"
+      }
+    ],
+    "tag": [
+      {
+        "value": "blockchain",
+        "source": "Android Phone"
+      },
+      {
+        "value": "protocols",
+        "source": "Android Phone"
+      },
+      {
+        "value": "p2p",
+        "source": "Android Phone"
+      }
+    ],
+    "naoStatus": {
+      "value": "member",
+      "source": "system"
+    },
+    "address": [
+      {
+        "source": "Android Phone",
+        "city": "Chicago",
+        "country": "USA",
+        "coordLat": 41.8781,
+        "coordLng": -87.6298
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2024-02-15T14:00:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-05-20T09:30:00Z",
+      "source": "system"
+    },
+    "joinedAt": {
+      "valueDateTime": "2024-03-01T12:00:00Z",
+      "source": "system"
+    },
+    "internalGroup": [
+      {
+        "value": "3",
+        "source": "system"
+      }
+    ],
+    "lastInteractionAt": "2024-07-20T14:15:00Z",
+    "humanityConfidenceScore": 6,
+    "account": [
+      {
+        "value": "bramcohen",
+        "protocol": "github",
+        "source": "github"
+      },
+      {
+        "value": "@bramcohen",
+        "protocol": "twitter",
+        "source": "twitter"
+      }
+    ]
+  },
+  {
+    "@id": "contact:6",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "David Thomson",
+        "source": "linkedin"
+      }
+    ],
+    "email": [
+      {
+        "value": "david@theproductioncoard.com",
+        "source": "linkedin"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15555678901",
+        "source": "linkedin"
+      }
+    ],
+    "organization": [
+      {
+        "source": "linkedin",
+        "value": "The Production Board",
+        "position": "Founder & CEO"
+      }
+    ],
+    "photo": [
+      {
+        "value": "images/David.jpg",
+        "source": "linkedin"
+      }
+    ],
+    "url": [
+      {
+        "value": "https://linkedin.com/in/dfriedberg",
+        "type2": {
+          "@id": "linkedIn"
+        },
+        "source": "linkedin"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Entrepreneur focused on industrial transformation",
+        "source": "linkedin"
+      }
+    ],
+    "tag": [
+      {
+        "value": "entrepreneur",
+        "source": "linkedin"
+      },
+      {
+        "value": "climate",
+        "source": "linkedin"
+      },
+      {
+        "value": "agriculture",
+        "source": "linkedin"
+      }
+    ],
+    "naoStatus": {
+      "value": "not_invited",
+      "source": "system"
+    },
+    "address": [
+      {
+        "source": "linkedin",
+        "city": "Austin",
+        "country": "USA",
+        "coordLat": 30.2672,
+        "coordLng": -97.7431
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2024-04-12T12:00:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-06-20T15:45:00Z",
+      "source": "system"
+    },
+    "lastInteractionAt": "2024-06-10T10:30:00Z",
+    "account": [
+      {
+        "value": "dfriedberg",
+        "protocol": "linkedin",
+        "source": "linkedin"
+      },
+      {
+        "value": "@dfriedberg",
+        "protocol": "twitter",
+        "source": "twitter"
+      }
+    ]
+  },
+  {
+    "@id": "contact:7",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "Day Waterbury",
+        "source": "Android Phone"
+      }
+    ],
+    "email": [
+      {
+        "value": "day.waterbury@socialimpact.org",
+        "source": "Android Phone"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15556789012",
+        "source": "Android Phone"
+      }
+    ],
+    "organization": [
+      {
+        "source": "Android Phone",
+        "value": "Social Impact Ventures",
+        "position": "Managing Partner"
+      }
+    ],
+    "photo": [
+      {
+        "value": "images/Day.jpg",
+        "source": "Android Phone"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Focused on social entrepreneurship and impact investing",
+        "source": "Android Phone"
+      }
+    ],
+    "tag": [
+      {
+        "value": "social-impact",
+        "source": "Android Phone"
+      },
+      {
+        "value": "investing",
+        "source": "Android Phone"
+      },
+      {
+        "value": "ventures",
+        "source": "Android Phone"
+      }
+    ],
+    "naoStatus": {
+      "value": "member",
+      "source": "system"
+    },
+    "address": [
+      {
+        "source": "Android Phone",
+        "city": "Denver",
+        "country": "USA",
+        "coordLat": 39.7392,
+        "coordLng": -104.9903
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2024-02-01T10:30:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-07-15T14:20:00Z",
+      "source": "system"
+    },
+    "joinedAt": {
+      "valueDateTime": "2024-02-20T11:00:00Z",
+      "source": "system"
+    },
+    "internalGroup": [
+      {
+        "value": "1",
+        "source": "system"
+      },
+      {
+        "value": "3",
+        "source": "system"
+      }
+    ],
+    "lastInteractionAt": "2024-07-22T13:45:00Z",
+    "humanityConfidenceScore": 5,
+    "account": [
+      {
+        "value": "daywaterbury_impact",
+        "protocol": "linkedin",
+        "source": "linkedin"
+      },
+      {
+        "value": "+1555678901234",
+        "protocol": "whatsapp",
+        "source": "whatsapp"
+      }
+    ]
+  },
+  {
+    "@id": "contact:8",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "Drummond Reed",
+        "source": "linkedin"
+      }
+    ],
+    "email": [
+      {
+        "value": "drummond.reed@gen.xyz",
+        "source": "linkedin"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15557890123",
+        "source": "linkedin"
+      }
+    ],
+    "organization": [
+      {
+        "source": "linkedin",
+        "value": "Gen Digital",
+        "position": "Chief Trust Officer"
+      }
+    ],
+    "photo": [
+      {
+        "value": "images/Drummond.jpg",
+        "source": "linkedin"
+      }
+    ],
+    "url": [
+      {
+        "value": "https://linkedin.com/in/drummondre",
+        "type2": {
+          "@id": "linkedIn"
+        },
+        "source": "linkedin"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Identity and trust infrastructure expert",
+        "source": "linkedin"
+      }
+    ],
+    "tag": [
+      {
+        "value": "identity",
+        "source": "linkedin"
+      },
+      {
+        "value": "trust",
+        "source": "linkedin"
+      },
+      {
+        "value": "digital-credentials",
+        "source": "linkedin"
+      }
+    ],
+    "naoStatus": {
+      "value": "member",
+      "source": "system"
+    },
+    "address": [
+      {
+        "source": "linkedin",
+        "city": "Boston",
+        "country": "USA",
+        "coordLat": 42.3601,
+        "coordLng": -71.0589
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2024-01-10T13:45:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-06-30T11:25:00Z",
+      "source": "system"
+    },
+    "joinedAt": {
+      "valueDateTime": "2024-01-25T09:15:00Z",
+      "source": "system"
+    },
+    "internalGroup": [
+      {
+        "value": "2",
+        "source": "system"
+      }
+    ],
+    "lastInteractionAt": "2024-07-10T16:30:00Z",
+    "humanityConfidenceScore": 2,
+    "account": [
+      {
+        "value": "drummondre",
+        "protocol": "linkedin",
+        "source": "linkedin"
+      },
+      {
+        "value": "drummond_reed",
+        "protocol": "telegram",
+        "source": "telegram"
+      }
+    ]
+  },
+  {
+    "@id": "contact:9",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "Duke Dorje",
+        "source": "Android Phone"
+      }
+    ],
+    "email": [
+      {
+        "value": "duke.stump@blockchainvc.com",
+        "source": "Android Phone"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15558901234",
+        "source": "Android Phone"
+      }
+    ],
+    "organization": [
+      {
+        "source": "Android Phone",
+        "value": "Blockchain Ventures",
+        "position": "Investment Partner"
+      }
+    ],
+    "photo": [
+      {
+        "value": "images/Duke.jpg",
+        "source": "Android Phone"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Early-stage blockchain and crypto investor",
+        "source": "Android Phone"
+      }
+    ],
+    "tag": [
+      {
+        "value": "blockchain",
+        "source": "Android Phone"
+      },
+      {
+        "value": "crypto",
+        "source": "Android Phone"
+      },
+      {
+        "value": "investing",
+        "source": "Android Phone"
+      }
+    ],
+    "naoStatus": {
+      "value": "invited",
+      "source": "system"
+    },
+    "address": [
+      {
+        "source": "Android Phone",
+        "city": "Miami",
+        "country": "USA",
+        "coordLat": 25.7617,
+        "coordLng": -80.1918
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2024-05-30T16:10:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-07-05T12:40:00Z",
+      "source": "system"
+    },
+    "invitedAt": {
+      "valueDateTime": "2024-06-15T14:20:00Z",
+      "source": "system"
+    },
+    "account": [
+      {
+        "value": "dukestump_crypto",
+        "protocol": "linkedin",
+        "source": "linkedin"
+      },
+      {
+        "value": "@cryptoduke",
+        "protocol": "twitter",
+        "source": "twitter"
+      }
+    ]
+  },
+  {
+    "@id": "contact:10",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "Frederic Boyer",
+        "source": "linkedin"
+      }
+    ],
+    "email": [
+      {
+        "value": "frederic.laloux@reinventorgs.com",
+        "source": "linkedin"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15559012345",
+        "source": "linkedin"
+      }
+    ],
+    "organization": [
+      {
+        "source": "linkedin",
+        "value": "Reinventing Organizations",
+        "position": "Author & Organizational Advisor"
+      }
+    ],
+    "photo": [
+      {
+        "value": "images/Frederic.jpg",
+        "source": "linkedin"
+      }
+    ],
+    "url": [
+      {
+        "value": "https://linkedin.com/in/fredericlaloux",
+        "type2": {
+          "@id": "linkedIn"
+        },
+        "source": "linkedin"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Author of 'Reinventing Organizations', organizational transformation expert",
+        "source": "linkedin"
+      }
+    ],
+    "tag": [
+      {
+        "value": "organizations",
+        "source": "linkedin"
+      },
+      {
+        "value": "transformation",
+        "source": "linkedin"
+      },
+      {
+        "value": "author",
+        "source": "linkedin"
+      }
+    ],
+    "naoStatus": {
+      "value": "not_invited",
+      "source": "system"
+    },
+    "address": [
+      {
+        "source": "linkedin",
+        "city": "Brussels",
+        "country": "Belgium",
+        "coordLat": 50.8503,
+        "coordLng": 4.3517
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2024-03-20T15:30:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-05-15T10:15:00Z",
+      "source": "system"
+    },
+    "account": [
+      {
+        "value": "fredericlaloux",
+        "protocol": "linkedin",
+        "source": "linkedin"
+      },
+      {
+        "value": "@fredlaloux",
+        "protocol": "twitter",
+        "source": "twitter"
+      }
+    ]
+  },
+  {
+    "@id": "contact:11",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "Joscha Raue",
+        "source": "Android Phone"
+      }
+    ],
+    "email": [
+      {
+        "value": "joscha.bach@cognitiveai.org",
+        "source": "Android Phone"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15550123456",
+        "source": "Android Phone"
+      }
+    ],
+    "organization": [
+      {
+        "source": "Android Phone",
+        "value": "Cognitive AI Research",
+        "position": "Principal AI Researcher"
+      }
+    ],
+    "photo": [
+      {
+        "value": "images/Joscha.jpg",
+        "source": "Android Phone"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Cognitive scientist and AI researcher, expert in artificial general intelligence",
+        "source": "Android Phone"
+      }
+    ],
+    "tag": [
+      {
+        "value": "ai",
+        "source": "Android Phone"
+      },
+      {
+        "value": "cognition",
+        "source": "Android Phone"
+      },
+      {
+        "value": "research",
+        "source": "Android Phone"
+      }
+    ],
+    "naoStatus": {
+      "value": "member",
+      "source": "system"
+    },
+    "address": [
+      {
+        "source": "Android Phone",
+        "city": "Berlin",
+        "country": "Germany",
+        "coordLat": 52.52,
+        "coordLng": 13.405
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2024-01-15T11:20:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-07-18T09:50:00Z",
+      "source": "system"
+    },
+    "joinedAt": {
+      "valueDateTime": "2024-01-30T13:45:00Z",
+      "source": "system"
+    },
+    "internalGroup": [
+      {
+        "value": "2",
+        "source": "system"
+      },
+      {
+        "value": "3",
+        "source": "system"
+      }
+    ],
+    "lastInteractionAt": "2024-08-01T12:00:00Z",
+    "humanityConfidenceScore": 6,
+    "account": [
+      {
+        "value": "joschabach",
+        "protocol": "github",
+        "source": "github"
+      },
+      {
+        "value": "@joscha_bach",
+        "protocol": "twitter",
+        "source": "twitter"
+      }
+    ]
+  },
+  {
+    "@id": "contact:11.5",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "J. Raue",
+        "source": "Android Phone"
+      }
+    ],
+    "email": [
+      {
+        "value": "joscha.bach@cognitiveai.org",
+        "source": "Android Phone"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15550123458",
+        "source": "Android Phone"
+      }
+    ],
+    "organization": [
+      {
+        "source": "Android Phone",
+        "value": "Cognitive AI Research",
+        "position": "Principal AI Researcher"
+      }
+    ],
+    "photo": [
+      {
+        "value": "images/Joscha.jpg",
+        "source": "Android Phone"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Cognitive scientist and AI researcher, expert in artificial general intelligence",
+        "source": "Android Phone"
+      }
+    ],
+    "tag": [
+      {
+        "value": "ai",
+        "source": "Android Phone"
+      },
+      {
+        "value": "cognition",
+        "source": "Android Phone"
+      },
+      {
+        "value": "research",
+        "source": "Android Phone"
+      }
+    ],
+    "naoStatus": {
+      "value": "member",
+      "source": "system"
+    },
+    "address": [
+      {
+        "source": "Android Phone",
+        "city": "Berlin",
+        "country": "Germany",
+        "coordLat": 52.52,
+        "coordLng": 13.405
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2024-01-15T11:20:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-07-18T09:50:00Z",
+      "source": "system"
+    },
+    "joinedAt": {
+      "valueDateTime": "2024-01-30T13:45:00Z",
+      "source": "system"
+    },
+    "internalGroup": [
+      {
+        "value": "2",
+        "source": "system"
+      },
+      {
+        "value": "3",
+        "source": "system"
+      }
+    ],
+    "lastInteractionAt": "2024-08-01T12:00:00Z",
+    "humanityConfidenceScore": 6,
+    "account": [
+      {
+        "value": "joschabach",
+        "protocol": "github",
+        "source": "github"
+      },
+      {
+        "value": "@joscha_bach",
+        "protocol": "twitter",
+        "source": "twitter"
+      }
+    ]
+  },
+  {
+    "@id": "contact:11.6",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "Jos. Raue",
+        "source": "Android Phone"
+      }
+    ],
+    "email": [
+      {
+        "value": "joscha.bach@some.org",
+        "source": "Android Phone"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15550123458",
+        "source": "Android Phone"
+      }
+    ],
+    "organization": [
+      {
+        "source": "Android Phone",
+        "value": "Cognitive AI Research",
+        "position": "Principal AI Researcher"
+      }
+    ],
+    "photo": [
+      {
+        "value": "images/Joscha.jpg",
+        "source": "Android Phone"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Cognitive scientist and AI researcher, expert in artificial general intelligence",
+        "source": "Android Phone"
+      }
+    ],
+    "tag": [
+      {
+        "value": "ai",
+        "source": "Android Phone"
+      },
+      {
+        "value": "cognition",
+        "source": "Android Phone"
+      },
+      {
+        "value": "research",
+        "source": "Android Phone"
+      }
+    ],
+    "naoStatus": {
+      "value": "member",
+      "source": "system"
+    },
+    "address": [
+      {
+        "source": "Android Phone",
+        "city": "Berlin",
+        "country": "Germany",
+        "coordLat": 52.52,
+        "coordLng": 13.405
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2024-01-15T11:20:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-07-18T09:50:00Z",
+      "source": "system"
+    },
+    "joinedAt": {
+      "valueDateTime": "2024-01-30T13:45:00Z",
+      "source": "system"
+    },
+    "internalGroup": [
+      {
+        "value": "2",
+        "source": "system"
+      },
+      {
+        "value": "3",
+        "source": "system"
+      }
+    ],
+    "lastInteractionAt": "2024-08-01T12:00:00Z"
+  },
+  {
+    "@id": "contact:12",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "Kevin Triplett",
+        "source": "linkedin"
+      }
+    ],
+    "email": [
+      {
+        "value": "kevin.kelly@wiredmagazine.com",
+        "source": "linkedin"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15551234567",
+        "source": "linkedin"
+      }
+    ],
+    "organization": [
+      {
+        "source": "linkedin",
+        "value": "Wired Magazine",
+        "position": "Senior Maverick"
+      }
+    ],
+    "photo": [
+      {
+        "value": "images/Kevin.jpg",
+        "source": "linkedin"
+      }
+    ],
+    "url": [
+      {
+        "value": "https://linkedin.com/in/kevinkelly",
+        "type2": {
+          "@id": "linkedIn"
+        },
+        "source": "linkedin"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Co-founder of Wired, technology philosopher and author",
+        "source": "linkedin"
+      }
+    ],
+    "tag": [
+      {
+        "value": "technology",
+        "source": "linkedin"
+      },
+      {
+        "value": "futurism",
+        "source": "linkedin"
+      },
+      {
+        "value": "writing",
+        "source": "linkedin"
+      }
+    ],
+    "naoStatus": {
+      "value": "member",
+      "source": "system"
+    },
+    "address": [
+      {
+        "source": "linkedin",
+        "city": "Pacifica",
+        "country": "USA",
+        "coordLat": 37.6138,
+        "coordLng": -122.4869
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2023-12-01T14:15:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-07-12T16:20:00Z",
+      "source": "system"
+    },
+    "joinedAt": {
+      "valueDateTime": "2023-12-20T10:30:00Z",
+      "source": "system"
+    },
+    "internalGroup": [
+      {
+        "value": "1",
+        "source": "system"
+      },
+      {
+        "value": "2",
+        "source": "system"
+      }
+    ],
+    "account": [
+      {
+        "value": "kevinkelly_wired",
+        "protocol": "linkedin",
+        "source": "linkedin"
+      }
+    ]
+  },
+  {
+    "@id": "contact:13",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "Kristina Lillieneke",
+        "source": "Android Phone"
+      }
+    ],
+    "email": [
+      {
+        "value": "kristina.shen@gravityvc.com",
+        "source": "Android Phone"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15552345679",
+        "source": "Android Phone"
+      }
+    ],
+    "organization": [
+      {
+        "source": "Android Phone",
+        "value": "Gravity Ventures",
+        "position": "Founding Partner"
+      }
+    ],
+    "photo": [
+      {
+        "value": "images/Kristina.jpg",
+        "source": "Android Phone"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Early-stage venture capitalist focused on deep tech",
+        "source": "Android Phone"
+      }
+    ],
+    "tag": [
+      {
+        "value": "venture-capital",
+        "source": "Android Phone"
+      },
+      {
+        "value": "deep-tech",
+        "source": "Android Phone"
+      },
+      {
+        "value": "startups",
+        "source": "Android Phone"
+      }
+    ],
+    "naoStatus": {
+      "value": "not_invited",
+      "source": "system"
+    },
+    "address": [
+      {
+        "source": "Android Phone",
+        "city": "San Francisco",
+        "country": "USA",
+        "region": "CA",
+        "coordLat": 37.7749,
+        "coordLng": -122.4194
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2024-04-05T12:30:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-06-15T14:45:00Z",
+      "source": "system"
+    },
+    "account": [
+      {
+        "value": "kristinashen_vc",
+        "protocol": "linkedin",
+        "source": "linkedin"
+      },
+      {
+        "value": "@kristina_vc",
+        "protocol": "twitter",
+        "source": "twitter"
+      }
+    ]
+  },
+  {
+    "@id": "contact:14",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "Margeigh Novotny",
+        "source": "linkedin"
+      }
+    ],
+    "email": [
+      {
+        "value": "margeigh.novosad@sustainabletech.org",
+        "source": "linkedin"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15553456781",
+        "source": "linkedin"
+      }
+    ],
+    "organization": [
+      {
+        "source": "linkedin",
+        "value": "Sustainable Technology Institute",
+        "position": "Executive Director"
+      }
+    ],
+    "photo": [
+      {
+        "value": "images/Margeigh.jpg",
+        "source": "linkedin"
+      }
+    ],
+    "url": [
+      {
+        "value": "https://linkedin.com/in/margeighnovosad",
+        "type2": {
+          "@id": "linkedIn"
+        },
+        "source": "linkedin"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Leader in sustainable technology and environmental innovation",
+        "source": "linkedin"
+      }
+    ],
+    "tag": [
+      {
+        "value": "sustainability",
+        "source": "linkedin"
+      },
+      {
+        "value": "environment",
+        "source": "linkedin"
+      },
+      {
+        "value": "technology",
+        "source": "linkedin"
+      }
+    ],
+    "naoStatus": {
+      "value": "member",
+      "source": "system"
+    },
+    "address": [
+      {
+        "source": "linkedin",
+        "city": "Portland",
+        "country": "USA",
+        "region": "OR",
+        "coordLat": 45.5152,
+        "coordLng": -122.6784
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2024-06-25T09:40:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-07-20T13:30:00Z",
+      "source": "system"
+    },
+    "joinedAt": {
+      "valueDateTime": "2024-06-01T14:20:00Z",
+      "source": "system"
+    },
+    "internalGroup": [
+      {
+        "value": "1",
+        "source": "system"
+      },
+      {
+        "value": "3",
+        "source": "system"
+      }
+    ],
+    "lastInteractionAt": "2024-07-31T18:30:00Z",
+    "humanityConfidenceScore": 5,
+    "vouchesSent": 2,
+    "vouchesReceived": 3,
+    "praisesSent": 4,
+    "praisesReceived": 2,
+    "account": [
+      {
+        "value": "margeighnovosad",
+        "protocol": "linkedin",
+        "source": "linkedin"
+      },
+      {
+        "value": "margeigh_sustainable",
+        "protocol": "signal",
+        "source": "signal"
+      }
+    ]
+  },
+  {
+    "@id": "contact:15",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "Oliver Sylvester-Bradley",
+        "source": "Android Phone"
+      }
+    ],
+    "email": [
+      {
+        "value": "oliver.sylvester@healthpolicy.gov",
+        "source": "Android Phone"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15554567891",
+        "source": "Android Phone"
+      }
+    ],
+    "organization": [
+      {
+        "source": "Android Phone",
+        "value": "Center for Medicare & Medicaid Services",
+        "position": "Deputy Administrator"
+      }
+    ],
+    "photo": [
+      {
+        "value": "images/Oli.jpg",
+        "source": "Android Phone"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Healthcare policy expert and Medicare/Medicaid leader",
+        "source": "Android Phone"
+      }
+    ],
+    "tag": [
+      {
+        "value": "healthcare",
+        "source": "Android Phone"
+      },
+      {
+        "value": "policy",
+        "source": "Android Phone"
+      },
+      {
+        "value": "medicare",
+        "source": "Android Phone"
+      }
+    ],
+    "naoStatus": {
+      "value": "member",
+      "source": "system"
+    },
+    "createdAt": {
+      "valueDateTime": "2024-03-01T10:45:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-07-08T12:15:00Z",
+      "source": "system"
+    },
+    "joinedAt": {
+      "valueDateTime": "2024-03-15T15:20:00Z",
+      "source": "system"
+    },
+    "internalGroup": [
+      {
+        "value": "1",
+        "source": "system"
+      }
+    ],
+    "vouchesSent": 4,
+    "vouchesReceived": 2,
+    "praisesSent": 2,
+    "praisesReceived": 3,
+    "account": [
+      {
+        "value": "olisylvester_health",
+        "protocol": "linkedin",
+        "source": "linkedin"
+      },
+      {
+        "value": "+1555456789012",
+        "protocol": "whatsapp",
+        "source": "whatsapp"
+      }
+    ]
+  },
+  {
+    "@id": "contact:17",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "Ruben Daniels",
+        "source": "linkedin"
+      }
+    ],
+    "email": [
+      {
+        "value": "ruben.harris@careerkarmaco.com",
+        "source": "linkedin"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15556789013",
+        "source": "linkedin"
+      }
+    ],
+    "organization": [
+      {
+        "source": "linkedin",
+        "value": "Career Karma",
+        "position": "Co-Founder & CEO"
+      }
+    ],
+    "photo": [
+      {
+        "value": "images/Ruben.jpg",
+        "source": "linkedin"
+      }
+    ],
+    "url": [
+      {
+        "value": "https://linkedin.com/in/rubenharris",
+        "type2": {
+          "@id": "linkedIn"
+        },
+        "source": "linkedin"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Entrepreneur focused on career development and education technology",
+        "source": "linkedin"
+      }
+    ],
+    "tag": [
+      {
+        "value": "education",
+        "source": "linkedin"
+      },
+      {
+        "value": "career-development",
+        "source": "linkedin"
+      },
+      {
+        "value": "entrepreneur",
+        "source": "linkedin"
+      }
+    ],
+    "naoStatus": {
+      "value": "member",
+      "source": "system"
+    },
+    "address": [
+      {
+        "source": "linkedin",
+        "city": "Atlanta",
+        "country": "USA",
+        "region": "GA",
+        "coordLat": 33.749,
+        "coordLng": -84.388
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2024-05-10T14:20:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-07-01T11:35:00Z",
+      "source": "system"
+    },
+    "joinedAt": {
+      "valueDateTime": "2024-04-15T16:30:00Z",
+      "source": "system"
+    },
+    "internalGroup": [
+      {
+        "value": "1",
+        "source": "system"
+      },
+      {
+        "value": "2",
+        "source": "system"
+      }
+    ],
+    "vouchesSent": 3,
+    "vouchesReceived": 4,
+    "praisesSent": 2,
+    "praisesReceived": 3,
+    "account": [
+      {
+        "value": "rubenharris",
+        "protocol": "linkedin",
+        "source": "linkedin"
+      },
+      {
+        "value": "@ruben_career",
+        "protocol": "twitter",
+        "source": "twitter"
+      }
+    ]
+  },
+  {
+    "@id": "contact:18",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "Samuel Gbafa",
+        "source": "linkedin"
+      }
+    ],
+    "email": [
+      {
+        "value": "sam.altman@openai.com",
+        "source": "linkedin"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15557890124",
+        "source": "linkedin"
+      }
+    ],
+    "organization": [
+      {
+        "source": "linkedin",
+        "value": "OpenAI",
+        "position": "CEO"
+      }
+    ],
+    "photo": [
+      {
+        "value": "images/Sam.jpg",
+        "source": "linkedin"
+      }
+    ],
+    "url": [
+      {
+        "value": "https://linkedin.com/in/samaltman",
+        "type2": {
+          "@id": "linkedIn"
+        },
+        "source": "linkedin"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Leading the development of artificial general intelligence",
+        "source": "linkedin"
+      }
+    ],
+    "tag": [
+      {
+        "value": "ai",
+        "source": "linkedin"
+      },
+      {
+        "value": "openai",
+        "source": "linkedin"
+      },
+      {
+        "value": "leadership",
+        "source": "linkedin"
+      }
+    ],
+    "naoStatus": {
+      "value": "invited",
+      "source": "system"
+    },
+    "address": [
+      {
+        "source": "linkedin",
+        "city": "San Francisco",
+        "country": "USA",
+        "coordLat": 37.7749,
+        "coordLng": -122.4194
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2024-06-01T13:25:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-07-15T14:50:00Z",
+      "source": "system"
+    },
+    "invitedAt": {
+      "valueDateTime": "2024-06-20T16:45:00Z",
+      "source": "system"
+    },
+    "account": [
+      {
+        "value": "samaltman",
+        "protocol": "linkedin",
+        "source": "linkedin"
+      },
+      {
+        "value": "@sama",
+        "protocol": "twitter",
+        "source": "twitter"
+      }
+    ]
+  },
+  {
+    "@id": "contact:20",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "Niko Bonnieure",
+        "source": "Android Phone"
+      }
+    ],
+    "email": [
+      {
+        "value": "niko@nextgraph.org",
+        "source": "Android Phone"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15559012346",
+        "source": "Android Phone"
+      }
+    ],
+    "organization": [
+      {
+        "source": "Android Phone",
+        "value": "NextGraph",
+        "position": "Founder & Lead Developer"
+      }
+    ],
+    "photo": [
+      {
+        "value": "images/Niko.jpg",
+        "source": "Android Phone"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Building decentralized graph database technology",
+        "source": "Android Phone"
+      }
+    ],
+    "tag": [
+      {
+        "value": "decentralized",
+        "source": "Android Phone"
+      },
+      {
+        "value": "database",
+        "source": "Android Phone"
+      },
+      {
+        "value": "p2p",
+        "source": "Android Phone"
+      }
+    ],
+    "naoStatus": {
+      "value": "member",
+      "source": "system"
+    },
+    "address": [
+      {
+        "source": "Android Phone",
+        "city": "Paris",
+        "country": "France",
+        "coordLat": 48.8566,
+        "coordLng": 2.3522
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2024-01-15T16:25:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-07-25T18:30:00Z",
+      "source": "system"
+    },
+    "joinedAt": {
+      "valueDateTime": "2024-02-01T11:15:00Z",
+      "source": "system"
+    },
+    "internalGroup": [
+      {
+        "value": "2",
+        "source": "system"
+      }
+    ],
+    "account": [
+      {
+        "value": "niko_nextgraph",
+        "protocol": "github",
+        "source": "github"
+      },
+      {
+        "value": "niko_bonnieure",
+        "protocol": "telegram",
+        "source": "telegram"
+      }
+    ]
+  },
+  {
+    "@id": "contact:21",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "Tree Willard",
+        "source": "Android Phone"
+      }
+    ],
+    "email": [
+      {
+        "value": "tree.willard@foresttech.org",
+        "source": "Android Phone"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15550123457",
+        "source": "Android Phone"
+      }
+    ],
+    "organization": [
+      {
+        "source": "Android Phone",
+        "value": "Forest Technology Institute",
+        "position": "Environmental Systems Engineer"
+      }
+    ],
+    "photo": [
+      {
+        "value": "images/Tree.jpg",
+        "source": "Android Contacts"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Expert in sustainable forest management and environmental technology",
+        "source": "Android Contacts"
+      }
+    ],
+    "tag": [
+      {
+        "value": "environment",
+        "source": "Android Contacts"
+      },
+      {
+        "value": "forestry",
+        "source": "Android Contacts"
+      },
+      {
+        "value": "sustainability",
+        "source": "Android Contacts"
+      }
+    ],
+    "naoStatus": {
+      "value": "member",
+      "source": "system"
+    },
+    "address": [
+      {
+        "source": "Android Contacts",
+        "city": "Portland",
+        "country": "USA",
+        "region": "OR",
+        "coordLat": 45.5152,
+        "coordLng": -122.6784
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2024-02-25T12:00:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-07-25T19:00:00Z",
+      "source": "system"
+    },
+    "joinedAt": {
+      "valueDateTime": "2024-03-10T14:00:00Z",
+      "source": "system"
+    },
+    "internalGroup": [
+      {
+        "value": "1",
+        "source": "system"
+      },
+      {
+        "value": "3",
+        "source": "system"
+      }
+    ]
+  },
+  {
+    "@id": "contact:22",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "Meena Seshamani",
+        "source": "Android Contacts"
+      }
+    ],
+    "email": [
+      {
+        "value": "meena.seshamani@healthpolicy.gov",
+        "source": "Android Contacts"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15554567892",
+        "source": "Android Contacts"
+      }
+    ],
+    "organization": [
+      {
+        "source": "Android Contacts",
+        "value": "Center for Medicare & Medicaid Services",
+        "position": "Deputy Administrator"
+      }
+    ],
+    "photo": [
+      {
+        "value": "images/Meena.jpg",
+        "source": "Android Contacts"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Healthcare policy expert and Medicare/Medicaid leader",
+        "source": "Android Contacts"
+      }
+    ],
+    "tag": [
+      {
+        "value": "healthcare",
+        "source": "Android Contacts"
+      },
+      {
+        "value": "policy",
+        "source": "Android Contacts"
+      },
+      {
+        "value": "medicare",
+        "source": "Android Contacts"
+      }
+    ],
+    "naoStatus": {
+      "value": "member",
+      "source": "system"
+    },
+    "address": [
+      {
+        "source": "Android Contacts",
+        "city": "Washington",
+        "country": "USA",
+        "region": "DC",
+        "coordLat": 38.9072,
+        "coordLng": -77.0369
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2024-03-01T10:45:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-07-08T12:15:00Z",
+      "source": "system"
+    },
+    "joinedAt": {
+      "valueDateTime": "2024-03-15T15:20:00Z",
+      "source": "system"
+    },
+    "internalGroup": [
+      {
+        "value": "1",
+        "source": "system"
+      }
+    ],
+    "account": [
+      {
+        "value": "meena_seshamani",
+        "protocol": "linkedin",
+        "source": "linkedin"
+      },
+      {
+        "value": "+1555456789034",
+        "protocol": "whatsapp",
+        "source": "whatsapp"
+      }
+    ]
+  },
+  {
+    "@id": "contact:23",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "Stephane Bancel",
+        "source": "Android Contacts"
+      }
+    ],
+    "email": [
+      {
+        "value": "stephane.bancel@modernatx.com",
+        "source": "Android Contacts"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15558901235",
+        "source": "Android Contacts"
+      }
+    ],
+    "organization": [
+      {
+        "source": "Android Contacts",
+        "value": "Moderna",
+        "position": "Chief Executive Officer"
+      }
+    ],
+    "photo": [
+      {
+        "value": "images/Stephane.jpg",
+        "source": "Android Contacts"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Biotech leader, revolutionized mRNA vaccine technology",
+        "source": "Android Contacts"
+      }
+    ],
+    "tag": [
+      {
+        "value": "biotech",
+        "source": "Android Contacts"
+      },
+      {
+        "value": "mrna",
+        "source": "Android Contacts"
+      },
+      {
+        "value": "vaccines",
+        "source": "Android Contacts"
+      }
+    ],
+    "naoStatus": {
+      "value": "member",
+      "source": "system"
+    },
+    "address": [
+      {
+        "source": "Android Contacts",
+        "city": "Cambridge",
+        "country": "USA",
+        "region": "MA",
+        "coordLat": 42.3736,
+        "coordLng": -71.1097
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2024-03-25T15:10:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-07-22T10:40:00Z",
+      "source": "system"
+    },
+    "joinedAt": {
+      "valueDateTime": "2024-04-10T12:30:00Z",
+      "source": "system"
+    },
+    "internalGroup": [
+      {
+        "value": "3",
+        "source": "system"
+      }
+    ]
+  },
+  {
+    "@id": "contact-emily",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "Emily Watson",
+        "source": "linkedin"
+      }
+    ],
+    "email": [
+      {
+        "value": "emily.watson@creativestudio.com",
+        "source": "linkedin"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15559876543",
+        "source": "iOS Contacts"
+      }
+    ],
+    "organization": [
+      {
+        "value": "Creative Studio",
+        "position": "Senior Designer",
+        "displayPosition": "Senior Designer at Creative Studio",
+        "source": "linkedin"
+      }
+    ],
+    "photo": [
+      {
+        "value": "",
+        "source": "linkedin"
+      }
+    ],
+    "url": [
+      {
+        "value": "https://linkedin.com/in/emilywatson",
+        "type2": {
+          "@id": "linkedIn"
+        },
+        "source": "linkedin"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Creative designer with 8+ years of experience in UX/UI",
+        "source": "linkedin"
+      }
+    ],
+    "tag": [
+      {
+        "value": "design",
+        "source": "linkedin"
+      },
+      {
+        "value": "ux",
+        "source": "linkedin"
+      },
+      {
+        "value": "creative",
+        "source": "linkedin"
+      }
+    ],
+    "naoStatus": {
+      "value": "pending",
+      "source": "system"
+    },
+    "address": [
+      {
+        "city": "Los Angeles",
+        "country": "USA",
+        "coordLat": 34.0522,
+        "coordLng": -118.2437,
+        "source": "linkedin"
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2024-11-15T10:00:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-11-15T10:00:00Z",
+      "source": "system"
+    }
+  },
+  {
+    "@id": "contact-david",
+    "type": [
+      {
+        "@id": "Individual"
+      }
+    ],
+    "name": [
+      {
+        "value": "David Park",
+        "source": "linkedin"
+      }
+    ],
+    "email": [
+      {
+        "value": "david.park@fintech.io",
+        "source": "linkedin"
+      }
+    ],
+    "phoneNumber": [
+      {
+        "value": "+15554567890",
+        "source": "Android Contacts"
+      }
+    ],
+    "organization": [
+      {
+        "value": "FinTech Innovations",
+        "position": "Product Manager",
+        "displayPosition": "Product Manager at FinTech Innovations",
+        "source": "linkedin"
+      }
+    ],
+    "photo": [
+      {
+        "value": "",
+        "source": "linkedin"
+      }
+    ],
+    "url": [
+      {
+        "value": "https://linkedin.com/in/davidpark",
+        "type2": {
+          "@id": "linkedIn"
+        },
+        "source": "linkedin"
+      }
+    ],
+    "biography": [
+      {
+        "value": "Passionate about blockchain and decentralized finance",
+        "source": "linkedin"
+      }
+    ],
+    "tag": [
+      {
+        "value": "fintech",
+        "source": "linkedin"
+      },
+      {
+        "value": "blockchain",
+        "source": "linkedin"
+      },
+      {
+        "value": "product",
+        "source": "linkedin"
+      }
+    ],
+    "naoStatus": {
+      "value": "pending",
+      "source": "system"
+    },
+    "address": [
+      {
+        "city": "New York",
+        "country": "USA",
+        "coordLat": 40.7128,
+        "coordLng": -74.0060,
+        "source": "linkedin"
+      }
+    ],
+    "createdAt": {
+      "valueDateTime": "2024-11-15T09:30:00Z",
+      "source": "system"
+    },
+    "updatedAt": {
+      "valueDateTime": "2024-11-15T09:30:00Z",
+      "source": "system"
+    }
+  }
+]

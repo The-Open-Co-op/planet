@@ -1,0 +1,60 @@
+stages:
+  - test
+  - build
+  - deploy
+
+variables:
+  NODE_VERSION: "20"
+
+.node_template: &node_template
+  image: oven/bun:1-alpine
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - ~/.bun/install/cache/
+  before_script:
+    - bun install
+
+test:
+  <<: *node_template
+  stage: test
+  script:
+    - bun run lint
+    - bun run check
+  only:
+    - main
+    - merge_requests
+    - branches
+    - preview  
+
+build:
+  <<: *node_template
+  stage: build
+  script:
+    - bun run build
+    - ls -la dist/
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 hour
+  only:
+    - main
+    - merge_requests
+    - preview  
+
+pages:
+  stage: deploy
+  image: alpine:latest
+  script:
+    - mkdir -p public
+    - cp -r dist/* public/
+    - ls -la public/
+  artifacts:
+    paths:
+      - public
+    expire_in: 30 days
+  dependencies:
+    - build  
+  only:
+    - preview 
