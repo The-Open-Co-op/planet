@@ -12,7 +12,10 @@ import {
   Skeleton,
   alpha,
   useTheme,
-  Button
+  Button,
+  Tabs,
+  Tab,
+  useMediaQuery
 } from '@mui/material';
 import {
   ArrowBack,
@@ -21,7 +24,6 @@ import {
 import {
   ContactViewHeader,
   ContactInfo,
-  ContactDetails,
   ContactGroups,
   ContactActions,
   RejectedVouchesAndPraises
@@ -39,6 +41,10 @@ const ContactViewPage = () => {
   const theme = useTheme();
   const [isBlocked, setIsBlocked] = useState(false);
   const [vouchesRefreshKey, setVouchesRefreshKey] = useState(0);
+  const [tabValue, setTabValue] = useState(0);
+  
+  // Check if desktop size
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
 
   const {
     contact,
@@ -163,14 +169,34 @@ const ContactViewPage = () => {
   }
 
   return (
-    <Box sx={{height: '100%', p: {xs: 2, md: 3}, backgroundColor: 'background.default'}}>
-      <Button
-        startIcon={<ArrowBack/>}
-        onClick={handleBack}
-        sx={{mb: 3}}
-      >
-        {location.state?.from === 'notifications' ? 'Back to Notifications' : 'Back to Contacts'}
-      </Button>
+    <Box sx={{height: '100%', overflow: 'auto', backgroundColor: 'background.default'}}>
+      {/* Header with back arrow and edit button */}
+      <Box sx={{ 
+        position: 'sticky', 
+        top: 0, 
+        backgroundColor: 'background.default', 
+        zIndex: 10,
+        p: 2, 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        borderBottom: 1,
+        borderColor: 'divider'
+      }}>
+        <Button
+          onClick={handleBack}
+          sx={{ minWidth: 'auto', p: 1 }}
+        >
+          <ArrowBack />
+        </Button>
+        <Button
+          startIcon={<Edit/>}
+          onClick={handleEditToggle}
+          sx={{ minWidth: 'auto', px: 2 }}
+        >
+          {isEditing ? "Exit" : "Edit"}
+        </Button>
+      </Box>
       
       {isBlocked && contact && (
         <Alert 
@@ -213,43 +239,63 @@ const ContactViewPage = () => {
         </Alert>
       )}
       
-      <Paper sx={{p: {xs: 2, md: 3}, mb: 3, backgroundColor: 'background.default'}}>
-        <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3}}>
-          <Typography variant="h6" sx={{fontWeight: 600}}>
-            Contact Information
-          </Typography>
-          <Button
-            variant={"text"}
-            startIcon={<Edit/>}
-            onClick={handleEditToggle}
-          >
-            {isEditing ? "Exit" : "Edit"}
-          </Button>
-        </Box>
-
+      <Box sx={{ p: 2 }}>
         <ContactViewHeader
           contact={contact}
+          contactGroups={contactGroups}
           isLoading={isLoading}
           isEditing={isEditing}
+          showTags={false}
+          onHumanityToggle={toggleHumanityVerification}
         />
 
-        <Divider sx={{my: 3}}/>
-
-        <Grid container spacing={3}>
-          <Grid size={{xs: 12, md: 6}}>
-            <ContactInfo contact={contact} isEditing={isEditing}/>
-            <ContactGroups groups={contactGroups}/>
-          </Grid>
-
-          <Grid size={{xs: 12, md: 6}}>
-            <ContactDetails
-              contact={contact}
-              onHumanityToggle={toggleHumanityVerification}
-            />
-          </Grid>
-        </Grid>
-
-        <Divider sx={{my: 3}}/>
+        {/* Desktop: Three column layout */}
+        {isDesktop ? (
+          <Box sx={{ display: 'flex', gap: 3, mt: 2 }}>
+            <Box sx={{ flex: 1, pl: 3 }}>
+              <ContactInfo contact={contact} isEditing={isEditing}/>
+            </Box>
+            <Box sx={{ flex: 2 }}>
+              <VouchesAndPraises 
+                contact={contact} 
+                onInviteToNAO={handleInviteToNAO}
+                refreshTrigger={vouchesRefreshKey}
+              />
+            </Box>
+          </Box>
+        ) : (
+          /* Mobile/Tablet: Tabs layout */
+          <>
+            <Tabs 
+              value={tabValue} 
+              onChange={(e, newValue) => setTabValue(newValue)}
+              sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}
+              variant="fullWidth"
+              centered
+            >
+              <Tab label="Contact" />
+              <Tab label="Vouches" />
+            </Tabs>
+            
+            {tabValue === 0 && (
+              <ContactInfo contact={contact} isEditing={isEditing}/>
+            )}
+            
+            {tabValue === 1 && (
+              <>
+                <VouchesAndPraises 
+                  contact={contact} 
+                  onInviteToNAO={handleInviteToNAO}
+                  refreshTrigger={vouchesRefreshKey}
+                />
+                <RejectedVouchesAndPraises 
+                  contact={contact} 
+                  onAcceptanceChanged={handleRefreshVouches}
+                />
+              </>
+            )}
+          </>
+        )}
 
         {/* Contact Actions */}
         <ContactActions
@@ -328,19 +374,7 @@ const ContactViewPage = () => {
           </Box>
         )}
 
-        {/* Vouches and Praises Section */}
-        <VouchesAndPraises 
-          contact={contact} 
-          onInviteToNAO={handleInviteToNAO}
-          refreshTrigger={vouchesRefreshKey}
-        />
-        
-        {/* Rejected Vouches and Praises Section */}
-        <RejectedVouchesAndPraises 
-          contact={contact} 
-          onAcceptanceChanged={handleRefreshVouches}
-        />
-      </Paper>
+      </Box>
     </Box>
   );
 };

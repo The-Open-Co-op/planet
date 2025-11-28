@@ -26,15 +26,9 @@ export const ContactInfo = forwardRef<HTMLDivElement, ContactInfoProps>(
     //const linkedin = getPropByType(contact, 'url', "linkedIn");
 
     return (
-      <Card variant="outlined" ref={ref}>
-        <CardContent sx={{p: {xs: 2, md: 3}}}>
-          <Typography variant="h6" gutterBottom>
-            Contact Information
-          </Typography>
-
+      <div ref={ref}>
           <MultiPropertyWithVisibility
-            label="Email Addresses"
-            icon={<Email/>}
+            label="Email"
             contact={contact}
             propertyKey="email"
             isEditing={isEditing}
@@ -43,8 +37,7 @@ export const ContactInfo = forwardRef<HTMLDivElement, ContactInfoProps>(
           />
 
           <MultiPropertyWithVisibility
-            label="Phone Numbers"
-            icon={<Phone/>}
+            label="Phone"
             contact={contact}
             propertyKey="phoneNumber"
             isEditing={isEditing}
@@ -52,28 +45,15 @@ export const ContactInfo = forwardRef<HTMLDivElement, ContactInfoProps>(
             validateType={"phone"}
           />
 
-          <PropertyWithSources
-            label="Company"
-            icon={<Business/>}
-            contact={contact}
-            propertyKey="organization"
-            isEditing={isEditing}
-            placeholder={"Company"}
-          />
-
           <MultiPropertyWithVisibility
-            label="Accounts"
-            icon={<AccountBox/>}
             contact={contact}
             propertyKey="account"
             isEditing={isEditing}
             placeholder={"Account"}
             variant={"accounts"}
-            hideIcon={true}
             hideLabel={true}
           />
-        </CardContent>
-      </Card>
+      </div>
     );
   }
 );

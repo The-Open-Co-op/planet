@@ -5,10 +5,10 @@ import {
   Paper 
 } from '@mui/material';
 import {
-  Dashboard,
-  Hub,
-  Chat,
-  Groups,
+  People,
+  Apps,
+  Notifications,
+  Settings,
 } from '@mui/icons-material';
 
 const BottomNavigation = () => {
@@ -16,30 +16,22 @@ const BottomNavigation = () => {
   const navigate = useNavigate();
 
   const navigationItems = [
-    { label: 'Home', icon: <Dashboard />, path: '/' },
-    { label: 'Network', icon: <Hub />, path: '/contacts' },
-    { label: 'Groups', icon: <Groups />, path: '/groups' },
-    { label: 'Chat', icon: <Chat />, path: '/messages' },
+    { label: 'Contacts', icon: <People />, path: '/contacts' },
+    { label: 'Apps', icon: <Apps />, path: '/apps' },
+    { label: 'Alerts', icon: <Notifications />, path: '/notifications' },
+    { label: 'Settings', icon: <Settings />, path: '/settings' },
   ];
 
   const getCurrentValue = () => {
     const currentPath = location.pathname;
-    if (currentPath === '/') return '/';
     
-    // Handle network path - should highlight Network tab
-    if (currentPath.startsWith('/contacts')) {
-      return '/contacts';
-    }
-    
-    // Groups has its own tab now
-    if (currentPath.startsWith('/groups')) {
-      return '/groups';
-    }
+    // Default to contacts if on root
+    if (currentPath === '/') return '/contacts';
     
     const activeItem = navigationItems.find(item => 
-      item.path === currentPath || (item.path !== '/' && currentPath.startsWith(item.path))
+      item.path === currentPath || currentPath.startsWith(item.path)
     );
-    return activeItem ? activeItem.path : '/';
+    return activeItem ? activeItem.path : '/contacts';
   };
 
   const handleChange = (_event: React.SyntheticEvent, newValue: string) => {

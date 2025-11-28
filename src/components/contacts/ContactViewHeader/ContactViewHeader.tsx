@@ -1,4 +1,4 @@
-import {forwardRef} from 'react';
+import {forwardRef, useState} from 'react';
 import {
   Typography,
   Box,
@@ -8,13 +8,21 @@ import {
   Card,
   CardContent,
   Button,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Switch,
+  FormControlLabel,
+  Divider,
 } from '@mui/material';
 import {
   LinkedIn,
   Person,
   VerifiedUser,
   CheckCircle,
-  PersonOutline, PersonSearch, Send, Favorite, Email, Add
+  PersonOutline, PersonSearch, Send, Favorite, Email, Add,
+  Info,
 } from '@mui/icons-material';
 import type {Contact} from '@/types/contact';
 import {useRelationshipCategories} from "@/hooks/useRelationshipCategories";
@@ -24,18 +32,21 @@ import {PropertyWithSources} from '../PropertyWithSources';
 
 export interface ContactViewHeaderProps {
   contact: Contact | null;
+  contactGroups?: Array<{"@id": string; name: string}>;
   isLoading: boolean;
   isEditing?: boolean;
   showStatus?: boolean;
   showTags?: boolean;
   showActions?: boolean;
   validateParent?: (valid: boolean) => void;
+  onHumanityToggle?: () => void;
 }
 
 export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderProps>(
-  ({contact, isEditing = false, showTags = true, showActions = true, showStatus = true, validateParent}, ref) => {
+  ({contact, contactGroups = [], isEditing = false, showTags = true, showActions = true, showStatus = true, validateParent, onHumanityToggle}, ref) => {
     const theme = useTheme();
     const {getCategoryIcon, getCategoryById} = useRelationshipCategories();
+    const [aboutModalOpen, setAboutModalOpen] = useState(false);
 
     if (!contact) return null;
 
@@ -48,7 +59,7 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
         case 'member':
           return {
             icon: <VerifiedUser/>,
-            label: 'NAO Member',
+            label: 'PLANET Member',
             color: theme.palette.success.main,
             bgColor: theme.palette.success.light + '20',
             borderColor: theme.palette.success.main
@@ -56,7 +67,7 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
         case 'invited':
           return {
             icon: <CheckCircle/>,
-            label: 'NAO Invited',
+            label: 'PLANET Invited',
             color: theme.palette.warning.main,
             bgColor: theme.palette.warning.light + '20',
             borderColor: theme.palette.warning.main
@@ -64,7 +75,7 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
         default:
           return {
             icon: <PersonOutline/>,
-            label: 'Not in NAO',
+            label: 'Not in PLANET',
             color: theme.palette.text.secondary,
             bgColor: 'transparent',
             borderColor: theme.palette.divider
@@ -77,11 +88,11 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
       <Box ref={ref}>
         <Box sx={{
           display: 'flex',
-          alignItems: 'flex-start',
+          alignItems: 'center',
           mb: 3,
-          flexDirection: {xs: 'column', sm: 'row'},
-          textAlign: {xs: 'center', sm: 'left'},
-          gap: {xs: 3, sm: '20px'}
+          flexDirection: 'column',
+          textAlign: 'center',
+          gap: 2
         }}>
           <Box
             sx={{
@@ -105,41 +116,49 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
             {!photo?.value && (name?.value?.charAt(0) || '')}
           </Box>
 
-          <Box sx={{flex: 1, minWidth: 0}}>
-            <PropertyWithSources
-              label={"Contact name"}
-              contact={contact}
-              propertyKey="name"
-              variant="header"
-              textVariant="h4"
-              isEditing={isEditing}
-              placeholder="Contact Name"
-              required={true}
-              validateParent={validateParent}
-            />
-
-            <PropertyWithSources
-              contact={contact}
-              label={"Headline"}
-              propertyKey="headline"
-              variant="header"
-              textVariant="h6"
-              isEditing={isEditing}
-              placeholder="Job Title / Position"
-            />
-
-            {showStatus && <Box sx={{display: 'flex', alignItems: 'center', gap: 1, mb: 2, flexWrap: 'wrap'}}>
-              <Chip
-                icon={naoStatus.icon}
-                label={naoStatus.label}
-                variant="outlined"
-                sx={{
-                  backgroundColor: naoStatus.bgColor,
-                  borderColor: naoStatus.borderColor,
-                  color: naoStatus.color,
-                  fontWeight: 500
-                }}
+          <Box sx={{flex: 1, minWidth: 0, textAlign: 'center'}}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+              <PropertyWithSources
+                label={"Contact name"}
+                contact={contact}
+                propertyKey="name"
+                variant="header"
+                textVariant="h4"
+                isEditing={isEditing}
+                placeholder="Contact Name"
+                required={true}
+                validateParent={validateParent}
               />
+              {!isEditing && (
+                <IconButton 
+                  size="small" 
+                  onClick={() => setAboutModalOpen(true)}
+                  sx={{ 
+                    border: '1px solid', 
+                    borderColor: 'divider',
+                    width: 24,
+                    height: 24,
+                    '&:hover': {
+                      backgroundColor: 'action.hover'
+                    }
+                  }}
+                >
+                  <Info sx={{ fontSize: 14 }} />
+                </IconButton>
+              )}
+            </Box>
+
+            <PropertyWithSources
+              contact={contact}
+              label={"Organization"}
+              propertyKey="organization"
+              variant="header"
+              textVariant="body2"
+              isEditing={isEditing}
+              placeholder="Company Name"
+            />
+
+            {showStatus && <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mb: 2, flexWrap: 'wrap'}}>
 
               {/* Relationship Category Indicator */}
               {contact.relationshipCategory && (() => {
@@ -231,7 +250,7 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
               display: 'flex',
               gap: 1,
               flexWrap: 'wrap',
-              justifyContent: {xs: 'center', sm: 'flex-start'},
+              justifyContent: 'center',
               mt: 2
             }}>
               {/* Invite to NAO button for non-members */}
@@ -249,32 +268,111 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
               )}
 
               {/* Vouch and Praise buttons */}
-                <Button
-                    variant="contained"
-                    startIcon={<VerifiedUser/>}
-                    size="small"
-                    color="primary"
-                >
-                    Send Vouch
-                </Button>
-                <Button
-                    variant="contained"
-                    startIcon={<Favorite/>}
-                    size="small"
-                    sx={{
-                      backgroundColor: '#f8bbd9',
-                      color: '#d81b60',
-                      '&:hover': {
-                        backgroundColor: '#f48fb1'
-                      }
-                    }}
-                >
-                    Send Praise
-                </Button>
+              <Button
+                variant="contained"
+                startIcon={<VerifiedUser/>}
+                size="small"
+                color="primary"
+              >
+                Send Vouch
+              </Button>
+              <Button
+                variant="contained"
+                startIcon={<Favorite/>}
+                size="small"
+                sx={{
+                  backgroundColor: '#f8bbd9',
+                  color: '#d81b60',
+                  '&:hover': {
+                    backgroundColor: '#f48fb1'
+                  }
+                }}
+              >
+                Send Praise
+              </Button>
             </Box>}
 
           </Box>
         </Box>
+        
+        {/* About Modal */}
+        <Dialog open={aboutModalOpen} onClose={() => setAboutModalOpen(false)} maxWidth="sm" fullWidth>
+          <DialogTitle>About: {name?.value || 'Contact'}</DialogTitle>
+          <DialogContent>
+            <Box sx={{ pt: 2 }}>
+              <FormControlLabel
+                control={
+                  <Switch 
+                    checked={contact.humanityConfidenceScore === 5} 
+                    onChange={(e) => {
+                      console.log('Toggle clicked, current score:', contact.humanityConfidenceScore);
+                      if (onHumanityToggle) {
+                        onHumanityToggle();
+                      }
+                    }}
+                  />
+                }
+                label="Vouch that this contact is human"
+                labelPlacement="start"
+                sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', ml: 0 }}
+              />
+              
+              {/* Groups in common */}
+              {contactGroups.length > 0 && (
+                <Box sx={{ mb: 3 }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+                    {contactGroups.length} Groups in common
+                  </Typography>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                    {contactGroups.map(group => (
+                      <Typography key={group['@id']} variant="body2" color="text.secondary">
+                        {group.name}
+                      </Typography>
+                    ))}
+                  </Box>
+                </Box>
+              )}
+              
+              <Divider sx={{ mb: 2 }} />
+              
+              {/* Added/Updated/Last interaction info */}
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                <Box>
+                  <Typography variant="caption" color="text.secondary">
+                    Added
+                  </Typography>
+                  <Typography variant="body2">
+                    {contact.createdAt && !isNaN(Date.parse(contact.createdAt)) 
+                      ? new Date(contact.createdAt).toLocaleDateString() 
+                      : new Date('2023-11-15').toLocaleDateString()}
+                  </Typography>
+                </Box>
+                
+                <Box>
+                  <Typography variant="caption" color="text.secondary">
+                    Updated
+                  </Typography>
+                  <Typography variant="body2">
+                    {contact.updatedAt && !isNaN(Date.parse(contact.updatedAt)) 
+                      ? new Date(contact.updatedAt).toLocaleDateString() 
+                      : new Date('2024-01-20').toLocaleDateString()}
+                  </Typography>
+                </Box>
+                
+                <Box>
+                  <Typography variant="caption" color="text.secondary">
+                    Last interaction
+                  </Typography>
+                  <Typography variant="body2">
+                    {contact.lastInteraction && !isNaN(Date.parse(contact.lastInteraction)) 
+                      ? new Date(contact.lastInteraction).toLocaleDateString() 
+                      : new Date('2024-03-10').toLocaleDateString()}
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+          </DialogContent>
+        </Dialog>
       </Box>
     );
   }

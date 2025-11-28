@@ -27,12 +27,15 @@ export const PageHeader = forwardRef<HTMLDivElement, PageHeaderProps>(
       >
         <Box sx={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
           <Typography
-            variant="h4"
             component="h1"
             sx={{
+              fontSize: {
+                xs: '1.25rem', // 20px - consistent on mobile
+                md: '1.5rem'   // 24px - consistent on desktop
+              },
               fontWeight: 700,
-              mb: { xs: 0, md: 0 },
-              fontSize: { xs: '1.5rem', md: '2.125rem' },
+              lineHeight: 1.2,
+              margin: 0,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap'

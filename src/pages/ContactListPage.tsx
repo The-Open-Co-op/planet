@@ -1,22 +1,63 @@
 import {useState, useEffect, useMemo} from 'react';
 import {useNavigate, useSearchParams} from 'react-router-dom';
-import {Typography, Box} from '@mui/material';
+import {
+  Typography, 
+  Box, 
+  TextField, 
+  InputAdornment, 
+  Button, 
+  IconButton,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  Divider,
+  FormControl,
+  InputLabel,
+  Select
+} from '@mui/material';
+import { StandardPage } from '@/components/layout/StandardPage';
+import {
+  Search as SearchIcon,
+  Settings as ManageIcon,
+  Add,
+  PersonAdd,
+  FileUpload,
+  Send as InviteIcon,
+  Info,
+  KeyboardArrowDown,
+  ArrowBack
+} from '@mui/icons-material';
 import {useContacts} from '@/hooks/contacts/useContacts';
 import {useContactDragDrop} from '@/hooks/contacts/useContactDragDrop';
+import {useRelationshipCategories} from '@/hooks/useRelationshipCategories';
 import {
-  ContactListHeader,
-  ContactTabs,
   ContactFilters,
   ContactGrid,
   MergeDialogs,
   FloatingActions
 } from '@/components/contacts';
-import {ContactMap} from '@/components/ContactMap';
 import {resolveFrom} from "@/utils/contactUtils";
 import {useMergeContacts} from "@/hooks/contacts/useMergeContacts.ts";
 
 const ContactListPage = () => {
   const currentUserGroupIds = useMemo(() => ['group1', 'group2', 'group3'], []);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  
+  // State
+  const [isManageMode, setIsManageMode] = useState(false);
+  const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [addMenuAnchor, setAddMenuAnchor] = useState<null | HTMLElement>(null);
+  const [isMergeDialogOpen, setIsMergeDialogOpen] = useState(false);
+  const [useAI, setUseAI] = useState(false);
+  const [isManualMergeMode, setIsManualMergeMode] = useState(false);
+  const [selectedContactsForMerge, setSelectedContactsForMerge] = useState<string[]>([]);
+  const [isMerging, setIsMerging] = useState(false);
+  const [mergeProgress, setMergeProgress] = useState(0);
+  const [isManualMerge, setIsManualMerge] = useState(false);
+  const [noDuplicatesFound, setNoDuplicatesFound] = useState(false);
 
   const {
     contacts,
@@ -36,76 +77,44 @@ const ContactListPage = () => {
   } = useContacts();
 
   const {getDuplicatedContacts, mergeContacts} = useMergeContacts();
-
-  const [tabValue, setTabValue] = useState(0);
-  const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
-  const [isMergeDialogOpen, setIsMergeDialogOpen] = useState(false);
-  const [useAI, setUseAI] = useState(false);
-  const [isManualMergeMode, setIsManualMergeMode] = useState(false);
-  const [selectedContactsForMerge, setSelectedContactsForMerge] = useState<string[]>([]);
-  const [isMerging, setIsMerging] = useState(false);
-  const [mergeProgress, setMergeProgress] = useState(0);
-  const [isManualMerge, setIsManualMerge] = useState(false);
-  const [noDuplicatesFound, setNoDuplicatesFound] = useState(false);
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const {getCategoriesArray, getCategoryIcon} = useRelationshipCategories();
 
   useEffect(() => {
     addFilter("currentUserGroupIds", currentUserGroupIds);
   }, [addFilter, currentUserGroupIds]);
 
-  // Clear selections when filters change
+  // Handle contact categorization from drag and drop
   useEffect(() => {
-    setSelectedContacts([]);
-  }, [filters]);
-
-  const mode = searchParams.get('mode');
-  const isSelectionMode = mode === 'select' || mode === 'invite' || mode === 'create-group';
-  const isMultiSelectMode = mode === 'create-group';
-  const returnTo = searchParams.get('returnTo');
-  const groupId = searchParams.get('groupId');
-  const groupData = searchParams.get('groupData');
-
-  useEffect(() => {
-    const handleContactCategorized = (event: CustomEvent) => {
-      const {contactId, category} = event.detail;
-      updateContact(contactId, {relationshipCategory: category});
-      setSelectedContacts([]);
+    const handleContactCategorized = async (event: CustomEvent) => {
+      const { contactId, category } = event.detail;
+      try {
+        await updateContact(contactId, {
+          relationshipCategory: category
+        });
+        console.log(`Updated contact ${contactId} relationship category to ${category}`);
+      } catch (error) {
+        console.error('Failed to update contact category:', error);
+      }
     };
 
     window.addEventListener('contactCategorized', handleContactCategorized as EventListener);
+    
     return () => {
       window.removeEventListener('contactCategorized', handleContactCategorized as EventListener);
     };
   }, [updateContact]);
 
+  // Handle contact interactions
   const handleContactClick = (contactId: string) => {
-    if (isSelectionMode || isManualMergeMode) return;
+    if (isManageMode || isManualMergeMode) return;
     navigate(`/contacts/${contactId}`);
   };
 
   const handleSelectContact = (nuri: string) => {
     if (isManualMergeMode) {
       handleToggleContactForMerge(nuri);
-    } else if (mode === 'create-group') {
+    } else if (isManageMode) {
       handleToggleContactSelection(nuri);
-    } else if (mode === 'invite' && returnTo === 'group-info' && groupId) {
-      const inviteParams = new URLSearchParams();
-      inviteParams.set('groupId', groupId);
-      inviteParams.set('inviteeNuri', nuri);
-      inviteParams.set('inviterName', 'Oli S-B');
-      navigate(`/invite?${inviteParams.toString()}`);
-    } else {
-      handleToggleContactSelection(nuri);
-    }
-
-    if (returnTo === 'group-invite' && groupId) {
-      navigate(`/groups/${groupId}?selectedContactNuri=${encodeURIComponent(nuri)}`);
-      return;
-    }
-
-    if (returnTo === 'group-info' && groupId) {
-      navigate(`/groups/${groupId}/info?selectedContactNuri=${encodeURIComponent(nuri)}`);
     }
   };
 
@@ -119,42 +128,59 @@ const ContactListPage = () => {
     });
   };
 
-  const hasSelection = selectedContacts.length > 0;
-
-  const handleSelectAll = () => {
-    if (hasSelection) {
-      setSelectedContacts([]);
-    } else {
-      setSelectedContacts(contactNuris);
-    }
-  };
-
-  const handleCreateGroup = async () => {
-    if (mode === 'create-group' && groupData) {
-      try {
-        const parsedGroupData = JSON.parse(decodeURIComponent(groupData));
-        const {dataService} = await import('@/services/dataService');
-        const newGroup = await dataService.createGroup({
-          name: parsedGroupData.name,
-          description: parsedGroupData.description,
-          logoPreview: parsedGroupData.logoPreview,
-          tags: parsedGroupData.tags,
-          members: selectedContacts
-        });
-
-        navigate(`/groups/${newGroup.id}/info`, {
-          state: {newGroup: {...newGroup, members: selectedContacts}}
-        });
-      } catch (error) {
-        console.error('Failed to create group:', error);
-      }
-    }
-  };
-
   const isContactSelected = (nuri: string) => {
     return selectedContacts.some(c => c === nuri);
   };
 
+  // Add menu handlers
+  const handleAddMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAddMenuAnchor(event.currentTarget);
+  };
+
+  const handleAddMenuClose = () => {
+    setAddMenuAnchor(null);
+  };
+
+  const handleAddContact = () => {
+    navigate('/contacts/create');
+    handleAddMenuClose();
+  };
+
+  const handleImportContacts = () => {
+    navigate('/import');
+    handleAddMenuClose();
+  };
+
+  const handleInviteContact = () => {
+    // TODO: Implement invite functionality
+    console.log('Invite contact');
+    handleAddMenuClose();
+  };
+
+  // Search handler
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setSearchQuery(value);
+    if (value.trim()) {
+      addFilter('searchQuery', value.trim());
+    } else {
+      // Remove search filter if empty
+      const newFilters = {...filters};
+      delete newFilters.searchQuery;
+      clearFilters();
+      Object.entries(newFilters).forEach(([key, val]) => {
+        if (key !== 'searchQuery') addFilter(key, val);
+      });
+    }
+  };
+
+  // Manage mode handlers
+  const handleToggleManageMode = () => {
+    setIsManageMode(!isManageMode);
+    setSelectedContacts([]);
+  };
+
+  // Merge functionality (keeping existing logic)
   const handleMergeContacts = () => setIsMergeDialogOpen(true);
   const handleCloseMergeDialog = () => {
     setIsMergeDialogOpen(false);
@@ -185,12 +211,6 @@ const ContactListPage = () => {
     return selectedContactsForMerge.some(c => c === contact);
   };
 
-  const handleMergeSelected = () => {
-    if (selectedContactsForMerge.length < 2) return;
-    setIsManualMergeMode(false);
-    startMergeProcess(selectedContactsForMerge);
-  };
-
   const autoMerge = () => {
     setIsMerging(true);
     setMergeProgress(0);
@@ -215,251 +235,301 @@ const ContactListPage = () => {
       setMergeProgress(100);
       setIsMerging(false);
     })();
-  }
-
-  const startMergeProcess = (selectedContacts?: string[]) => {
-    setIsMerging(true);
-    setMergeProgress(0);
-    setIsManualMerge(!!selectedContacts);
-
-    const progressInterval = setInterval(() => {
-      setMergeProgress(prev => {
-        const newProgress = prev + Math.random() * 15;
-        if (newProgress >= 100) {
-          clearInterval(progressInterval);
-          setTimeout(() => {
-            setIsMerging(false);
-            setIsManualMerge(false);
-            setSelectedContactsForMerge([]);
-          }, 1000);
-          return 100;
-        }
-        return newProgress;
-      });
-    }, 200);
   };
-
-  const cancelManualMerge = () => {
-    setIsManualMergeMode(false);
-    setSelectedContactsForMerge([]);
-    setSelectedContacts([]);
-  };
-
-  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => setTabValue(newValue);
 
   const dragDrop = useContactDragDrop({
     selectedContactNuris: selectedContacts
   });
 
+  const relationshipCategories = getCategoriesArray().filter(cat => cat.id !== 'uncategorized');
+
   return (
-    <Box sx={{
-      height: {md: 'calc(100vh - 100px)', xs: 'calc(100vh - 112px)'},
-      width: '100%',
-      maxWidth: {xs: '100vw', md: '100%'},
-      overflow: 'hidden',
-      boxSizing: 'border-box',
-      p: {xs: '10px', md: 0},
-      mx: {xs: 0, md: 'auto'},
-      display: 'flex',
-      flexDirection: 'column'
-    }}>
-      <ContactListHeader
-        isSelectionMode={isSelectionMode}
-        isManualMergeMode={isManualMergeMode}
-        mode={mode}
-        selectedContactsCount={selectedContacts.length}
-      />
+    <StandardPage 
+      title={isManageMode ? 'Manage Contacts' : 'Contacts'}
+      actions={!isManageMode ? (
+        <>
+          <Button
+            onClick={handleToggleManageMode}
+            sx={{ 
+              mr: 1,
+              minWidth: { xs: 'auto', md: 'auto' },
+              px: { xs: 1, md: 2 },
+              border: { xs: 'none', md: '1px solid' },
+              borderColor: { md: 'rgba(0, 0, 0, 0.23)' },
+              '&:hover': {
+                border: { xs: 'none', md: '1px solid' },
+                borderColor: { md: 'rgba(0, 0, 0, 0.87)' },
+                backgroundColor: 'rgba(0, 0, 0, 0.04)'
+              }
+            }}
+          >
+            <ManageIcon sx={{ fontSize: { xs: 20, md: 18 } }} />
+            <Box component="span" sx={{ display: { xs: 'none', md: 'inline' }, ml: 1 }}>
+              Manage
+            </Box>
+          </Button>
+          <Button
+            onClick={handleAddMenuOpen}
+            sx={{
+              minWidth: { xs: 'auto', md: 'auto' },
+              px: { xs: 1, md: 2 },
+              backgroundColor: { xs: 'transparent', md: 'primary.main' },
+              color: { xs: 'primary.main', md: 'white' },
+              border: { xs: 'none', md: 'none' },
+              '&:hover': {
+                backgroundColor: { xs: 'rgba(25, 118, 210, 0.04)', md: 'primary.dark' }
+              }
+            }}
+          >
+            <Add sx={{ fontSize: { xs: 20, md: 18 } }} />
+            <Box component="span" sx={{ display: { xs: 'none', md: 'inline' }, ml: 1 }}>
+              Add
+            </Box>
+            <KeyboardArrowDown sx={{ display: { xs: 'none', md: 'inline' }, ml: 0.5, fontSize: 16 }} />
+          </Button>
+        </>
+      ) : (
+        <Button
+          onClick={handleToggleManageMode}
+          sx={{
+            minWidth: { xs: 'auto', md: 'auto' },
+            px: { xs: 1, md: 2 },
+            border: { xs: 'none', md: '1px solid' },
+            borderColor: { md: 'rgba(0, 0, 0, 0.23)' },
+            '&:hover': {
+              border: { xs: 'none', md: '1px solid' },
+              borderColor: { md: 'rgba(0, 0, 0, 0.87)' },
+              backgroundColor: 'rgba(0, 0, 0, 0.04)'
+            }
+          }}
+        >
+          <ArrowBack sx={{ fontSize: { xs: 20, md: 18 } }} />
+          <Box component="span" sx={{ display: { xs: 'none', md: 'inline' }, ml: 1 }}>
+            Back
+          </Box>
+        </Button>
+      )}
+    >
+      {/* Search Bar with Relationship Filter */}
+      <Box sx={{ display: 'flex', gap: 2, mb: 2, alignItems: 'center' }}>
+        <TextField
+          fullWidth
+          placeholder="Search..."
+          value={searchQuery}
+          onChange={handleSearchChange}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <FormControl size="small" sx={{ minWidth: 140 }}>
+          <InputLabel>Relationships</InputLabel>
+          <Select
+            value={filters.relationshipFilter || 'all'}
+            label="Relationships"
+            onChange={(e) => addFilter('relationshipFilter', e.target.value)}
+          >
+            <MenuItem value="all">All</MenuItem>
+            {getCategoriesArray()
+              .filter(category => category.id !== 'uncategorized')
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map(category => (
+                <MenuItem key={category.id} value={category.id}>
+                  {category.name}
+                </MenuItem>
+              ))}
+            <MenuItem value="uncategorized">None</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
 
-      <ContactTabs
-        tabValue={tabValue}
-        onTabChange={handleTabChange}
-        contactCount={contactNuris.length}
-        isLoading={isLoading}
-      />
-
-      {tabValue === 2 && (
-        <Box sx={{
-          flex: 1,
-          minHeight: 0,
-          overflow: 'hidden',
-          display: 'flex',
-          flexDirection: 'column'
-        }}>
-          {error ? (
-            <Box sx={{textAlign: 'center', py: 8}}>
-              <Typography variant="h6" color="error" gutterBottom>
-                Error loading contacts
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {error.message}
-              </Typography>
-            </Box>
-          ) : isLoading ? (
-            <Box sx={{textAlign: 'center', py: 8}}>
-              <Typography variant="h6" color="text.secondary" gutterBottom>
-                Loading map...
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Building your contact map view
-              </Typography>
-            </Box>
-          ) : contactNuris.length === 0 ? (
-            <Box sx={{textAlign: 'center', py: 8}}>
-              <Typography variant="h6" color="text.secondary" gutterBottom>
-                No contacts to map
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Import some contacts to see your map!
-              </Typography>
-            </Box>
-          ) : (
-            <Box sx={{
-              flex: 1,
-              minHeight: 0,
-              position: 'relative',
-              borderRadius: 2,
-              border: 1,
-              borderColor: 'divider',
-              overflow: 'hidden'
-            }}>
-              <ContactMap
-                contacts={contacts.filter(contact => {
-                  const location = resolveFrom(contact, "address");
-                  return location?.coordLat && location?.coordLng
-                })}
-                onContactClick={(contact) => {
-                  navigate(`/contacts/${contact["@id"]}`);
+      {/* Relationship Categories - Show in Manage Mode */}
+      {isManageMode && (
+        <Box sx={{ mb: 3, p: 2, border: 1, borderColor: 'divider', borderRadius: 2 }}>
+          <Box sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between',
+            mb: 1
+          }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.secondary' }}>
+              Relationships
+            </Typography>
+            <IconButton size="small" sx={{ color: 'text.secondary' }}>
+              <Info fontSize="small" />
+            </IconButton>
+          </Box>
+          <Typography variant="caption" sx={{ mb: 2, color: 'text.secondary', display: 'block' }}>
+            Drag and drop contacts into a category to automatically set sharing permissions.
+          </Typography>
+          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 1 }}>
+            {relationshipCategories.map((category) => (
+              <Box
+                key={category.id}
+                onDragOver={(e) => dragDrop.handleDragOver(e, category.id)}
+                onDragLeave={dragDrop.handleDragLeave}
+                onDrop={(e) => dragDrop.handleDrop(e, category.id)}
+                sx={{
+                  minHeight: 80,
+                  border: 2,
+                  borderColor: dragDrop.dragOverCategory === category.id ? category.color : 'divider',
+                  borderStyle: dragDrop.dragOverCategory === category.id ? 'solid' : 'dashed',
+                  borderRadius: 2,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  p: 1,
+                  cursor: 'pointer',
+                  backgroundColor: dragDrop.dragOverCategory === category.id ? `${category.color}10` : 'transparent',
+                  transition: 'all 0.2s ease-in-out',
+                  '&:hover': {
+                    borderColor: category.color,
+                    backgroundColor: `${category.color}08`,
+                  },
                 }}
-              />
-            </Box>
-          )}
+              >
+                <Box sx={{ color: category.color, mb: 0.5 }}>
+                  {getCategoryIcon(category.id)}
+                </Box>
+                <Typography 
+                  variant="caption" 
+                  sx={{ 
+                    textAlign: 'center', 
+                    fontSize: '0.7rem', 
+                    fontWeight: 500
+                  }}
+                >
+                  {category.name}
+                </Typography>
+                {(category.count ?? 0) > 0 && (
+                  <Typography 
+                    variant="caption" 
+                    sx={{ 
+                      color: 'text.secondary', 
+                      fontSize: '0.6rem',
+                      mt: 0.5
+                    }}
+                  >
+                    {category.count}
+                  </Typography>
+                )}
+              </Box>
+            ))}
+          </Box>
         </Box>
       )}
 
-      {tabValue === 0 && (
-        <>
-          <ContactFilters
-            filters={filters}
-            isSelectionMode={isSelectionMode}
+
+      {/* Contact Grid */}
+      <Box sx={{ flex: 1, overflow: 'hidden' }}>
+        {error ? (
+          <Box sx={{textAlign: 'center', py: 8}}>
+            <Typography variant="h6" color="error" gutterBottom>
+              Error loading contacts
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {error.message}
+            </Typography>
+          </Box>
+        ) : isLoading ? (
+          <Box sx={{textAlign: 'center', py: 8}}>
+            <Typography variant="h6" color="text.secondary" gutterBottom>
+              Loading contacts...
+            </Typography>
+          </Box>
+        ) : contactNuris.length === 0 ? (
+          <Box sx={{textAlign: 'center', py: 8}}>
+            <Typography variant="h6" color="text.secondary" gutterBottom>
+              {searchQuery ? 'No contacts found' : 'No contacts yet'}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {searchQuery ? 'Try adjusting your search terms.' : 'Import some contacts to get started!'}
+            </Typography>
+          </Box>
+        ) : (
+          <ContactGrid
+            contacts={contacts}
+            contactNuris={contactNuris}
+            isLoading={isLoading}
+            error={error}
+            isLoadingMore={isLoadingMore}
+            onLoadMore={loadMore}
+            hasMore={hasMore}
+            isSelectionMode={isManageMode}
             isManualMergeMode={isManualMergeMode}
-            onAddFilter={addFilter}
-            onClearFilters={clearFilters}
-            dragDrop={dragDrop}
+            isMultiSelectMode={isManageMode}
+            filters={filters}
+            onContactClick={handleContactClick}
+            onSelectContact={handleSelectContact}
+            isContactSelected={isContactSelected}
+            isContactSelectedForMerge={isContactSelectedForMerge}
+            onSelectAll={() => {}} // TODO: Implement select all
+            hasSelection={selectedContacts.length > 0}
+            totalCount={totalCount}
+            contactCount={contactNuris.length}
+            dragDrop={isManageMode ? dragDrop : undefined}
+            onSetIconFilter={setIconFilter}
+            onMergeContacts={handleMergeContacts}
           />
+        )}
+      </Box>
+        
+      {/* Add Menu */}
+        <Menu
+          anchorEl={addMenuAnchor}
+          open={Boolean(addMenuAnchor)}
+          onClose={handleAddMenuClose}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        >
+          <MenuItem onClick={handleAddContact}>
+            <ListItemIcon>
+              <PersonAdd fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Add Contact</ListItemText>
+          </MenuItem>
+          <MenuItem onClick={handleImportContacts}>
+            <ListItemIcon>
+              <FileUpload fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Import Contacts</ListItemText>
+          </MenuItem>
+          <MenuItem onClick={handleInviteContact}>
+            <ListItemIcon>
+              <InviteIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Invite Contact</ListItemText>
+          </MenuItem>
+        </Menu>
 
-          {error ? (
-            <Box sx={{textAlign: 'center', py: 8}}>
-              <Typography variant="h6" color="error" gutterBottom>
-                Error loading contacts
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {error.message}
-              </Typography>
-            </Box>
-          ) : isLoading ? (
-            <Box sx={{textAlign: 'center', py: 8}}>
-              <Typography variant="h6" color="text.secondary" gutterBottom>
-                Loading contacts...
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Please wait while we fetch your contacts
-              </Typography>
-            </Box>
-          ) : contactNuris.length === 0 ? (
-            <Box sx={{textAlign: 'center', py: 8}}>
-              <Typography variant="h6" color="text.secondary" gutterBottom>
-                {(filters.searchQuery || '') ? 'No contacts found' : 'No contacts yet'}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {(filters.searchQuery || '') ? 'Try adjusting your search terms.' : 'Import some contacts to get started!'}
-              </Typography>
-            </Box>
-          ) : (
-            <Box sx={{
-              display: 'flex',
-              flexDirection: {xs: 'column', md: 'row'},
-              gap: {xs: 2, md: 3},
-              flex: 1,
-              minHeight: 0,
-              overflow: 'hidden',
-              position: 'relative'
-            }}>
-              {/* Global Drag Label */}
-              {dragDrop.dragOverCategory && dragDrop.draggedContactNuri && (
-                <Box sx={{
-                  position: 'fixed',
-                  top: '20px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  backgroundColor: 'rgba(0,0,0,0.9)',
-                  color: 'white',
-                  px: 2,
-                  py: 1,
-                  borderRadius: 2,
-                  fontSize: '1rem',
-                  fontWeight: 600,
-                  whiteSpace: 'nowrap',
-                  zIndex: 10000,
-                  pointerEvents: 'none',
-                  boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
-                  border: '2px solid rgba(255,255,255,0.2)'
-                }}>
-                  {dragDrop.getCategoryDisplayName(dragDrop.dragOverCategory)}
-                </Box>
-              )}
+        {/* Existing Dialogs */}
+        <MergeDialogs
+          isMergeDialogOpen={isMergeDialogOpen}
+          isMerging={isMerging}
+          mergeProgress={mergeProgress}
+          useAI={useAI}
+          isManualMerge={isManualMerge}
+          noDuplicatesFound={noDuplicatesFound}
+          onCloseMergeDialog={handleCloseMergeDialog}
+          onAutoMerge={handleAutoMerge}
+          onManualMerge={handleManualMerge}
+          onSetUseAI={setUseAI}
+        />
 
-              <ContactGrid
-                contacts={contacts}
-                contactNuris={contactNuris}
-                isLoading={isLoading}
-                error={error}
-                isLoadingMore={isLoadingMore}
-                onLoadMore={loadMore}
-                hasMore={hasMore}
-                isSelectionMode={isSelectionMode}
-                isManualMergeMode={isManualMergeMode}
-                isMultiSelectMode={isMultiSelectMode}
-                filters={filters}
-                onContactClick={handleContactClick}
-                onSelectContact={handleSelectContact}
-                isContactSelected={isContactSelected}
-                isContactSelectedForMerge={isContactSelectedForMerge}
-                onSelectAll={handleSelectAll}
-                hasSelection={hasSelection}
-                totalCount={totalCount}
-                contactCount={contactNuris.length}
-                dragDrop={dragDrop}
-                onSetIconFilter={setIconFilter}
-                onMergeContacts={handleMergeContacts}
-              />
-            </Box>
-          )}
-        </>
-      )}
-
-      <MergeDialogs
-        isMergeDialogOpen={isMergeDialogOpen}
-        isMerging={isMerging}
-        mergeProgress={mergeProgress}
-        useAI={useAI}
-        isManualMerge={isManualMerge}
-        noDuplicatesFound={noDuplicatesFound}
-        onCloseMergeDialog={handleCloseMergeDialog}
-        onAutoMerge={handleAutoMerge}
-        onManualMerge={handleManualMerge}
-        onSetUseAI={setUseAI}
-      />
-
-      <FloatingActions
-        isMultiSelectMode={isMultiSelectMode}
-        isManualMergeMode={isManualMergeMode}
-        selectedContactsCount={selectedContacts.length}
-        selectedContactsForMergeCount={selectedContactsForMerge.length}
-        onCreateGroup={handleCreateGroup}
-        onMergeSelected={handleMergeSelected}
-        onCancelManualMerge={cancelManualMerge}
-      />
-    </Box>
+        <FloatingActions
+          isMultiSelectMode={isManageMode}
+          isManualMergeMode={isManualMergeMode}
+          selectedContactsCount={selectedContacts.length}
+          selectedContactsForMergeCount={selectedContactsForMerge.length}
+          onCreateGroup={() => {}} // Remove group functionality
+          onMergeSelected={() => {}} // TODO: Implement merge selected
+          onCancelManualMerge={() => setIsManualMergeMode(false)}
+        />
+    </StandardPage>
   );
 };
 

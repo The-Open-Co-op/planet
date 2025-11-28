@@ -1,5 +1,5 @@
 import {Favorite, PersonOutline, Send, VerifiedUser} from "@mui/icons-material"
-import {alpha, Box, Button, Card, CardContent, Grid, Typography, useTheme} from "@mui/material"
+import {alpha, Box, Button, Typography, useTheme} from "@mui/material"
 import {resolveFrom} from "@/utils/contactUtils";
 import {forwardRef, useState, useEffect, useCallback} from "react";
 import type {Contact} from "@/types/contact";
@@ -17,6 +17,7 @@ export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesPro
   const theme = useTheme();
   const [acceptedNotifications, setAcceptedNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  
 
   const loadAcceptedNotifications = useCallback(async () => {
     if (!contact) return;
@@ -39,10 +40,14 @@ export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesPro
 
 
   const extractSkillFromMessage = (message: string, type: 'vouch' | 'praise'): string => {
-    if (type === 'vouch' && message.includes('vouched for your')) {
-      return message.split('vouched for your ')[1]?.split(' skills')[0] || 'skills';
-    } else if (type === 'praise' && message.includes('praised your')) {
-      return message.split('praised your ')[1]?.split(' skills')[0] || message.split('praised your ')[1] || 'skills';
+    try {
+      if (type === 'vouch' && message.includes('vouched for your')) {
+        return message.split('vouched for your ')[1]?.split(' skills')[0] || 'skills';
+      } else if (type === 'praise' && message.includes('praised your')) {
+        return message.split('praised your ')[1]?.split(' skills')[0] || message.split('praised your ')[1] || 'skills';
+      }
+    } catch (error) {
+      console.error('Error extracting skill from message:', error);
     }
     return type === 'vouch' ? 'skills' : 'work';
   };
@@ -51,24 +56,20 @@ export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesPro
     return null;
   }
 
+  // const isDesktop = theme.breakpoints.up('md'); // Not used, commenting out
+  
   return <Box sx={{mb: 3}} ref={ref}>
-    <Typography variant="h6" sx={{fontWeight: 600, mb: 3}}>
-      Vouches & Praises
-    </Typography>
 
-    <Card variant="outlined">
-      <Grid container sx={{minHeight: 300}}>
-        {/* What I've Sent */}
-        <Grid size={{xs: 12, md: 6}} sx={{borderRight: {md: 1}, borderColor: {md: 'divider'}}}>
-          <CardContent sx={{p: 3, height: '100%'}}>
+    <Box sx={{display: 'flex', flexDirection: { xs: 'column', md: 'row' }, minHeight: 300}}>
+      {/* What I've Sent */}
+      <Box sx={{flex: 1, borderRight: {md: 1}, borderColor: {md: 'divider'}, p: { xs: 0, md: 3 }}}>
             <Box sx={{display: 'flex', alignItems: 'center', mb: 3}}>
-              <Send sx={{mr: 1, color: 'success.main', fontSize: 20}}/>
-              <Typography variant="h6" sx={{fontWeight: 600, color: 'success.main'}}>
+              <Typography variant="h6" sx={{fontWeight: 600}}>
                 Sent to {resolveFrom(contact, 'name')?.value?.split(' ')[0] || 'Contact'}
               </Typography>
             </Box>
 
-            {contact.naoStatus?.value === 'member' ? (
+            {contact.naoStatus?.value === 'member' || contact['@id'] === 'contact:11' ? (
               <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
                 {/* Vouch item */}
                 <Box sx={{
@@ -123,50 +124,43 @@ export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesPro
                   No vouches or praises sent yet
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  Invite {resolveFrom(contact, 'name')?.value?.split(' ')[0] || 'them'} to NAO to start vouching for
+                  Invite {resolveFrom(contact, 'name')?.value?.split(' ')[0] || 'them'} to PLANET to start vouching for
                   them!
                 </Typography>
               </Box>
             )}
 
-            <Box sx={{mt: 3, pt: 2, borderTop: 1, borderColor: 'divider', textAlign: 'center'}}>
-              <Typography variant="caption" color="text.secondary">
-                {contact.naoStatus?.value === 'member' ? '1 vouch • 2 praises sent' : 'No vouches sent yet'}
-              </Typography>
-            </Box>
-          </CardContent>
-        </Grid>
+      </Box>
 
-        {/* What I've Received */}
-        <Grid size={{xs: 12, md: 6}}>
-          <CardContent sx={{p: 3, height: '100%'}}>
+      {/* What I've Received */}
+      <Box sx={{flex: 1, p: { xs: 0, md: 3 }, pt: { xs: 3, md: 3 }}}>
             <Box sx={{display: 'flex', alignItems: 'center', mb: 3}}>
-              <Box sx={{
-                width: 20,
-                height: 20,
-                borderRadius: '50%',
-                border: 1,
-                borderColor: '#74796D24',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                mr: 1
-              }}>
-                <Box sx={{width: 6, height: 6, borderRadius: '50%', bgcolor: 'info.main'}}/>
-              </Box>
-              <Typography variant="h6" sx={{fontWeight: 600, color: 'info.main'}}>
+              <Typography variant="h6" sx={{fontWeight: 600}}>
                 Received from {resolveFrom(contact, 'name')?.value?.split(' ')[0] || 'Contact'}
               </Typography>
             </Box>
 
-            {contact.naoStatus?.value === 'member' ? (
+            {contact.naoStatus?.value === 'member' || contact['@id'] === 'contact:11' ? (
               <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
                 {isLoading ? (
                   <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
                     Loading...
                   </Typography>
-                ) : acceptedNotifications.length > 0 ? (
-                  acceptedNotifications.map((notification) => (
+                ) : acceptedNotifications.length > 0 || contact['@id'] === 'contact:11' ? (
+                  (contact['@id'] === 'contact:11' && acceptedNotifications.length === 0 ? [
+                    {
+                      id: 'mock-1',
+                      type: 'vouch',
+                      message: 'Joscha vouched for your blockchain development skills',
+                      updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()
+                    },
+                    {
+                      id: 'mock-2',
+                      type: 'praise',
+                      message: 'Joscha praised your problem solving skills',
+                      updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
+                    }
+                  ] : acceptedNotifications).map((notification) => (
                     <Box 
                       key={notification.id}
                       sx={{
@@ -190,7 +184,7 @@ export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesPro
                             {extractSkillFromMessage(notification.message, notification.type as 'vouch' | 'praise')}
                           </Typography>
                           <Typography variant="caption" color="text.secondary">
-                            • {formatDateDiff(notification.updatedAt)}
+                            • {formatDateDiff(new Date(notification.updatedAt))}
                           </Typography>
                         </Box>
                         <Typography variant="body2" color="text.secondary">
@@ -219,8 +213,8 @@ export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesPro
                 <PersonOutline sx={{fontSize: 48, opacity: 0.3, color: 'text.secondary'}}/>
                 <Typography variant="body2" color="text.secondary" textAlign="center" sx={{maxWidth: 250}}>
                   {contact.naoStatus?.value === 'invited'
-                    ? `${resolveFrom(contact, 'name')?.value?.split(' ')[0] || 'Contact'} hasn't joined NAO yet, so they can't send vouches or praises.`
-                    : `${resolveFrom(contact, 'name')?.value?.split(' ')[0] || 'Contact'} needs to join NAO before they can send vouches or praises.`
+                    ? `${resolveFrom(contact, 'name')?.value?.split(' ')[0] || 'Contact'} hasn't joined PLANET yet, so they can't send vouches or praises.`
+                    : `${resolveFrom(contact, 'name')?.value?.split(' ')[0] || 'Contact'} needs to join PLANET before they can send vouches or praises.`
                   }
                 </Typography>
                 {contact.naoStatus?.value === 'not_invited' && (
@@ -231,27 +225,12 @@ export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesPro
                     size="small"
                     sx={{mt: 1}}
                   >
-                    Invite to NAO
+                    Invite to PLANET
                   </Button>
                 )}
               </Box>
             )}
-
-            <Box sx={{mt: 3, pt: 2, borderTop: 1, borderColor: 'divider', textAlign: 'center'}}>
-              <Typography variant="caption" color="text.secondary">
-                {contact.naoStatus?.value === 'member' ? (
-                  isLoading ? 'Loading...' : (
-                    acceptedNotifications.length === 0 ? 'No vouches or praises received yet' : 
-                    `${acceptedNotifications.filter(n => n.type === 'vouch').length} vouch${acceptedNotifications.filter(n => n.type === 'vouch').length !== 1 ? 'es' : ''} • ${acceptedNotifications.filter(n => n.type === 'praise').length} praise${acceptedNotifications.filter(n => n.type === 'praise').length !== 1 ? 's' : ''} received`
-                  )
-                ) : 'No vouches or praises yet'}
-              </Typography>
-            </Box>
-          </CardContent>
-        </Grid>
-      </Grid>
-    </Card>
+      </Box>
+    </Box>
   </Box>
-
-
 });

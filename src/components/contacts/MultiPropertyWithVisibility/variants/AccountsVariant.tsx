@@ -149,36 +149,43 @@ export const AccountsVariant = <K extends ResolvableKey>({
     );
   };
 
-  const renderDisplayItem = (item: any, index: number) => {
+  const renderDisplayItem = (item: any, index: number, array: any[]) => {
     return (
-      <Box key={item['@id'] || index} sx={{display: 'flex', alignItems: 'center', mb: 2}}>
-        {AccountRegistry.getIcon(item.protocol)}
-        <Box>
-          <Typography variant="body2" color="text.secondary">
-            {AccountRegistry.getLabel(item.protocol)}
+      <Box key={item['@id'] || index} sx={{
+        display: 'flex', 
+        flexDirection: 'column', 
+        gap: 0.5, 
+        pb: index < array.length - 1 ? 2 : 0,
+        mb: index < array.length - 1 ? 2 : 0,
+        borderBottom: index < array.length - 1 ? '1px solid rgba(0, 0, 0, 0.08)' : 'none',
+        width: '100%'
+      }}>
+        <Typography variant="caption" color="text.secondary" sx={{fontWeight: 600, textTransform: 'uppercase', fontSize: '0.7rem'}}>
+          {AccountRegistry.getLabel(item.protocol)}
+        </Typography>
+        {AccountRegistry.getLink(item.protocol, item.value) ? (
+          <Typography
+            variant="body2"
+            component="a"
+            href={AccountRegistry.getLink(item.protocol, item.value)}
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={{
+              color: '#0077b5',
+              textDecoration: 'none',
+              fontSize: '0.9rem',
+              '&:hover': {
+                textDecoration: 'underline',
+              },
+            }}
+          >
+            View Profile
           </Typography>
-          {AccountRegistry.getLink(item.protocol, item.value) ? <Typography
-              variant="body1"
-              component="a"
-              href={AccountRegistry.getLink(item.protocol, item.value)}
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                color: '#0077b5',
-                textDecoration: 'none',
-                '&:hover': {
-                  textDecoration: 'underline',
-                },
-              }}
-            >
-              View Profile
-            </Typography> :
-            <Typography
-              variant="body1"
-            >
-              {item.value}
-            </Typography>}
-        </Box>
+        ) : (
+          <Typography variant="body2" sx={{fontSize: '0.9rem'}}>
+            {item.value}
+          </Typography>
+        )}
       </Box>
     );
   };
@@ -256,7 +263,7 @@ export const AccountsVariant = <K extends ResolvableKey>({
           {renderNewItemForm()}
         </>
       ) : (
-        visibleItems.map(renderDisplayItem)
+        visibleItems.map((item, index) => renderDisplayItem(item, index, visibleItems))
       )}
     </>
   );

@@ -126,7 +126,7 @@ const PhoneVerificationSuccess: React.FC<PhoneVerificationSuccessProps> = ({
           <Button
             variant="contained"
             startIcon={<Person/>}
-            onClick={() => navigate('/account')}
+            onClick={() => navigate('/settings')}
             sx={{py: 1.5, px: 4}}
           >
             Return to Profile

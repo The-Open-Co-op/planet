@@ -9,12 +9,12 @@ import {
   Tab,
   Button,
 } from '@mui/material';
+import { PageHeader } from '@/components/ui';
 import {
   Security,
   Settings,
   Logout,
 } from '@mui/icons-material';
-import { StandardPage } from '@/components/layout/StandardPage';
 import {DEFAULT_RCARDS, DEFAULT_PRIVACY_SETTINGS} from '@/types/notification';
 import type {RCardWithPrivacy} from '@/types/notification';
 import type {PersonhoodCredentials} from '@/types/personhood';
@@ -131,6 +131,8 @@ export const AccountPageContent = ({initialTab = 0, profileData, handleLogout: e
     }
   };
 
+
+
   const handleRCardUpdate = (updatedRCard: RCardWithPrivacy) => {
     setRCards(prev =>
       prev.map(card => card.id === updatedRCard.id ? updatedRCard : card)
@@ -139,17 +141,53 @@ export const AccountPageContent = ({initialTab = 0, profileData, handleLogout: e
   };
 
   return (
-    <StandardPage title="Settings">
-      {/* Navigation Tabs */}
-      <Box sx={{ mb: 2, borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={tabValue} onChange={handleTabChange}>
-          <Tab icon={<Security />} label="My Cards" />
-          <Tab icon={<Settings />} label="Account" />
+    <Box sx={{ height: '100%', p: 2 }}>
+      <Typography variant="h4" sx={{ mb: 2 }}>Settings</Typography>
+      <Typography variant="body1" sx={{ color: 'red' }}>
+        SIMPLE TEST: Settings page is working - Tab value: {tabValue}
+      </Typography>
+      <Typography variant="body2" sx={{ mt: 2 }}>
+        This is a simplified version to test if the component renders at all.
+      </Typography>
+    </Box>
+  );
+};
+
+      <Box sx={{
+        mb: {xs: 1, md: 3},
+        width: '100%',
+        overflow: 'hidden',
+      }}>
+        <Tabs
+          value={tabValue}
+          onChange={handleTabChange}
+          variant="scrollable"
+          scrollButtons="auto"
+          allowScrollButtonsMobile
+          sx={{
+            '& .MuiTabs-flexContainer': {
+              gap: {xs: 0, md: 1},
+            },
+            '& .MuiTab-root': {
+              minWidth: {xs: 'auto', md: 120},
+              fontSize: {xs: '0.75rem', md: '0.875rem'},
+              px: {xs: 1, md: 2},
+            },
+            minWidth: 0,
+            borderBottom: 1,
+            borderColor: "divider"
+          }}
+        >
+          <Tab icon={<Security/>} label="My Cards"/>
+          <Tab icon={<Settings/>} label="Account"/>
         </Tabs>
       </Box>
-      
+
       {/* Tab Content */}
-      <Box sx={{ mt: 2 }}>
+      <Box sx={{width: '100%', overflow: 'hidden'}}>
+
+
+        {/* My Cards Tab */}
         <TabPanel value={tabValue} index={0}>
           <SettingsSection
             rCards={rCards}
@@ -162,33 +200,37 @@ export const AccountPageContent = ({initialTab = 0, profileData, handleLogout: e
             initialProfileData={profileData}
           />
         </TabPanel>
+
+        {/* Account Tab */}
         <TabPanel value={tabValue} index={1}>
           <AccountSettings 
             personhoodCredentials={personhoodCredentials}
           />
-          
-          {externalHandleLogout && (
-            <Box sx={{
-              mt: 3,
-              pt: 3,
-              borderTop: 1,
-              borderColor: 'divider',
-              textAlign: 'center'
-            }}>
-              <Button
-                variant="outlined"
-                color="error"
-                startIcon={<Logout/>}
-                onClick={externalHandleLogout}
-              >
-                Logout
-              </Button>
-            </Box>
-          )}
         </TabPanel>
       </Box>
-      
-      {/* RCard Management Dialog */}
+
+      {/* Logout Button */}
+      {isNextGraph && (
+        <Box sx={{mt: 3, mb: 2, textAlign: 'center'}}>
+          <Button
+            variant="outlined"
+            startIcon={<Logout/>}
+            onClick={externalHandleLogout}
+            sx={{
+              color: 'error.main',
+              borderColor: 'error.main',
+              '&:hover': {
+                borderColor: 'error.dark',
+                backgroundColor: 'error.light'
+              }
+            }}
+          >
+            Logout
+          </Button>
+        </Box>
+      )}
+
+      {/* rCard Management Dialog */}
       <RCardManagement
         open={showRCardManagement}
         onClose={() => setShowRCardManagement(false)}
@@ -226,6 +268,7 @@ const NextGraphAccountPage = () => {
 const MockAccountPage = () => {
   return <AccountPageContent isNextGraph={false}/>;
 };
+
 
 export const AccountPage = () => {
   const isNextGraph = isNextGraphEnabled();

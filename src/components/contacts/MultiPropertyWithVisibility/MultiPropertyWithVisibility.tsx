@@ -400,29 +400,18 @@ export const MultiPropertyWithVisibility = <K extends ResolvableKey>({
   if (!isEditing && visibleItems.length === 0) return null;
 
   return (
-    <Box sx={{mb: 2}}>
-      <Box sx={{display: 'flex', alignItems: 'center', gap: 1, mb: 1}}>
-        <Box sx={{display: 'flex', width: '100%', gap: 2, justifyItems: 'start'}}>
-          {!hideIcon && icon && (
-            <Box sx={{color: 'text.secondary'}}>
-              {icon}
-            </Box>
-          )}
-          {!hideLabel && label && (
-            <Typography variant="body2" color="text.secondary">
-              {label}
-            </Typography>
-          )}
-        </Box>
-        {renderManageMenu()}
-      </Box>
-
+    <Box sx={{mb: 3, pb: 2, borderBottom: '1px solid rgba(0, 0, 0, 0.08)'}}>
+      {!hideLabel && label && (
+        <Typography variant="caption" color="text.secondary" sx={{fontWeight: 600, mb: 1, display: 'block', textTransform: 'uppercase', fontSize: '0.7rem'}}>
+          {label}
+        </Typography>
+      )}
+      
       <Box sx={{
         display: 'flex',
         flexDirection: 'column',
         gap: 1,
-        alignItems: 'flex-start',
-        ml: !hideIcon && !hideLabel ? 5 : 0
+        alignItems: 'flex-start'
       }}>
         {renderVariant()}
       </Box>

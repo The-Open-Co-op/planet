@@ -102,8 +102,8 @@ export const ContactGrid = ({
       flexDirection: 'column',
       overflow: 'hidden'
     }}>
-      {/* Select All Button, Contact Count and Merge Contacts - same line */}
-      {totalCount && (
+      {/* Select All Button and Merge Contacts - Only in Manage/Manual Merge Mode */}
+      {(isSelectionMode || isManualMergeMode) && (
         <Box sx={{
           mb: 1,
           mt: {xs: 1, md: 0},
@@ -134,41 +134,27 @@ export const ContactGrid = ({
             </Button>
           )}
 
-          {/* Actions */}
-          <Box sx={{display: 'flex', alignItems: 'center', gap: 2, ml: 'auto'}}>
-            {/* Contact Count - right aligned with contact box right edge */}
-            <Typography
-              variant="body2"
-              color="text.secondary"
+          {/* Merge button for manual merge mode */}
+          {isManualMergeMode && (
+            <Button
+              variant="text"
+              startIcon={<CallMerge/>}
+              onClick={onMergeContacts}
+              size="small"
               sx={{
-                fontSize: '0.875rem',
-                textAlign: 'right'
+                fontSize: '0.75rem',
+                textTransform: 'none',
+                color: 'primary.main',
+                fontWeight: 500,
+                minWidth: 'auto',
+                p: 0.5,
+                ml: 0.5,
+                width: 'auto'
               }}
             >
-              {contactCount} of {totalCount} contacts
-            </Typography>
-            {!isSelectionMode && !isManualMergeMode && (
-              <Button
-                variant="text"
-                startIcon={<CallMerge/>}
-                onClick={onMergeContacts}
-                size="small"
-                sx={{
-                  fontSize: '0.75rem',
-                  textTransform: 'none',
-                  color: 'primary.main',
-                  fontWeight: 500,
-                  minWidth: 'auto',
-                  p: 0.5,
-                  ml: 0.5,
-                  width: 'auto'
-                }}
-              >
-                Merge Contacts
-              </Button>
-            )}
-          </Box>
-
+              Merge Contacts
+            </Button>
+          )}
         </Box>
       )}
       {/* Top line for scrolling under */}
@@ -208,16 +194,18 @@ export const ContactGrid = ({
           {contactNuris.map((nuri) => (
             <Grid size={{xs: 12}} key={nuri}>
               <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                {/* Selection checkbox - always visible on the left */}
-                <Checkbox
-                  checked={isManualMergeMode ? isContactSelectedForMerge(nuri) : isContactSelected(nuri)}
-                  onChange={() => onSelectContact(nuri)}
-                  sx={{
-                    mt: 0.5,
-                    p: 0.5,
-                    '& .MuiSvgIcon-root': {fontSize: 20}
-                  }}
-                />
+                {/* Selection checkbox - only visible in manage or manual merge mode */}
+                {(isSelectionMode || isManualMergeMode) && (
+                  <Checkbox
+                    checked={isManualMergeMode ? isContactSelectedForMerge(nuri) : isContactSelected(nuri)}
+                    onChange={() => onSelectContact(nuri)}
+                    sx={{
+                      mt: 0.5,
+                      p: 0.5,
+                      '& .MuiSvgIcon-root': {fontSize: 20}
+                    }}
+                  />
+                )}
 
                 <ContactCard
                   contacts={contacts}

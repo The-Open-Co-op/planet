@@ -87,7 +87,7 @@ export const ContactCard = forwardRef<HTMLDivElement, ContactCardProps>(
     return (
       <Card
         ref={ref}
-        draggable={!isSelectionMode && !isManualMergeMode}
+        draggable={dragDrop && isSelectionMode && !isManualMergeMode}
         onDragStart={(e) => dragDrop?.handleDragStart(e, nuri)}
         onDragEnd={dragDrop?.handleDragEnd}
         onClick={() => onContactClick(contact['@id'] || '')}

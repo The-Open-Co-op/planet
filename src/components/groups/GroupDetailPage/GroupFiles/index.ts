@@ -1,1 +1,0 @@
-export { GroupFiles } from './GroupFiles';

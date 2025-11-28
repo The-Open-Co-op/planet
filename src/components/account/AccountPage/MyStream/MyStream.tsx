@@ -24,7 +24,20 @@ import {
   LocalOffer,
   ShoppingCart,
 } from '@mui/icons-material';
-import PostCreateForm, { PostCreateFormData } from '@/components/groups/PostCreateForm';
+// Temporary placeholder - remove when implementing posts
+interface PostCreateFormData {
+  type: 'post' | 'offer' | 'want';
+  content: string;
+}
+
+const PostCreateForm = ({ onSubmit, onCancel }: { 
+  onSubmit: (data: PostCreateFormData) => void;
+  onCancel: () => void;
+}) => (
+  <Box sx={{ p: 2 }}>
+    <Typography>Post creation feature coming soon...</Typography>
+  </Box>
+);
 
 export const MyStream = () => {
   const [showTypeDialog, setShowTypeDialog] = useState(false);

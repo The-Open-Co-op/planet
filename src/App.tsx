@@ -1,4 +1,4 @@
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { OnboardingProvider } from '@/contexts/OnboardingContext';
@@ -6,7 +6,6 @@ import { BrowserNGLdoProvider, useNextGraphAuth } from '@/lib/nextgraph';
 import type { NextGraphAuth } from '@/types/nextgraph';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import SocialContractPage from '@/pages/SocialContractPage';
-import { GroupJoinPage } from '@/components/groups/GroupJoinPage';
 import { PersonalDataVaultPage } from '@/components/auth/PersonalDataVaultPage';
 import { SocialContractAgreementPage } from '@/components/auth/SocialContractAgreementPage';
 import { ClaimIdentityPage } from '@/components/auth/ClaimIdentityPage';
@@ -16,14 +15,8 @@ import { LoginPage } from '@/components/auth/LoginPage';
 import ImportPage from '@/pages/ImportPage';
 import ContactListPage from '@/pages/ContactListPage';
 import ContactViewPage from '@/pages/ContactViewPage';
-import { GroupPage } from '@/components/groups/GroupPage';
-import GroupDetailPage from '@/components/groups/GroupDetailPage/GroupDetailPage';
-import { GroupInfoPage } from '@/components/groups/GroupInfoPage';
-import CreateGroupPage from '@/pages/CreateGroupPage';
 import { InvitationPage } from '@/components/invitations/InvitationPage';
-import HomePage from '@/pages/HomePage';
-import PostsOffersPage from '@/pages/PostsOffersPage';
-import MessagesPage from '@/pages/MessagesPage';
+import AppsPage from '@/pages/AppsPage';
 import { AccountPage } from '@/components/account/AccountPage';
 import { NotificationsPage } from '@/components/notifications/NotificationsPage';
 import { PhoneVerificationPage } from '@/components/account/PhoneVerificationPage';
@@ -111,25 +104,19 @@ const AppRoutes = () => (
         <Route path="/onboarding/social-contract" element={<SocialContractAgreementPage />} />
         <Route path="/onboarding/claim-identity" element={<ClaimIdentityPage />} />
         <Route path="/onboarding/accept-connection" element={<AcceptConnectionPage />} />
-        <Route path="/join-group" element={<GroupJoinPage />} />
 
         <Route path="/*" element={
           <DashboardLayout>
             <Routes>
               <Route path="/onboarding/welcome" element={<WelcomeToVaultPage />} />
-              <Route path="/" element={<HomePage />} />
+              <Route path="/" element={<Navigate to="/contacts" replace />} />
               <Route path="/import" element={<ImportPage />} />
               <Route path="/contacts" element={<ContactListPage />} />
               <Route path="/contacts/create" element={<CreateContactPage />} />
               <Route path="/contacts/:id" element={<ContactViewPage />} />
-              <Route path="/groups" element={<GroupPage />} />
-              <Route path="/groups/create" element={<CreateGroupPage />} />
-              <Route path="/groups/:groupId" element={<GroupDetailPage />} />
-              <Route path="/groups/:groupId/info" element={<GroupInfoPage />} />
-              <Route path="/posts" element={<PostsOffersPage />} />
-              <Route path="/messages" element={<MessagesPage />} />
+              <Route path="/apps" element={<AppsPage />} />
               <Route path="/notifications" element={<NotificationsPage />} />
-              <Route path="/account" element={<AccountPage />} />
+              <Route path="/settings" element={<AccountPage />} />
               <Route path="/verify-phone/:phone" element={<PhoneVerificationPage />} />
               <Route path="/invite" element={<InvitationPage />} />
             </Routes>

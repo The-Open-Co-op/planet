@@ -1,1 +1,0 @@
-export { GroupJoinPage } from './GroupJoinPage';

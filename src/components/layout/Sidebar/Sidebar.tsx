@@ -42,7 +42,7 @@ export const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
           flexShrink: 0,
         }}>
           <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>
-            NAO
+            PLANET
           </Typography>
         </Box>
         

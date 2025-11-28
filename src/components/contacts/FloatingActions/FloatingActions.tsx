@@ -31,7 +31,7 @@ export const FloatingActions = ({
           variant="extended"
           sx={{
             position: 'fixed',
-            bottom: { xs: 90, md: 24 },
+            bottom: { xs: 104, md: 24 }, // Increased to clear bottom nav (80px + 24px margin)
             right: 24,
             zIndex: 1000,
           }}
@@ -45,7 +45,7 @@ export const FloatingActions = ({
       {isManualMergeMode && (
         <Box sx={{
           position: 'fixed',
-          bottom: { xs: 90, md: 24 },
+          bottom: { xs: 104, md: 24 }, // Increased to clear bottom nav (80px + 24px margin)
           left: '50%',
           transform: 'translateX(-50%)',
           display: 'flex',

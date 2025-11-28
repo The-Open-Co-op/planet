@@ -50,7 +50,7 @@ export interface NotificationAction {
 
 export interface Notification {
   id: string;
-  type: 'vouch' | 'praise' | 'connection' | 'group_invite' | 'message' | 'system';
+  type: 'vouch' | 'praise' | 'connection' | 'system';
   title: string;
   message: string;
   fromUserId?: string;
@@ -111,8 +111,6 @@ export interface NotificationSummary {
     vouch: number;
     praise: number;
     connection: number;
-    group_invite: number;
-    message: number;
     system: number;
   };
 }

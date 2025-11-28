@@ -5,6 +5,7 @@ import {
   Button,
 } from '@mui/material';
 import { MarkEmailRead } from '@mui/icons-material';
+import { StandardPage } from '@/components/layout/StandardPage';
 import { notificationService } from '@/services/notificationService';
 import type { Notification, NotificationSummary } from '@/types/notification';
 import { NotificationsList } from './NotificationsList';
@@ -205,66 +206,24 @@ export const NotificationsPage = forwardRef<HTMLDivElement, NotificationsPagePro
     };
 
     return (
-      <Box 
-        ref={ref}
-        className={className}
-        sx={{ 
-          height: '100%',
-          width: '100%',
-          maxWidth: { xs: '100vw', md: '100%' },
-          overflow: 'hidden',
-          boxSizing: 'border-box',
-          p: { xs: '10px', md: 0 },
-          mx: { xs: 0, md: 'auto' }
-        }}
+      <StandardPage 
+        title="Alerts"
+        actions={notificationSummary.unread > 0 ? (
+          <Button
+            variant="outlined"
+            startIcon={<MarkEmailRead />}
+            onClick={handleMarkAllAsRead}
+          >
+            Mark All Read
+          </Button>
+        ) : undefined}
       >
-        {/* Header */}
-        <Box sx={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center', 
-          mb: { xs: 1, md: 1 },
-          width: '100%',
-          overflow: 'hidden',
-          minWidth: 0
-        }}>
-          <Box sx={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
-            <Typography 
-              variant="h4" 
-              component="h1" 
-              sx={{ 
-                fontWeight: 700, 
-                mb: { xs: 0, md: 0 },
-                fontSize: { xs: '1.5rem', md: '2.125rem' },
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              Notifications
-            </Typography>
-            {notificationSummary.unread > 0 && (
-              <Typography variant="body2" color="text.secondary">
-                You have {notificationSummary.unread} unread notification{notificationSummary.unread !== 1 ? 's' : ''}
-              </Typography>
-            )}
-          </Box>
+        <Box ref={ref} className={className}>
           {notificationSummary.unread > 0 && (
-            <Button
-              variant="outlined"
-              startIcon={<MarkEmailRead />}
-              onClick={handleMarkAllAsRead}
-              sx={{ 
-                borderRadius: 2,
-                fontSize: { xs: '0.75rem', md: '0.875rem' },
-                px: { xs: 1, md: 2 },
-                py: { xs: 0.5, md: 1 }
-              }}
-            >
-              Mark All Read
-            </Button>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              You have {notificationSummary.unread} unread notification{notificationSummary.unread !== 1 ? 's' : ''}
+            </Typography>
           )}
-        </Box>
 
         {/* Notifications List */}
         <Box sx={{ 
@@ -286,7 +245,8 @@ export const NotificationsPage = forwardRef<HTMLDivElement, NotificationsPagePro
             />
           </Box>
         </Box>
-      </Box>
+        </Box>
+      </StandardPage>
     );
   }
 );

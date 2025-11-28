@@ -32,8 +32,6 @@ export class NotificationService {
         vouch: userNotifications.filter(n => n.type === 'vouch').length,
         praise: userNotifications.filter(n => n.type === 'praise').length,
         connection: userNotifications.filter(n => n.type === 'connection').length,
-        group_invite: userNotifications.filter(n => n.type === 'group_invite').length,
-        message: userNotifications.filter(n => n.type === 'message').length,
         system: userNotifications.filter(n => n.type === 'system').length,
       },
     };

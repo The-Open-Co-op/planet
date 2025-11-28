@@ -295,8 +295,8 @@ export const PropertyWithSources = <K extends ResolvableKey>({
   // Different layouts based on variant
   if (variant === 'header') {
     return (
-      <Box sx={{display: 'flex', alignItems: 'center', gap: 1, mb: 1}}>
-        <Typography variant={textVariant} component="h1" gutterBottom={false}>
+      <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mb: 1}}>
+        <Typography variant={textVariant} component="h1" gutterBottom={false} sx={{ textAlign: 'center' }}>
           {currentValue}
         </Typography>
         {getSourceSelectors()}

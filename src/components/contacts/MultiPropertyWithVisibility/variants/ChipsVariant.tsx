@@ -69,10 +69,9 @@ export const ChipsVariant = ({
 
     return (
       <Box key={item['@id'] || index} sx={{display: 'flex', alignItems: 'center', gap: 2}}>
-        <Chip
-          label={label}
-          size="small"
-        />
+        <Box sx={{color: 'text.primary', fontSize: '0.9rem'}}>
+          {label}
+        </Box>
         {item.preferred && <Star fontSize="small"/>}
       </Box>
     );
