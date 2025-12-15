@@ -11,15 +11,24 @@ export interface AvatarProps {
 }
 
 const sizeMap = {
-  small: {width: 32, height: 32, fontSize: '0.875rem'},
-  medium: {width: 44, height: 44, fontSize: '1.25rem'},
-  large: {width: 80, height: 80, fontSize: '2rem'}
+  small: {width: 32, height: 32, fontSize: '0.75rem'},
+  medium: {width: 44, height: 44, fontSize: '0.875rem'},
+  large: {width: 80, height: 80, fontSize: '1.5rem'}
 };
 
 export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
   ({name, profileImage, size = 'medium', className, onClick}, ref) => {
     const dimensions = sizeMap[size];
     const photoStyles = profileImage ? getContactPhotoStyles(name) : null;
+
+    // Extract initials from name
+    const getInitials = (fullName: string) => {
+      const names = fullName.trim().split(' ');
+      if (names.length === 1) {
+        return names[0].charAt(0).toUpperCase();
+      }
+      return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase();
+    };
 
     return (
       <Box
@@ -37,8 +46,9 @@ export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: profileImage ? 'transparent' : 'primary.main',
-          color: 'white',
+          backgroundColor: profileImage ? 'transparent' : '#f0f0f0',
+          color: '#333',
+          border: '1px solid #ddd',
           fontSize: dimensions.fontSize,
           fontWeight: 600,
           flexShrink: 0,
@@ -46,7 +56,7 @@ export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
           mr: {sx: 0, md: 2}
         }}
       >
-        {!profileImage && name?.charAt(0)}
+        {!profileImage && name && getInitials(name)}
       </Box>
     );
   }

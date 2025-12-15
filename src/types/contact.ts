@@ -1,4 +1,5 @@
 import {SocialContact} from "@/.ldo/contact.typings";
+import {RCardAssignment} from "./rcard";
 
 export interface SortParams {
   sortBy?: string;
@@ -12,11 +13,17 @@ export interface Contact extends SocialContact {
   praisesSent?: number;
   praisesReceived?: number;
   relationshipCategory?: 'friends_family' | 'community' | 'business' | string;
+  rCardAssignments?: RCardAssignment[];
   lastInteractionAt?: Date;
   interactionCount?: number;
   recentInteractionScore?: number;
   sharedTagsCount?: number;
   isDraft?: boolean;
+  isMe?: boolean;
+  planetStatus?: {
+    value: string;
+    source?: string;
+  };
 }
 
 export interface SimpleMockContact {
