@@ -1,7 +1,7 @@
 import { createTheme, alpha } from '@mui/material/styles';
 import type { PaletteMode } from '@mui/material';
 
-// Custom color palette with NAO green theme
+// Custom color palette with PLANET green theme
 const colors = {
   primary: {
     50: '#f0f5ed',

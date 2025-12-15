@@ -11,21 +11,19 @@ import {useSaveContacts} from "@/hooks/contacts/useSaveContacts.ts";
 export interface ContactsFilters extends SortParams {
   searchQuery?: string;
   relationshipFilter?: string;
-  naoStatusFilter?: string;
+  planetStatusFilter?: string;
   accountFilter?: string;
   groupFilter?: string;
   currentUserGroupIds?: string[];
+  cardAssignmentFilter?: string;
 }
 
-export type iconFilter = 'relationshipFilter' | 'naoStatusFilter' | 'accountFilter' | 'vouchFilter' | 'praiseFilter';
+export type iconFilter = 'relationshipFilter' | 'planetStatusFilter' | 'accountFilter' | 'vouchFilter' | 'praiseFilter' | 'cardAssignmentFilter';
 
 export interface ContactsReturn {
   contacts: Contact[];
   contactNuris: string[]; // NURI list or IDs for mock data
   isLoading: boolean;
-  isLoadingMore: boolean;
-  hasMore: boolean;
-  loadMore: () => void;
   totalCount: number;
   error: Error | null;
   updateContact: (nuri: string, updates: Partial<Contact>) => Promise<void>;
@@ -41,18 +39,16 @@ export const useContacts = (): ContactsReturn => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [contactNuris, setContactNuris] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [currentPage, setCurrentPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
-  const limit = 10;
   const [error, setError] = useState<Error | null>(null);
   const [filters, setFilters] = useState<ContactsFilters>({
     searchQuery: '',
     relationshipFilter: 'all',
-    naoStatusFilter: 'all',
+    planetStatusFilter: 'all',
     accountFilter: 'all',
     groupFilter: 'all',
-    sortBy: 'mostActive',
+    cardAssignmentFilter: 'all',
+    sortBy: 'name',
     sortDirection: 'asc',
     currentUserGroupIds: []
   });
@@ -61,14 +57,14 @@ export const useContacts = (): ContactsReturn => {
   const isNextGraph = isNextGraphEnabled();
   const nextGraphAuth = useNextGraphAuth() || {} as NextGraphAuth;
   const {session} = nextGraphAuth;
-  const hasMore = contactNuris.length < totalCount;
 
   const setIconFilter = useCallback((key: iconFilter, value: string) => {
     setFilters(prevFilters => ({
       ...prevFilters,
       relationshipFilter: key === 'relationshipFilter' ? value : 'all',
-      naoStatusFilter: key === 'naoStatusFilter' ? value : 'all',
+      planetStatusFilter: key === 'planetStatusFilter' ? value : 'all',
       accountFilter: key === 'accountFilter' ? value : 'all',
+      cardAssignmentFilter: key === 'cardAssignmentFilter' ? value : 'all',
       groupFilter: 'all',
       // Handle vouch and praise filters with sorting
       ...(key === 'vouchFilter' && value === 'has_vouches' && {
@@ -82,15 +78,20 @@ export const useContacts = (): ContactsReturn => {
     }));
   }, []);
 
-  const loadMockContacts = useCallback(async (page: number): Promise<string[]> => {
+  const loadMockContacts = useCallback(async (): Promise<string[]> => {
+    console.log(`🔄 Loading all mock contacts...`);
     const allContacts = await dataService.getContacts();
+    console.log(`📊 Total contacts fetched: ${allContacts.length}`);
+    console.log(`👤 Me contacts found:`, allContacts.filter(c => c.isMe).length);
+    console.log(`🆔 All contact IDs:`, allContacts.map(c => c['@id']));
 
     const {
       searchQuery = '',
       relationshipFilter = 'all',
-      naoStatusFilter = 'all',
+      planetStatusFilter = 'all',
       accountFilter = 'all',
       groupFilter = 'all',
+      cardAssignmentFilter = 'all',
       sortBy = 'name',
       sortDirection = 'asc',
       currentUserGroupIds = []
@@ -118,9 +119,9 @@ export const useContacts = (): ContactsReturn => {
         contact.relationshipCategory === relationshipFilter;
 
       // NAO Status filter
-      const matchesNaoStatus = naoStatusFilter === 'all' ||
-        (naoStatusFilter === 'undefined' && !contact.naoStatus?.value) ||
-        contact.naoStatus?.value === naoStatusFilter;
+      const matchesPlanetStatus = planetStatusFilter === 'all' ||
+        (planetStatusFilter === 'undefined' && !contact.planetStatus?.value) ||
+        contact.planetStatus?.value === planetStatusFilter;
 
       // Account filter
       const matchesSource = accountFilter === 'all'
@@ -140,11 +141,19 @@ export const useContacts = (): ContactsReturn => {
       const matchesPraises = sortBy !== 'praiseTotal' ||
         ((contact.praisesSent || 0) + (contact.praisesReceived || 0)) > 0;
 
-      return matchesSearch && matchesRelationship && matchesNaoStatus && matchesSource && matchesGroup && matchesVouches && matchesPraises;
+      // Card assignment filter - matches contacts assigned to specific Trust Profile types
+      const matchesCardAssignment = cardAssignmentFilter === 'all' ||
+        (contact.rCardAssignments?.some(assignment => assignment.cardType === cardAssignmentFilter));
+
+      return matchesSearch && matchesRelationship && matchesPlanetStatus && matchesSource && matchesGroup && matchesVouches && matchesPraises && matchesCardAssignment;
     });
 
     // Sort the filtered results
     filtered.sort((a, b) => {
+      // Always put the "me" contact first
+      if (a.isMe && !b.isMe) return -1;
+      if (!a.isMe && b.isMe) return 1;
+      
       let compareValue = 0;
 
       switch (sortBy) {
@@ -160,10 +169,10 @@ export const useContacts = (): ContactsReturn => {
           compareValue = aOrganization.localeCompare(bOrganization);
           break;
         }
-        case 'naoStatus': {
+        case 'planetStatus': {
           const statusOrder = {'member': 0, 'invited': 1, 'not_invited': 2};
-          const aStatus = a.naoStatus?.value as keyof typeof statusOrder;
-          const bStatus = b.naoStatus?.value as keyof typeof statusOrder;
+          const aStatus = a.planetStatus?.value as keyof typeof statusOrder;
+          const bStatus = b.planetStatus?.value as keyof typeof statusOrder;
           compareValue = (statusOrder[aStatus] || 3) - (statusOrder[bStatus] || 3);
           break;
         }
@@ -180,7 +189,8 @@ export const useContacts = (): ContactsReturn => {
           break;
         }
         case 'mostActive': {
-          const now = Date.now();
+          // Use a fixed reference time for consistent sorting across page loads
+          const now = new Date('2024-07-30T00:00:00Z').getTime(); // Fixed reference date
           const dayInMs = 24 * 60 * 60 * 1000;
           const weekInMs = 7 * dayInMs;
           const monthInMs = 30 * dayInMs;
@@ -253,16 +263,17 @@ export const useContacts = (): ContactsReturn => {
     });
 
     setContacts(allContacts);
-
-    const startIndex = page * limit;
-    const endIndex = startIndex + limit;
-    const paginatedContacts = filtered.slice(startIndex, endIndex);
-
     setTotalCount(filtered.length);
-    return paginatedContacts.map(contact => contact['@id'] || '');
+    
+    console.log(`📄 Loading all ${filtered.length} contacts (no pagination)`);
+    console.log(`🔍 Filtered contact IDs:`, filtered.map(c => c['@id']));
+    console.log(`👤 Filtered me contacts:`, filtered.filter(c => c.isMe).length);
+    
+    // Return ALL filtered contacts, not paginated
+    return filtered.map(contact => contact['@id'] || '');
   }, [filters]);
 
-  const loadNextGraphContacts = useCallback(async (page: number): Promise<string[]> => {
+  const loadNextGraphContacts = useCallback(async (): Promise<string[]> => {
     if (!session) {
       return [];
     }
@@ -274,7 +285,6 @@ export const useContacts = (): ContactsReturn => {
       searchQuery
     } = filters;
 
-
     const filterParams = new Map<string, string>();
     if (accountFilter !== 'all') {
       filterParams.set('account', accountFilter);
@@ -283,8 +293,8 @@ export const useContacts = (): ContactsReturn => {
       filterParams.set('fts', searchQuery);
     }
 
-    const offset = page * limit;
-    const contactIDsResult = await nextgraphDataService.getContactIDs(session, limit, offset,
+    // Load all contacts without pagination
+    const contactIDsResult = await nextgraphDataService.getContactIDs(session, undefined, undefined,
       undefined, undefined, [{sortBy, sortDirection}], filterParams);
     const contactsCountResult = await nextgraphDataService.getContactsCount(session, filterParams);
 
@@ -299,8 +309,7 @@ export const useContacts = (): ContactsReturn => {
 
   const updateContact = async (nuri: string, updates: Partial<Contact>) => {
     await editContact(nuri, updates);
-    setCurrentPage(0);
-    loadContacts(0);
+    loadContacts();
   };
 
   const addFilter = useCallback((key: keyof ContactsFilters, value: ContactsFilters[keyof ContactsFilters]) => {
@@ -315,22 +324,21 @@ export const useContacts = (): ContactsReturn => {
       ...prevFilters,
       searchQuery: '',
       relationshipFilter: 'all',
-      naoStatusFilter: 'all',
+      planetStatusFilter: 'all',
       accountFilter: 'all',
+      cardAssignmentFilter: 'all',
       groupFilter: 'all',
-      sortBy: 'mostActive',
+      sortBy: 'name',
       sortDirection: 'asc'
     }));
   }, []);
 
-  const loadContacts = useCallback(async (page: number) => {
+  const loadContacts = useCallback(async () => {
+    console.log(`🚀 Loading all contacts...`);
     try {
-      const nuris = !isNextGraph ? await loadMockContacts(page) : await loadNextGraphContacts(page);
-      if (page === 0) {
-        setContactNuris(nuris);
-      } else {
-        setContactNuris(prev => [...prev, ...nuris]);
-      }
+      const nuris = !isNextGraph ? await loadMockContacts() : await loadNextGraphContacts();
+      console.log(`📥 Loaded ${nuris.length} contacts total`);
+      setContactNuris(nuris);
     } catch (err) {
       const errorMessage = err instanceof Error ? err : new Error(`Failed to load contacts`);
       setError(errorMessage);
@@ -338,19 +346,11 @@ export const useContacts = (): ContactsReturn => {
     }
   }, [isNextGraph, loadMockContacts, loadNextGraphContacts]);
 
-  const loadMore = useCallback(() => {
-    if (isLoadingMore || !hasMore) return;
-    setIsLoadingMore(true);
-    const nextPage = currentPage + 1;
-    loadContacts(nextPage)
-      .then(() => setCurrentPage(nextPage))
-      .finally(() => setIsLoadingMore(false));
-  }, [currentPage, hasMore, isLoadingMore, loadContacts]);
+  // Removed loadMore - no pagination needed
 
   const reloadContacts = useCallback(() => {
-    setCurrentPage(0);
     setIsLoading(true);
-    loadContacts(0).finally(() => setIsLoading(false));
+    loadContacts().finally(() => setIsLoading(false));
   }, [loadContacts]);
 
   useEffect(() => {
@@ -361,13 +361,10 @@ export const useContacts = (): ContactsReturn => {
     contacts,
     contactNuris,
     isLoading,
-    isLoadingMore,
     error,
     addFilter,
     clearFilters,
     filters,
-    hasMore,
-    loadMore,
     totalCount,
     updateContact,
     setIconFilter,

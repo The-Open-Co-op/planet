@@ -5,8 +5,10 @@ import {
   Select,
   MenuItem,
   FormControl,
+  TextField,
+  IconButton,
 } from '@mui/material';
-import {Add} from '@mui/icons-material';
+import {Add, Delete} from '@mui/icons-material';
 import {AccountRegistry} from "@/utils/accountRegistry";
 import React, {useCallback, useState} from 'react';
 import type {Contact} from "@/types/contact";
@@ -34,6 +36,7 @@ interface AccountsVariantProps<K extends ResolvableKey> {
   onNewItemValueChange: (value: string) => void;
   setIsAddingNew: (adding: boolean) => void;
   setNewItemValue: (value: string) => void;
+  onRemoveItem?: (itemId: string) => void;
   contact?: Contact;
 }
 
@@ -53,9 +56,11 @@ export const AccountsVariant = <K extends ResolvableKey>({
                                                            onNewItemValueChange,
                                                            setIsAddingNew,
                                                            setNewItemValue,
+                                                           onRemoveItem,
                                                            contact
                                                          }: AccountsVariantProps<K>) => {
   const [newItemProtocol, setNewItemProtocol] = useState('linkedin');
+  const [customLabel, setCustomLabel] = useState('');
   const availableAccountTypes = AccountRegistry.getAllAccountTypes();
   const {commitData, changeData} = useLdo();
   const isNextgraph = isNextGraphEnabled();
@@ -119,7 +124,7 @@ export const AccountsVariant = <K extends ResolvableKey>({
 
     return (
       <Box key={itemId} sx={{display: 'flex', alignItems: 'start', gap: 1, width: '100%', mb: 1}}>
-        <FormControl size="small" sx={{minWidth: 140}}>
+        <FormControl size="small" sx={{minWidth: {xs: 100, sm: 140}}}>
           <Select
             value={item.protocol || 'linkedin'}
             disabled={item.source !== "user"}
@@ -129,7 +134,9 @@ export const AccountsVariant = <K extends ResolvableKey>({
             {availableAccountTypes.map(accountType => (
               <MenuItem key={accountType.protocol} value={accountType.protocol}>
                 <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                  {accountType.icon && React.cloneElement(accountType.icon, {fontSize: 'small'})}
+                  <Box sx={{display: {xs: 'none', sm: 'block'}, '& svg': {verticalAlign: 'middle'}}}>
+                    {accountType.icon && React.cloneElement(accountType.icon, {fontSize: 'small'})}
+                  </Box>
                   <Typography variant="body2">{accountType.label}</Typography>
                 </Box>
               </MenuItem>
@@ -145,6 +152,16 @@ export const AccountsVariant = <K extends ResolvableKey>({
           onBlur={() => onBlur(itemId)}
           placeholder={placeholder ?? ""}
         />
+        
+        {onRemoveItem && visibleItems.length > 1 && (
+          <IconButton 
+            size="small" 
+            onClick={() => onRemoveItem(itemId)}
+            sx={{color: 'error.main'}}
+          >
+            <Delete fontSize="small"/>
+          </IconButton>
+        )}
       </Box>
     );
   };
@@ -153,15 +170,15 @@ export const AccountsVariant = <K extends ResolvableKey>({
     return (
       <Box key={item['@id'] || index} sx={{
         display: 'flex', 
-        flexDirection: 'column', 
-        gap: 0.5, 
+        alignItems: 'center',
+        gap: 2, 
         pb: index < array.length - 1 ? 2 : 0,
         mb: index < array.length - 1 ? 2 : 0,
         borderBottom: index < array.length - 1 ? '1px solid rgba(0, 0, 0, 0.08)' : 'none',
         width: '100%'
       }}>
-        <Typography variant="caption" color="text.secondary" sx={{fontWeight: 600, textTransform: 'uppercase', fontSize: '0.7rem'}}>
-          {AccountRegistry.getLabel(item.protocol)}
+        <Typography variant="caption" color="text.secondary" sx={{fontWeight: 600, textTransform: 'uppercase', fontSize: '0.7rem', minWidth: {xs: '50px', sm: '70px'}}}>
+          {item.protocol === 'other' && item.customLabel ? item.customLabel : AccountRegistry.getLabel(item.protocol)}
         </Typography>
         {AccountRegistry.getLink(item.protocol, item.value) ? (
           <Typography
@@ -197,49 +214,66 @@ export const AccountsVariant = <K extends ResolvableKey>({
 
     return (
       <>
-        {isAddingNew && <Box sx={{display: 'flex', alignItems: 'start', gap: 1, width: '100%', mb: 1}}>
-          <FormControl size="small" sx={{minWidth: 140}}>
-            <Select
-              value={newItemProtocol}
-              disabled={true}
-              onChange={(e) => handleProtocolChange(e.target.value)}
-              variant="outlined"
-            >
-              {availableAccountTypes.map(accountType => (
-                <MenuItem key={accountType.protocol} value={accountType.protocol}>
-                  <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                    {accountType.icon && React.cloneElement(accountType.icon, {fontSize: 'small'})}
-                    <Typography variant="body2">{accountType.label}</Typography>
-                  </Box>
-                </MenuItem>
-              ))}
-              </Select>
-          </FormControl>
+        {isAddingNew && <Box sx={{display: 'flex', flexDirection: 'column', gap: 1, width: '100%', mb: 1}}>
+          <Box sx={{display: 'flex', alignItems: 'start', gap: 1, width: '100%'}}>
+            <FormControl size="small" sx={{minWidth: {xs: 100, sm: 140}}}>
+              <Select
+                value={newItemProtocol}
+                disabled={false}
+                onChange={(e) => handleProtocolChange(e.target.value)}
+                variant="outlined"
+              >
+                {availableAccountTypes.map(accountType => (
+                  <MenuItem key={accountType.protocol} value={accountType.protocol}>
+                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                      <Box sx={{display: {xs: 'none', sm: 'block'}}}>
+                        {accountType.icon && React.cloneElement(accountType.icon, {fontSize: 'small'})}
+                      </Box>
+                      <Typography variant="body2">{accountType.label}</Typography>
+                    </Box>
+                  </MenuItem>
+                ))}
+                </Select>
+            </FormControl>
 
-          <MultiPropertyItem
-            itemId={visibleItems.length.toString()}
-            value={newItemValue}
-            source={"user"}
-            onChange={(e) => onNewItemValueChange(e.target.value)}
-            onBlur={() => {
-              if (newItemValue.trim()) {
-                onAddNewItem({protocol: "linkedin"});
-              } else {
-                setIsAddingNew(false);
-                setNewItemValue('');
-              }
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                onAddNewItem({protocol: "linkedin"});
-              } else if (e.key === 'Escape') {
-                setIsAddingNew(false);
-                setNewItemValue('');
-              }
-            }}
-            autoFocus={true}
-            placeholder={placeholder || `Add new ${label?.toLowerCase() || 'item'}`}
-          />
+            <MultiPropertyItem
+              itemId={visibleItems.length.toString()}
+              value={newItemValue}
+              source={"user"}
+              onChange={(e) => onNewItemValueChange(e.target.value)}
+              onBlur={() => {
+                if (newItemValue.trim()) {
+                  onAddNewItem({protocol: newItemProtocol, customLabel: newItemProtocol === 'other' ? customLabel : undefined});
+                } else {
+                  setIsAddingNew(false);
+                  setNewItemValue('');
+                  setCustomLabel('');
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  onAddNewItem({protocol: newItemProtocol, customLabel: newItemProtocol === 'other' ? customLabel : undefined});
+                } else if (e.key === 'Escape') {
+                  setIsAddingNew(false);
+                  setNewItemValue('');
+                  setCustomLabel('');
+                }
+              }}
+              autoFocus={true}
+              placeholder={placeholder || `Add new ${label?.toLowerCase() || 'item'}`}
+            />
+          </Box>
+          
+          {newItemProtocol === 'other' && (
+            <TextField
+              size="small"
+              value={customLabel}
+              onChange={(e) => setCustomLabel(e.target.value)}
+              placeholder="Account type name"
+              variant="outlined"
+              sx={{ml: '148px'}}
+            />
+          )}
         </Box>}
         <Button
           disabled={isAddingNew && !newItemValue.trim()}
@@ -247,7 +281,7 @@ export const AccountsVariant = <K extends ResolvableKey>({
           onClick={() => setIsAddingNew(true)}
           variant="text"
           size="small"
-          sx={{alignSelf: 'flex-end', mt: 2}}
+          sx={{alignSelf: 'flex-end', mt: 2, color: '#1976d2', '&:hover': { backgroundColor: 'rgba(25, 118, 210, 0.04)' }}}
         >
           Add {label?.toLowerCase() || 'item'}
         </Button>

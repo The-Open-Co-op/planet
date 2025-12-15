@@ -2,16 +2,15 @@ import React, {forwardRef} from "react";
 import {Box, Typography, Chip, Skeleton} from "@mui/material";
 import {alpha, useTheme} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import {Favorite, VerifiedUser} from "@mui/icons-material";
+import {Favorite, VerifiedUser, Business, Groups, FamilyRestroom, Public} from "@mui/icons-material";
 import {Avatar, IconButton} from "@/components/ui";
 import type {Contact} from "@/types/contact";
-import {useRelationshipCategories} from "@/hooks/useRelationshipCategories";
 import {resolveFrom} from "@/utils/contactUtils";
 import {Theme} from "@mui/material/styles";
 import {Email, Name, Organization, PhoneNumber} from "@/.ldo/contact.typings";
 import {iconFilter} from "@/hooks/contacts/useContacts";
-import {AccountRegistry} from "@/utils/accountRegistry";
 import {formatPhone} from "@/utils/phoneHelper";
+import type {RCardType} from "@/types/rcard";
 
 const renderContactName = (name?: Name, isLoading?: boolean) => (
   <Typography
@@ -126,7 +125,7 @@ const renderEmailAndPhone = (email?: Email, phoneNumber?: PhoneNumber) => (
 
 export interface ContactCardDetailedProps {
   contact: Contact;
-  getNaoStatusIcon: (naoStatus?: string) => React.ReactNode;
+  getPlanetStatusIcon: (planetStatus?: string) => React.ReactNode;
   onSetIconFilter: (key: iconFilter, value: string) => void;
 }
 
@@ -137,14 +136,12 @@ export const ContactCardDetailed = forwardRef<
   (
     {
       contact,
-      getNaoStatusIcon,
       onSetIconFilter,
     },
     ref,
   ) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-    const {getCategoryIcon, getCategoryColor} = useRelationshipCategories();
 
     const name = resolveFrom(contact, 'name');
     const email = resolveFrom(contact, 'email');
@@ -179,62 +176,105 @@ export const ContactCardDetailed = forwardRef<
         </IconButton> : null
     );
 
-    const renderAccountButtons = () => {
-      let accountProtocols = contact.account?.map(account => account.protocol!) ?? [];
-      accountProtocols = [...new Set(accountProtocols)];
-      return accountProtocols.map((protocol) => <IconButton
-          key={protocol}
-          variant="source"
+
+    const getRCardIcon = (cardType: RCardType) => {
+      switch (cardType) {
+        case 'Business':
+          return <Business sx={{ fontSize: 16, color: '#7b1fa2' }} />;
+        case 'Friends':
+          return <Groups sx={{ fontSize: 16, color: '#388e3c' }} />;
+        case 'Family':
+          return <FamilyRestroom sx={{ fontSize: 16, color: '#388e3c' }} />;
+        case 'Community':
+          return <Public sx={{ fontSize: 16, color: '#1976d2' }} />;
+        default:
+          return null;
+      }
+    };
+
+    const renderCardAssignmentButtons = () => {
+      // Only show Trust Profile assignments for invited/member contacts
+      if (contact.planetStatus?.value !== 'member' && contact.planetStatus?.value !== 'invited') {
+        return null;
+      }
+
+      // Show Trust Profile assignments from rCardAssignments
+      const assignedCards = contact.rCardAssignments || [];
+
+      return assignedCards.map((assignment) => (
+        <IconButton
+          key={assignment.cardType}
+          variant="card-assignment"
           size={isMobile ? "medium" : "large"}
-          onClick={() => onSetIconFilter("accountFilter", protocol || "all")}
-          info={protocol}
+          onClick={() => onSetIconFilter("cardAssignmentFilter" as iconFilter, assignment.cardType)}
+          info={assignment.cardType}
         >
-          {AccountRegistry.getIcon(protocol ?? "", {fontSize: 16, color: '#0077b5'})}
+          {getRCardIcon(assignment.cardType)}
         </IconButton>
-      )
-    }
-
-    const renderCategoryButton = () => (
-      <IconButton
-        variant="category"
-        size={isMobile ? "medium" : "large"}
-        backgroundColor={getCategoryColor(contact.relationshipCategory)}
-        color="white"
-        onClick={() =>
-          onSetIconFilter(
-            "relationshipFilter",
-            contact.relationshipCategory || "uncategorized",
-          )
-        }
-      >
-        {getCategoryIcon(contact.relationshipCategory, 16)}
-      </IconButton>
-    );
-
-    const renderNaoStatusButton = () => (
-      <IconButton
-        variant="nao-status"
-        size={isMobile ? "medium" : "large"}
-        onClick={() =>
-          onSetIconFilter(
-            "naoStatusFilter",
-            contact.naoStatus?.value || "not_invited",
-          )
-        }
-      >
-        {getNaoStatusIcon(contact.naoStatus?.value)}
-      </IconButton>
-    );
+      ));
+    };
 
     const renderAccountFilers = () => (
       <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
-        {renderVouchesButton()}
-        {renderPraisesButton()}
-        {renderAccountButtons()}
-        {renderCategoryButton()}
-        {renderNaoStatusButton()}
+        {!isMobile && renderVouchesButton()}
+        {!isMobile && renderPraisesButton()}
+        {renderCardAssignmentButtons()}
       </Box>
     );
+
+    // Special layout for "me" contact
+    if (contact.isMe) {
+      return (
+        <Box
+          ref={ref}
+          sx={{
+            display: "flex",
+            alignItems: {xs: "center", md: "flex-start"},
+            gap: {xs: 2, md: 0},
+            minHeight: {xs: 'auto', md: 44},
+            width: "100%",
+          }}
+        >
+          {/* Avatar */}
+          <Avatar
+            name={name?.value || ''}
+            profileImage={photo?.value}
+            size={isMobile ? "medium" : "large"}
+          />
+
+          {/* Name & "My Profile" Label */}
+          <Box
+            sx={{
+              minWidth: 0,
+              flex: 1,
+              ml: 2
+            }}
+          >
+            <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 0.5}}>
+              {renderContactName(name)}
+            </Box>
+            <Typography variant="body2" sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.75rem' }}>
+              My Profile
+            </Typography>
+            {!isMobile && renderJobTitleAndCompany(organization)}
+          </Box>
+
+          {/* Icons - same as regular contacts */}
+          {!isMobile && <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+              height: 44,
+              flexShrink: 0,
+              ml: "auto",
+            }}
+          >
+            {renderAccountFilers()}
+          </Box>}
+        </Box>
+      );
+    }
 
     return (
       <Box
@@ -243,7 +283,7 @@ export const ContactCardDetailed = forwardRef<
           display: "flex",
           alignItems: {xs: "center", md: "flex-start"},
           gap: {xs: 2, md: 0},
-          height: {xs: 80, md: 44},
+          minHeight: {xs: 'auto', md: 44},
           width: "100%",
         }}
       >
@@ -262,14 +302,13 @@ export const ContactCardDetailed = forwardRef<
             mr: {xs: 0, md: 3},
           }}
         >
-          <Box sx={{display: "flex", alignItems: "center", gap: {xs: 0.5, md: 1}, mb: 0.5}}>
+          <Box sx={{display: "flex", alignItems: "center", gap: {xs: 0.5, md: 1}, mb: 0.5, justifyContent: {xs: "space-between", md: "flex-start"}}}>
             {renderContactName(name)}
             {renderIsMerged((contact.mergedFrom?.size ?? 0) > 0, theme)}
+            {isMobile && renderAccountFilers()}
           </Box>
 
-          {renderJobTitleAndCompany(organization)}
-          {isMobile && renderEmail(email)}
-          {isMobile && renderAccountFilers()}
+          {!isMobile && renderJobTitleAndCompany(organization)}
         </Box>
 
         {/* Second Column - Email & Phone */}

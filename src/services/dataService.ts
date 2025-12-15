@@ -124,6 +124,8 @@ export function processContactFromJSON(jsonContact: any, withIds = true): Contac
     "interactionCount",
     "recentInteractionScore",
     "sharedTagsCount",
+    "isMe",
+    "rCardAssignments",
   ] as (keyof Contact)[];
 
   mockProperties.forEach(property => {
@@ -141,6 +143,55 @@ export function processContactFromJSON(jsonContact: any, withIds = true): Contac
 let contacts: Contact[] = [];
 let isLoaded = false;
 let draftContact: Contact | undefined;
+
+// Create the special "me" contact
+const createMeContact = (): Contact => {
+  return processContactFromJSON({
+    "@id": "contact:me",
+    "type": [{ "@id": "Individual" }],
+    "name": [{
+      "value": "Oliver Sylvester-Bradley",
+      "source": "user"
+    }],
+    "email": [{
+      "value": "oliver@opendataservices.coop",
+      "source": "user"
+    }],
+    "phoneNumber": [{
+      "value": "+447973123456",
+      "source": "user"
+    }],
+    "organization": [{
+      "value": "Open Data Services Co-operative",
+      "position": "Co-founder & Director",
+      "source": "user"
+    }],
+    "address": [{
+      "addressLocality": "London",
+      "addressCountry": "UK",
+      "source": "user"
+    }],
+    "biography": [{
+      "value": "Digital innovation specialist focused on open data standards and cooperative technology solutions",
+      "source": "user"
+    }],
+    "planetStatus": {
+      "value": "member",
+      "source": "user"
+    },
+    "photo": [{
+      "value": "images/Oli.jpg",
+      "source": "user"
+    }],
+    "isMe": true,
+    "humanityConfidenceScore": 5,
+    "vouchesSent": 12,
+    "vouchesReceived": 15,
+    "praisesSent": 8,
+    "praisesReceived": 10,
+    "lastInteractionAt": new Date().toISOString()
+  }, true);
+};
 
 const blockedContacts = new Set<string>();
 
@@ -167,7 +218,14 @@ export const dataService = {
 
   async getContacts(withIds = true): Promise<Contact[]> {
     if (!isLoaded) await this.loadContacts(withIds);
-    return contacts.filter(contact => (contact.mergedInto?.size ?? 0) === 0);
+    const filteredContacts = contacts.filter(contact => (contact.mergedInto?.size ?? 0) === 0);
+    
+    // Add the "me" contact at the beginning
+    const meContact = createMeContact();
+    console.log('🆔 Created me contact:', meContact['@id'], meContact.isMe, meContact);
+    const allContacts = [meContact, ...filteredContacts];
+    console.log('📋 Total contacts returned (including me):', allContacts.length);
+    return allContacts;
   },
 
   async loadContacts(withIds = true): Promise<Contact[]> {
@@ -178,6 +236,55 @@ export const dataService = {
           const contactsData = await response.json();
           // @ts-expect-error just mock
           contacts = contactsData.map((jsonContact) => processContactFromJSON(jsonContact, withIds));
+          
+          // Add sample RCard assignments for testing - only for invited/member contacts
+          if (contacts.length > 0) {
+            contacts.forEach((contact) => {
+              // Only assign Trust Profiles to invited/member contacts
+              if (contact.planetStatus?.value === 'member' || contact.planetStatus?.value === 'invited') {
+                // Add different assignments based on contact ID for testing
+                if (contact['@id'] === 'contact:1') {
+                  contact.rCardAssignments = [
+                    {
+                      cardType: 'Business',
+                      assignedAt: new Date('2024-01-15'),
+                      assignedBy: 'current-user'
+                    },
+                    {
+                      cardType: 'Community',
+                      assignedAt: new Date('2024-02-01'), 
+                      assignedBy: 'current-user'
+                    }
+                  ];
+                } else if (contact['@id'] === 'contact:2') {
+                  contact.rCardAssignments = [
+                    {
+                      cardType: 'Friends',
+                      assignedAt: new Date('2024-01-20'),
+                      assignedBy: 'current-user'
+                    }
+                  ];
+                } else if (contact['@id'] === 'contact:3') {
+                  contact.rCardAssignments = [
+                    {
+                      cardType: 'Family',
+                      assignedAt: new Date('2024-01-25'),
+                      assignedBy: 'current-user'
+                    },
+                    {
+                      cardType: 'Friends',
+                      assignedAt: new Date('2024-02-10'),
+                      assignedBy: 'current-user'
+                    }
+                  ];
+                }
+              } else {
+                // Ensure non-invited contacts have no Trust Profile assignments
+                contact.rCardAssignments = [];
+              }
+            });
+          }
+          
           isLoaded = true;
           resolve(contacts);
         } catch (error) {
@@ -199,8 +306,13 @@ export const dataService = {
 
   async getContact(id: string): Promise<Contact | undefined> {
     try {
-      if (contacts.length === 0) {
+      if (!isLoaded) {
         await this.getContacts();
+      }
+
+      // Handle the special "me" contact
+      if (id === "contact:me") {
+        return createMeContact();
       }
 
       return contacts.find((c: Contact) => c["@id"] === id);
@@ -229,7 +341,7 @@ export const dataService = {
                 (jsonContact.phoneNumber && jsonContact.phoneNumber.some((p) => p.source === sourceId)) ||
                 // @ts-expect-error just mock
                 (jsonContact.organization && jsonContact.organization.some((o) => o.source === sourceId)) ||
-                (jsonContact.naoStatus && jsonContact.naoStatus.source === sourceId)
+                (jsonContact.planetStatus && jsonContact.planetStatus.source === sourceId)
               );
               return hasSource;
             })
@@ -603,7 +715,7 @@ export const dataService = {
 
   // Update contact NAO status
   updateContactStatus(contactId: string, newStatus: string): void {
-    this.updateContact(contactId, {naoStatus: {value: newStatus}});
+    this.updateContact(contactId, {planetStatus: {value: newStatus}});
     console.log(`📝 Updated contact ${contactId} status to ${newStatus}`);
   },
 

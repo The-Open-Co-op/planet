@@ -11,7 +11,6 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
-  Divider,
   FormControl,
   InputLabel,
   Select
@@ -32,18 +31,16 @@ import {useContacts} from '@/hooks/contacts/useContacts';
 import {useContactDragDrop} from '@/hooks/contacts/useContactDragDrop';
 import {useRelationshipCategories} from '@/hooks/useRelationshipCategories';
 import {
-  ContactFilters,
   ContactGrid,
   MergeDialogs,
   FloatingActions
 } from '@/components/contacts';
-import {resolveFrom} from "@/utils/contactUtils";
 import {useMergeContacts} from "@/hooks/contacts/useMergeContacts.ts";
 
 const ContactListPage = () => {
   const currentUserGroupIds = useMemo(() => ['group1', 'group2', 'group3'], []);
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  useSearchParams();
   
   // State
   const [isManageMode, setIsManageMode] = useState(false);
@@ -56,25 +53,23 @@ const ContactListPage = () => {
   const [selectedContactsForMerge, setSelectedContactsForMerge] = useState<string[]>([]);
   const [isMerging, setIsMerging] = useState(false);
   const [mergeProgress, setMergeProgress] = useState(0);
-  const [isManualMerge, setIsManualMerge] = useState(false);
+  const [isManualMerge] = useState(false);
   const [noDuplicatesFound, setNoDuplicatesFound] = useState(false);
 
   const {
     contacts,
     contactNuris,
     isLoading,
-    isLoadingMore,
     error,
     addFilter,
     clearFilters,
     filters,
-    hasMore,
-    loadMore,
     totalCount,
     setIconFilter,
     updateContact,
     reloadContacts
   } = useContacts();
+
 
   const {getDuplicatedContacts, mergeContacts} = useMergeContacts();
   const {getCategoriesArray, getCategoryIcon} = useRelationshipCategories();
@@ -87,13 +82,60 @@ const ContactListPage = () => {
   useEffect(() => {
     const handleContactCategorized = async (event: CustomEvent) => {
       const { contactId, category } = event.detail;
+      console.log(`🔄 Attempting to assign Trust Profile ${category} to contact ${contactId}`);
+      
       try {
+        // Get current contact to preserve existing assignments
+        const currentContact = contacts.find(c => c['@id'] === contactId);
+        
+        // Only allow Trust Profile assignment for invited/member contacts
+        if (currentContact?.planetStatus?.value !== 'member' && currentContact?.planetStatus?.value !== 'invited') {
+          console.log(`❌ Cannot assign Trust Profile to non-invited contact ${contactId}. Contact must be invited to PLANET first.`);
+          return;
+        }
+        
+        const existingAssignments = currentContact?.rCardAssignments || [];
+        
+        // Map category names to RCardType
+        const categoryToCardType: { [key: string]: string } = {
+          'friends': 'Friends',
+          'family': 'Family', 
+          'community': 'Community',
+          'business': 'Business'
+        };
+        
+        const cardType = categoryToCardType[category];
+        if (!cardType) {
+          console.error(`Unknown category: ${category}`);
+          return;
+        }
+        
+        // Check if already assigned
+        const isAlreadyAssigned = existingAssignments.some(a => a.cardType === cardType);
+        if (isAlreadyAssigned) {
+          console.log(`Trust Profile ${cardType} already assigned to contact ${contactId}`);
+          return;
+        }
+        
+        // Create new assignment
+        const newAssignment = {
+          cardType: cardType as any,
+          assignedAt: new Date(),
+          assignedBy: 'current-user'
+        };
+        
+        const updatedAssignments = [...existingAssignments, newAssignment];
+        
         await updateContact(contactId, {
-          relationshipCategory: category
+          rCardAssignments: updatedAssignments
         });
-        console.log(`Updated contact ${contactId} relationship category to ${category}`);
+        console.log(`✅ Successfully assigned Trust Profile ${cardType} to contact ${contactId}`);
+        
+        // Reload contacts to reflect the changes
+        console.log('🔄 Reloading contacts to show updated Trust Profile assignment...');
+        reloadContacts();
       } catch (error) {
-        console.error('Failed to update contact category:', error);
+        console.error(`❌ Failed to assign Trust Profile for ${contactId}:`, error);
       }
     };
 
@@ -102,7 +144,7 @@ const ContactListPage = () => {
     return () => {
       window.removeEventListener('contactCategorized', handleContactCategorized as EventListener);
     };
-  }, [updateContact]);
+  }, [updateContact, reloadContacts, contacts]);
 
   // Handle contact interactions
   const handleContactClick = (contactId: string) => {
@@ -245,7 +287,22 @@ const ContactListPage = () => {
 
   return (
     <StandardPage 
-      title={isManageMode ? 'Manage Contacts' : 'Contacts'}
+      title={isManageMode ? (
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <IconButton
+            onClick={handleToggleManageMode}
+            size="small"
+            sx={{ 
+              mr: 1,
+              ml: -1,
+              color: 'text.primary'
+            }}
+          >
+            <ArrowBack />
+          </IconButton>
+          Manage Contacts
+        </Box>
+      ) : 'Contacts'}
       actions={!isManageMode ? (
         <>
           <Button
@@ -273,11 +330,11 @@ const ContactListPage = () => {
             sx={{
               minWidth: { xs: 'auto', md: 'auto' },
               px: { xs: 1, md: 2 },
-              backgroundColor: { xs: 'transparent', md: 'primary.main' },
-              color: { xs: 'primary.main', md: 'white' },
-              border: { xs: 'none', md: 'none' },
+              backgroundColor: { xs: 'transparent', md: 'white' },
+              color: { xs: 'black', md: 'black' },
+              border: { xs: 'none', md: '1px solid black' },
               '&:hover': {
-                backgroundColor: { xs: 'rgba(25, 118, 210, 0.04)', md: 'primary.dark' }
+                backgroundColor: { xs: 'rgba(0, 0, 0, 0.04)', md: 'rgba(0, 0, 0, 0.04)' }
               }
             }}
           >
@@ -288,27 +345,7 @@ const ContactListPage = () => {
             <KeyboardArrowDown sx={{ display: { xs: 'none', md: 'inline' }, ml: 0.5, fontSize: 16 }} />
           </Button>
         </>
-      ) : (
-        <Button
-          onClick={handleToggleManageMode}
-          sx={{
-            minWidth: { xs: 'auto', md: 'auto' },
-            px: { xs: 1, md: 2 },
-            border: { xs: 'none', md: '1px solid' },
-            borderColor: { md: 'rgba(0, 0, 0, 0.23)' },
-            '&:hover': {
-              border: { xs: 'none', md: '1px solid' },
-              borderColor: { md: 'rgba(0, 0, 0, 0.87)' },
-              backgroundColor: 'rgba(0, 0, 0, 0.04)'
-            }
-          }}
-        >
-          <ArrowBack sx={{ fontSize: { xs: 20, md: 18 } }} />
-          <Box component="span" sx={{ display: { xs: 'none', md: 'inline' }, ml: 1 }}>
-            Back
-          </Box>
-        </Button>
-      )}
+      ) : null}
     >
       {/* Search Bar with Relationship Filter */}
       <Box sx={{ display: 'flex', gap: 2, mb: 2, alignItems: 'center' }}>
@@ -456,9 +493,6 @@ const ContactListPage = () => {
             contactNuris={contactNuris}
             isLoading={isLoading}
             error={error}
-            isLoadingMore={isLoadingMore}
-            onLoadMore={loadMore}
-            hasMore={hasMore}
             isSelectionMode={isManageMode}
             isManualMergeMode={isManualMergeMode}
             isMultiSelectMode={isManageMode}

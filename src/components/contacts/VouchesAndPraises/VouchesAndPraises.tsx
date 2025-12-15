@@ -1,5 +1,5 @@
-import {Favorite, PersonOutline, Send, VerifiedUser} from "@mui/icons-material"
-import {alpha, Box, Button, Typography, useTheme} from "@mui/material"
+import {Favorite, VerifiedUser} from "@mui/icons-material"
+import {alpha, Box, Typography, useTheme} from "@mui/material"
 import {resolveFrom} from "@/utils/contactUtils";
 import {forwardRef, useState, useEffect, useCallback} from "react";
 import type {Contact} from "@/types/contact";
@@ -9,11 +9,11 @@ import {formatDateDiff} from "@/utils/dateHelpers";
 
 export interface VouchesAndPraisesProps {
   contact?: Contact;
-  onInviteToNAO?: () => void;
+  onInviteToPLANET?: () => void;
   refreshTrigger?: number; // Add refresh trigger
 }
 
-export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesProps>(({contact, onInviteToNAO, refreshTrigger}, ref) => {
+export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesProps>(({contact, refreshTrigger}, ref) => {
   const theme = useTheme();
   const [acceptedNotifications, setAcceptedNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -69,7 +69,7 @@ export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesPro
               </Typography>
             </Box>
 
-            {contact.naoStatus?.value === 'member' || contact['@id'] === 'contact:11' ? (
+            {contact.planetStatus?.value === 'member' ? (
               <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
                 {/* Vouch item */}
                 <Box sx={{
@@ -119,11 +119,14 @@ export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesPro
                 </Box>
               </Box>
             ) : (
-              <Box sx={{textAlign: 'center', py: 4}}>
-                <Typography variant="body2" color="text.secondary" gutterBottom>
-                  No vouches or praises sent yet
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
+              <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: 200
+              }}>
+                <Typography variant="body2" color="text.secondary">
                   Invite {resolveFrom(contact, 'name')?.value?.split(' ')[0] || 'them'} to PLANET to start vouching for
                   them!
                 </Typography>
@@ -140,27 +143,14 @@ export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesPro
               </Typography>
             </Box>
 
-            {contact.naoStatus?.value === 'member' || contact['@id'] === 'contact:11' ? (
+            {contact.planetStatus?.value === 'member' ? (
               <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
                 {isLoading ? (
                   <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
                     Loading...
                   </Typography>
-                ) : acceptedNotifications.length > 0 || contact['@id'] === 'contact:11' ? (
-                  (contact['@id'] === 'contact:11' && acceptedNotifications.length === 0 ? [
-                    {
-                      id: 'mock-1',
-                      type: 'vouch',
-                      message: 'Joscha vouched for your blockchain development skills',
-                      updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()
-                    },
-                    {
-                      id: 'mock-2',
-                      type: 'praise',
-                      message: 'Joscha praised your problem solving skills',
-                      updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
-                    }
-                  ] : acceptedNotifications).map((notification) => (
+                ) : acceptedNotifications.length > 0 ? (
+                  acceptedNotifications.map((notification) => (
                     <Box 
                       key={notification.id}
                       sx={{
@@ -210,24 +200,12 @@ export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesPro
                 minHeight: 200,
                 gap: 2
               }}>
-                <PersonOutline sx={{fontSize: 48, opacity: 0.3, color: 'text.secondary'}}/>
-                <Typography variant="body2" color="text.secondary" textAlign="center" sx={{maxWidth: 250}}>
-                  {contact.naoStatus?.value === 'invited'
-                    ? `${resolveFrom(contact, 'name')?.value?.split(' ')[0] || 'Contact'} hasn't joined PLANET yet, so they can't send vouches or praises.`
-                    : `${resolveFrom(contact, 'name')?.value?.split(' ')[0] || 'Contact'} needs to join PLANET before they can send vouches or praises.`
+                <Typography variant="body2" color="text.secondary" textAlign="center">
+                  {contact.planetStatus?.value === 'invited'
+                    ? `${resolveFrom(contact, 'name')?.value?.split(' ')[0] || 'Contact'} hasn't joined PLANET yet.`
+                    : `${resolveFrom(contact, 'name')?.value?.split(' ')[0] || 'Contact'} needs to join PLANET to send vouches.`
                   }
                 </Typography>
-                {contact.naoStatus?.value === 'not_invited' && (
-                  <Button
-                    variant="outlined"
-                    startIcon={<Send/>}
-                    onClick={onInviteToNAO}
-                    size="small"
-                    sx={{mt: 1}}
-                  >
-                    Invite to PLANET
-                  </Button>
-                )}
               </Box>
             )}
       </Box>

@@ -1,10 +1,5 @@
 import {forwardRef, useState, useEffect} from 'react';
 import {Card, CardContent, useTheme} from '@mui/material';
-import {
-  CheckCircle,
-  Schedule,
-  Send,
-} from '@mui/icons-material';
 import type {Contact} from '@/types/contact';
 import {ContactCardDetailed} from './ContactCardDetailed';
 import {useNextGraphAuth, useResource, useSubject} from '@/lib/nextgraph';
@@ -71,15 +66,15 @@ export const ContactCard = forwardRef<HTMLDivElement, ContactCardProps>(
       }
     }, [isNextGraph, nuri, socialContact, contacts]);
 
-    const getNaoStatusIcon = (naoStatus?: string) => {
-      switch (naoStatus) {
+    const getContactOpacity = (planetStatus?: string) => {
+      switch (planetStatus) {
         case 'member':
-          return <CheckCircle sx={{fontSize: 16, color: '#388e3c'}}/>;
+          return 1.0; // 100% opacity for joined PLANET members
         case 'invited':
-          return <Schedule sx={{fontSize: 16, color: '#9e9e9e', opacity: 0.7}}/>;
+          return 0.7; // 70% opacity (30% transparency) for invited users
         case 'not_invited':
         default:
-          return <Send sx={{fontSize: 16, color: '#1976d2'}}/>;
+          return 0.5; // 50% opacity (50% transparency) for not yet invited
       }
     };
 
@@ -103,6 +98,7 @@ export const ContactCard = forwardRef<HTMLDivElement, ContactCardProps>(
           } : {},
           position: 'relative',
           width: '100%',
+          opacity: getContactOpacity(contact.planetStatus?.value),
         }}
       >
         <CardContent sx={{
@@ -113,7 +109,7 @@ export const ContactCard = forwardRef<HTMLDivElement, ContactCardProps>(
         }}>
           <ContactCardDetailed
             contact={contact}
-            getNaoStatusIcon={getNaoStatusIcon}
+            getPlanetStatusIcon={() => null}
             onSetIconFilter={onSetIconFilter}
           />
         </CardContent>

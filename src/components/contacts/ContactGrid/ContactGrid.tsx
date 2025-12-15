@@ -1,9 +1,8 @@
-import {Box, Grid, Checkbox, Typography, Button, CircularProgress} from '@mui/material';
+import {Box, Grid, Checkbox, Typography, Button} from '@mui/material';
 import {ContactCard} from '@/components/contacts/ContactCard';
 import type {ContactsFilters, iconFilter} from '@/hooks/contacts/useContacts';
 import type {UseContactDragDropReturn} from '@/hooks/contacts/useContactDragDrop';
 import {CallMerge} from '@mui/icons-material';
-import {Waypoint} from 'react-waypoint';
 import {Contact} from "@/types/contact";
 
 interface ContactGridProps {
@@ -15,9 +14,6 @@ interface ContactGridProps {
   isManualMergeMode: boolean;
   isMultiSelectMode: boolean;
   filters: ContactsFilters;
-  onLoadMore: () => void;
-  hasMore: boolean;
-  isLoadingMore: boolean;
   onContactClick: (contactId: string) => void;
   onSelectContact: (contact: string) => void;
   onSetIconFilter: (key: iconFilter, value: string) => void;
@@ -40,9 +36,6 @@ export const ContactGrid = ({
                               isManualMergeMode,
                               isMultiSelectMode,
                               filters,
-                              onLoadMore,
-                              hasMore,
-                              isLoadingMore,
                               onContactClick,
                               onSelectContact,
                               onSetIconFilter,
@@ -50,8 +43,6 @@ export const ContactGrid = ({
                               isContactSelectedForMerge,
                               onSelectAll,
                               hasSelection = false,
-                              contactCount,
-                              totalCount,
                               dragDrop,
                               onMergeContacts
                             }: ContactGridProps) => {
@@ -172,10 +163,6 @@ export const ContactGrid = ({
         flex: 1,
         minWidth: 0,
         overflow: 'auto',
-        maxHeight: {
-          xs: 'calc(100vh - 280px)',
-          md: 'calc(100vh - 320px)'
-        },
         '&::-webkit-scrollbar': {
           width: '8px'
         },
@@ -222,28 +209,6 @@ export const ContactGrid = ({
               </Box>
             </Grid>
           ))}
-
-          {/* Infinite scroll waypoint */}
-          {hasMore && !isLoading && !isLoadingMore && (
-            <Waypoint onEnter={onLoadMore}/>
-          )}
-
-          {/* Load more spinner */}
-          {isLoadingMore && (
-            <Grid size={{ xs: 12 }}>
-              <Box sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                py: 4
-              }}>
-                <CircularProgress size={24} />
-                <Typography variant="body2" color="text.secondary" sx={{ ml: 2 }}>
-                  Loading more contacts...
-                </Typography>
-              </Box>
-            </Grid>
-          )}
         </Grid>
       </Box>
     </Box>

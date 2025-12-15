@@ -2,25 +2,13 @@ import {useState, useCallback, useEffect} from 'react';
 import {
   Typography,
   Box,
-  IconButton,
-  Menu,
-  MenuItem,
-  Switch,
 } from '@mui/material';
-import {
-  MoreVert,
-  Visibility,
-  VisibilityOff,
-  Star,
-  StarBorder,
-} from '@mui/icons-material';
 import type {Contact} from '@/types/contact';
-import {ContactKeysWithHidden, setUpdatedTime, updateProperty, updatePropertyFlag} from '@/utils/contactUtils';
+import {ContactKeysWithHidden, setUpdatedTime} from '@/utils/contactUtils';
 import {getVisibleItems} from '@/utils/contactUtils';
-import {getSourceIcon, getSourceLabel} from "@/components/contacts/sourcesHelper";
 import {dataset, useLdo} from "@/lib/nextgraph";
 import {isNextGraphEnabled} from "@/utils/featureFlags";
-import {ChipsVariant, AccountsVariant} from './variants';
+import {ChipsVariant, AccountsVariant, PhoneVariant, EmailVariant} from './variants';
 import {ValidationType} from "@/hooks/useFieldValidation";
 
 type ResolvableKey = ContactKeysWithHidden;
@@ -36,31 +24,27 @@ interface MultiPropertyWithVisibilityProps<K extends ResolvableKey> {
   showManageButton?: boolean;
   isEditing?: boolean;
   placeholder?: string;
-  variant?: "chips" | "accounts";
+  variant?: "chips" | "accounts" | "phone" | "email";
   validateType?: ValidationType;
 }
 
 export const MultiPropertyWithVisibility = <K extends ResolvableKey>({
                                                                        label,
-                                                                       icon,
                                                                        contact,
                                                                        propertyKey,
                                                                        subKey = 'value',
                                                                        hideLabel = false,
-                                                                       hideIcon = false,
                                                                        showManageButton = true,
                                                                        isEditing = false,
                                                                        variant = "chips",
                                                                        placeholder,
                                                                        validateType = "text"
                                                                      }: MultiPropertyWithVisibilityProps<K>) => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, setUpdateTrigger] = useState(0);
   const [editingValues, setEditingValues] = useState<Record<string, string>>({});
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [newItemValue, setNewItemValue] = useState('');
-  const open = Boolean(anchorEl);
 
   const {commitData, changeData} = useLdo();
 
@@ -79,51 +63,6 @@ export const MultiPropertyWithVisibility = <K extends ResolvableKey>({
     loadAllItems();
   }, [loadAllItems]);
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleVisibilityToggle = (item: any) => {
-    if (!contact) {
-      return;
-    }
-    let changedContactObj = contact;
-    if (isNextgraph) {
-      const resource = dataset.getResource(contact["@id"]!);
-      if (!resource.isError && resource.type !== "InvalidIdentifierResource") {
-        changedContactObj = changeData(contact, resource);
-        updatePropertyFlag(changedContactObj, propertyKey, item["@id"], "hidden", "toggle");
-        updateProperty(changedContactObj, propertyKey, item["@id"], "preferred", false);
-        commitData(changedContactObj);
-      }
-    } else {
-      updatePropertyFlag(changedContactObj, propertyKey, item["@id"], "hidden", "toggle");
-      updateProperty(changedContactObj, propertyKey, item["@id"], "preferred", false);
-      setUpdateTrigger(prev => prev + 1);
-    }
-  };
-
-  const handlePreferredToggle = (item: any) => {
-    if (!contact) {
-      return;
-    }
-    let changedContactObj = contact;
-    if (isNextgraph) {
-      const resource = dataset.getResource(contact["@id"]!);
-      if (!resource.isError && resource.type !== "InvalidIdentifierResource") {
-        changedContactObj = changeData(contact, resource);
-        updatePropertyFlag(changedContactObj, propertyKey, item["@id"], "preferred");
-        commitData(changedContactObj);
-      }
-    } else {
-      updatePropertyFlag(changedContactObj, propertyKey, item["@id"], "preferred");
-      setUpdateTrigger(prev => prev + 1);
-    }
-  };
 
   const persistFieldChange = useCallback((itemId: string, newValue: string) => {
     if (!contact) return;
@@ -218,6 +157,81 @@ export const MultiPropertyWithVisibility = <K extends ResolvableKey>({
     loadAllItems();
   }, [changeData, commitData, contact, isNextgraph, newItemValue, propertyKey, subKey, loadAllItems]);
 
+  const removeItem = useCallback((itemId: string) => {
+    if (!contact) return;
+
+    const removePropertyItem = (contactObj: Contact) => {
+      const fieldSet = contactObj[propertyKey];
+      if (!fieldSet) return;
+
+      // Find and remove the item
+      const itemsArray = fieldSet.toArray();
+      const itemToRemove = itemsArray.find(item => item["@id"] === itemId);
+      
+      if (itemToRemove) {
+        fieldSet.delete(itemToRemove);
+        setUpdatedTime(contactObj);
+      }
+
+      return contactObj;
+    };
+
+    if (isNextgraph) {
+      const resource = dataset.getResource(contact["@id"]!);
+      if (!resource.isError && resource.type !== "InvalidIdentifierResource") {
+        const changedContactObj = changeData(contact, resource);
+        removePropertyItem(changedContactObj);
+        commitData(changedContactObj);
+      }
+    } else {
+      removePropertyItem(contact);
+    }
+
+    loadAllItems();
+  }, [changeData, commitData, contact, isNextgraph, propertyKey, loadAllItems]);
+
+  const persistTypeChange = useCallback((itemId: string, typeField: string, newTypeValue: string) => {
+    if (!contact) return;
+
+    const updateTypeWithUserSource = (contactObj: Contact) => {
+      const fieldSet = contactObj[propertyKey];
+      if (!fieldSet) return;
+
+      let targetItem = null;
+      for (const item of fieldSet) {
+        if (item["@id"] === itemId) {
+          targetItem = item;
+          break;
+        }
+      }
+
+      if (targetItem) {
+        // @ts-expect-error TODO: narrow later
+        targetItem[typeField] = newTypeValue;
+        // If it wasn't a user source, mark it as user source since they're editing it
+        if (targetItem.source !== "user") {
+          targetItem.source = "user";
+        }
+      }
+
+      setUpdatedTime(contactObj);
+      return contactObj;
+    };
+
+    if (isNextgraph) {
+      const resource = dataset.getResource(contact["@id"]!);
+      if (!resource.isError && resource.type !== "InvalidIdentifierResource") {
+        const changedContactObj = changeData(contact, resource);
+        updateTypeWithUserSource(changedContactObj);
+        commitData(changedContactObj);
+      }
+    } else {
+      updateTypeWithUserSource(contact);
+    }
+
+    loadAllItems();
+  }, [changeData, commitData, contact, isNextgraph, propertyKey, loadAllItems]);
+
   const handleInputChange = useCallback((itemId: string, newValue: string) => {
     setEditingValues(prev => ({...prev, [itemId]: newValue}));
   }, []);
@@ -240,7 +254,41 @@ export const MultiPropertyWithVisibility = <K extends ResolvableKey>({
         return updated;
       });
     }
-  }, [editingValues, persistFieldChange, allItems, subKey]);
+    
+    // Also check for type changes (phoneType, emailType)
+    const phoneTypeKey = `${itemId}_phoneType`;
+    const emailTypeKey = `${itemId}_emailType`;
+    
+    if (editingValues[phoneTypeKey] !== undefined) {
+      const originalItem = allItems.find(item => item["@id"] === itemId);
+      const originalType = originalItem ? (originalItem.phoneType || 'mobile') : 'mobile';
+      
+      if (editingValues[phoneTypeKey] !== originalType) {
+        persistTypeChange(itemId, 'phoneType', editingValues[phoneTypeKey]);
+      }
+      
+      setEditingValues(prev => {
+        const updated = {...prev};
+        delete updated[phoneTypeKey];
+        return updated;
+      });
+    }
+    
+    if (editingValues[emailTypeKey] !== undefined) {
+      const originalItem = allItems.find(item => item["@id"] === itemId);
+      const originalType = originalItem ? (originalItem.emailType || 'personal') : 'personal';
+      
+      if (editingValues[emailTypeKey] !== originalType) {
+        persistTypeChange(itemId, 'emailType', editingValues[emailTypeKey]);
+      }
+      
+      setEditingValues(prev => {
+        const updated = {...prev};
+        delete updated[emailTypeKey];
+        return updated;
+      });
+    }
+  }, [editingValues, persistFieldChange, persistTypeChange, allItems, subKey]);
 
   useEffect(() => {
     if (isEditing && contact) {
@@ -278,93 +326,6 @@ export const MultiPropertyWithVisibility = <K extends ResolvableKey>({
 
   if (visibleItems.length === 0 && !showManageButton && !isEditing) return null;
 
-  const renderManageMenu = () => {
-    if (!showManageButton || allItems.length <= 1) return null;
-
-    return (
-      <>
-        <IconButton
-          size="small"
-          onClick={handleClick}
-          sx={{ml: 1}}
-        >
-          <MoreVert fontSize="small"/>
-        </IconButton>
-        <Menu
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          PaperProps={{
-            sx: {minWidth: 250}
-          }}
-        >
-          <MenuItem disabled>
-            <Typography variant="caption" color="text.secondary">
-              Manage Items
-            </Typography>
-          </MenuItem>
-          {allItems.filter(el => el["@id"]).map((item: any, index: number) => {
-            const itemId = item['@id'] || `${propertyKey}_${index}`;
-            const isHidden = item.hidden || false;
-
-            const isPreferred = item.preferred || false;
-
-            return (
-              <MenuItem key={itemId} sx={{display: 'block', padding: 0}}>
-                <Box sx={{display: 'flex', flexDirection: 'column'}}>
-                  {/* Visibility toggle row */}
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1,
-                      width: '100%',
-                      padding: '8px 16px',
-                      cursor: 'pointer',
-                      '&:hover': {backgroundColor: 'rgba(0, 0, 0, 0.04)'}
-                    }}
-                  >
-                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}
-                         onClick={() => handlePreferredToggle(item)}>
-                      {isPreferred ? <Star fontSize="small"/> : <StarBorder fontSize="small"/>}
-                    </Box>
-                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1, flex: 1}}>
-
-                      {item.source && getSourceIcon(item.source)}
-                      <Box sx={{flex: 1}}>
-                        <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                          <Typography variant="body2">
-                            {item[subKey] || 'No value'}
-                          </Typography>
-                        </Box>
-                        {item.source && (
-                          <Typography variant="caption" color="text.secondary">
-                            {getSourceLabel(item.source)}
-                          </Typography>
-                        )}
-                      </Box>
-                    </Box>
-                    <Box sx={{display: 'flex', alignItems: 'center'}}>
-                      {isHidden ? <VisibilityOff fontSize="small"/> : <Visibility fontSize="small"/>}
-                      <Switch
-                        checked={!isHidden}
-                        onChange={(e) => {
-                          e.stopPropagation();
-                          handleVisibilityToggle(item);
-                        }}
-                        onClick={(e) => e.stopPropagation()}
-                        size="small"
-                      />
-                    </Box>
-                  </Box>
-                </Box>
-              </MenuItem>
-            );
-          })}
-        </Menu>
-      </>
-    );
-  };
 
   const renderVariant = () => {
     const commonProps = {
@@ -383,8 +344,10 @@ export const MultiPropertyWithVisibility = <K extends ResolvableKey>({
       onNewItemValueChange: setNewItemValue,
       setIsAddingNew,
       setNewItemValue,
+      onRemoveItem: removeItem,
       contact,
-      validateType
+      validateType,
+      onRefresh: loadAllItems
     };
 
     switch (variant) {
@@ -392,6 +355,10 @@ export const MultiPropertyWithVisibility = <K extends ResolvableKey>({
         return <ChipsVariant {...commonProps} />;
       case "accounts":
         return <AccountsVariant {...commonProps} />;
+      case "phone":
+        return <PhoneVariant {...commonProps} />;
+      case "email":
+        return <EmailVariant {...commonProps} />;
       default:
         return <ChipsVariant {...commonProps} />;
     }

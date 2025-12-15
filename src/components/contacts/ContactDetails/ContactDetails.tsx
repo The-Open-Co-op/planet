@@ -45,13 +45,13 @@ export const ContactDetails = forwardRef<HTMLDivElement, ContactDetailsProps>(
       };
     };
 
-    const getNaoStatusIndicator = (contact: Contact) => {
-      switch (contact.naoStatus?.value) {
+    const getPlanetStatusIndicator = (contact: Contact) => {
+      switch (contact.planetStatus?.value) {
         case 'member':
           return {
             icon: <VerifiedUser/>,
-            label: 'NAO Member',
-            description: 'This person is a verified member of the NAO network.',
+            label: 'PLANET Member',
+            description: 'This person is a verified member of the PLANET network.',
             color: theme.palette.success.main,
             bgColor: theme.palette.success.light + '20',
             borderColor: theme.palette.success.main
@@ -59,8 +59,8 @@ export const ContactDetails = forwardRef<HTMLDivElement, ContactDetailsProps>(
         case 'invited':
           return {
             icon: <CheckCircle/>,
-            label: 'NAO Invited',
-            description: 'This person has been invited to join the NAO network.',
+            label: 'PLANET Invited',
+            description: 'This person has been invited to join the PLANET network.',
             color: theme.palette.warning.main,
             bgColor: theme.palette.warning.light + '20',
             borderColor: theme.palette.warning.main
@@ -68,8 +68,8 @@ export const ContactDetails = forwardRef<HTMLDivElement, ContactDetailsProps>(
         default:
           return {
             icon: <PersonOutline/>,
-            label: 'Not in NAO',
-            description: 'This person has not been invited to the NAO network yet.',
+            label: 'Not in PLANET',
+            description: 'This person has not been invited to the PLANET network yet.',
             color: theme.palette.text.secondary,
             bgColor: 'transparent',
             borderColor: theme.palette.divider
@@ -80,7 +80,7 @@ export const ContactDetails = forwardRef<HTMLDivElement, ContactDetailsProps>(
     if (!contact) return null;
 
     const humanityInfo = getHumanityScoreInfo(contact.humanityConfidenceScore);
-    const naoStatus = getNaoStatusIndicator(contact);
+    const planetStatus = getPlanetStatusIndicator(contact);
 
     return (
       <Card variant="outlined" ref={ref}>
@@ -200,23 +200,23 @@ export const ContactDetails = forwardRef<HTMLDivElement, ContactDetailsProps>(
           {/* NAO Status Details */}
           <Box sx={{mt: 2}}>
             <Typography variant="body2" color="text.secondary" gutterBottom>
-              NAO Network Status
+              PLANET Network Status
             </Typography>
             <Box sx={{
               p: 2,
               borderRadius: 2,
-              backgroundColor: naoStatus.bgColor,
+              backgroundColor: planetStatus.bgColor,
               border: 1,
-              borderColor: naoStatus.borderColor
+              borderColor: planetStatus.borderColor
             }}>
               <Box sx={{display: 'flex', alignItems: 'center', gap: 1, mb: 1}}>
-                {naoStatus.icon}
-                <Typography variant="body2" sx={{fontWeight: 600, color: naoStatus.color}}>
-                  {naoStatus.label}
+                {planetStatus.icon}
+                <Typography variant="body2" sx={{fontWeight: 600, color: planetStatus.color}}>
+                  {planetStatus.label}
                 </Typography>
               </Box>
               <Typography variant="body2" color="text.secondary">
-                {naoStatus.description}
+                {planetStatus.description}
               </Typography>
             </Box>
           </Box>

@@ -16,12 +16,55 @@ import {
 import {
   Security,
   LocationOn,
-  Share,
   Refresh,
   VpnKey,
+  CheckCircle,
 } from '@mui/icons-material';
-import type { RCardWithPrivacy, LocationSharingLevel } from '@/types/notification';
+import type { RCardWithPrivacy, LocationSharingLevel, Vouch } from '@/types/notification';
 import { DEFAULT_PRIVACY_SETTINGS } from '@/types/notification';
+
+// Mock vouches data
+const mockVouches: Vouch[] = [
+  {
+    id: '1',
+    fromUserId: 'user-123',
+    fromUserName: 'Sarah Johnson',
+    fromUserAvatar: '/images/sarah.jpg',
+    toUserId: 'me',
+    skill: 'React Development',
+    description: 'Excellent React developer with deep understanding of modern patterns',
+    level: 'expert',
+    endorsementText: 'Built our entire frontend with React hooks and TypeScript',
+    createdAt: new Date('2024-01-15'),
+    updatedAt: new Date('2024-01-15'),
+  },
+  {
+    id: '2',
+    fromUserId: 'user-456',
+    fromUserName: 'Mike Chen',
+    fromUserAvatar: '/images/mike.jpg',
+    toUserId: 'me',
+    skill: 'Project Management',
+    description: 'Outstanding project management and team leadership skills',
+    level: 'advanced',
+    endorsementText: 'Led our biggest project delivery successfully',
+    createdAt: new Date('2024-01-10'),
+    updatedAt: new Date('2024-01-10'),
+  },
+  {
+    id: '3',
+    fromUserId: 'user-789',
+    fromUserName: 'Emma Davis',
+    fromUserAvatar: '/images/emma.jpg',
+    toUserId: 'me',
+    skill: 'TypeScript',
+    description: 'Strong TypeScript skills and mentoring abilities',
+    level: 'intermediate',
+    endorsementText: 'Helped the team adopt TypeScript best practices',
+    createdAt: new Date('2024-01-05'),
+    updatedAt: new Date('2024-01-05'),
+  },
+];
 
 interface RCardPrivacySettingsProps {
   rCard: RCardWithPrivacy;
@@ -30,6 +73,8 @@ interface RCardPrivacySettingsProps {
 
 const RCardPrivacySettings = ({ rCard, onUpdate }: RCardPrivacySettingsProps) => {
   const [settings, setSettings] = useState(rCard?.privacySettings || DEFAULT_PRIVACY_SETTINGS);
+  // Track which vouches are shared via this profile (mock data - would come from rCard in real app)
+  const [sharedVouchIds, setSharedVouchIds] = useState<string[]>(['1']); // Example: first vouch is shared
 
   // Sync settings when rCard changes
   useEffect(() => {
@@ -73,26 +118,43 @@ const RCardPrivacySettings = ({ rCard, onUpdate }: RCardPrivacySettingsProps) =>
     onUpdate(updatedRCard);
   };
 
+  const handleVouchToggle = (vouchId: string, isShared: boolean) => {
+    if (isShared) {
+      setSharedVouchIds(prev => [...prev, vouchId]);
+    } else {
+      setSharedVouchIds(prev => prev.filter(id => id !== vouchId));
+    }
+  };
+
+  // Split vouches into shared and not shared, then sort each group
+  const sharedVouches = mockVouches
+    .filter(vouch => sharedVouchIds.includes(vouch.id))
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  
+  const unsharedVouches = mockVouches
+    .filter(vouch => !sharedVouchIds.includes(vouch.id))
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
 
   return (
-    <Card>
+    <Card sx={{ mb: 3 }}>
       <CardContent sx={{ p: 3 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
           <Security color="primary" />
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            Privacy Settings for {rCard.name}
+            Privacy Settings
           </Typography>
         </Box>
 
         <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
-          Configure what information is shared with contacts assigned to this profile.
+          Configure what is shared with contacts assigned to this profile.
         </Typography>
 
         {/* Key Recovery & Trust Settings */}
         <Box sx={{ mb: 4 }}>
           <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
             <VpnKey fontSize="small" />
-            Trust & Recovery
+            Key Recovery
           </Typography>
           
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -106,10 +168,10 @@ const RCardPrivacySettings = ({ rCard, onUpdate }: RCardPrivacySettingsProps) =>
               label={
                 <Box>
                   <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                    Key Recovery Buddy
+                    
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
-                    Allow contacts in this category to help recover your account
+                    Allow contacts to help recover your account
                   </Typography>
                 </Box>
               }
@@ -118,7 +180,7 @@ const RCardPrivacySettings = ({ rCard, onUpdate }: RCardPrivacySettingsProps) =>
           </Box>
         </Box>
 
-        <Divider sx={{ my: 3 }} />
+        <Divider sx={{ my: 2 }} />
 
         {/* Location Sharing */}
         <Box sx={{ mb: 4 }}>
@@ -165,122 +227,15 @@ const RCardPrivacySettings = ({ rCard, onUpdate }: RCardPrivacySettingsProps) =>
 
         <Divider sx={{ my: 3 }} />
 
-        {/* Data Sharing */}
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="h6" sx={{ fontWeight: 600, mb: 3, display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Share fontSize="small" />
-            Data Sharing
-          </Typography>
-          
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={settings.dataSharing.posts}
-                  onChange={(e) => handleSettingChange('dataSharing', 'posts', e.target.checked)}
-                />
-              }
-              label={
-                <Box>
-                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                    Posts
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    Share your posts and updates
-                  </Typography>
-                </Box>
-              }
-            />
-            
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={settings.dataSharing.offers}
-                  onChange={(e) => handleSettingChange('dataSharing', 'offers', e.target.checked)}
-                />
-              }
-              label={
-                <Box>
-                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                    Offers
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    Share what you're offering
-                  </Typography>
-                </Box>
-              }
-            />
-            
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={settings.dataSharing.wants}
-                  onChange={(e) => handleSettingChange('dataSharing', 'wants', e.target.checked)}
-                />
-              }
-              label={
-                <Box>
-                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                    Wants
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    Share what you're looking for
-                  </Typography>
-                </Box>
-              }
-            />
-            
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={settings.dataSharing.vouches}
-                  onChange={(e) => handleSettingChange('dataSharing', 'vouches', e.target.checked)}
-                />
-              }
-              label={
-                <Box>
-                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                    Vouches
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    Share vouches you've received
-                  </Typography>
-                </Box>
-              }
-            />
-            
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={settings.dataSharing.praise}
-                  onChange={(e) => handleSettingChange('dataSharing', 'praise', e.target.checked)}
-                />
-              }
-              label={
-                <Box>
-                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                    Praise
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    Share praise you've received
-                  </Typography>
-                </Box>
-              }
-            />
-          </Box>
-        </Box>
-
-        <Divider sx={{ my: 3 }} />
-
         {/* Re-sharing Settings */}
         <Box sx={{ mb: 2 }}>
           <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
             <Refresh fontSize="small" />
-            Re-sharing
+            Network Access
           </Typography>
           
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            Allow your shared content to be forwarded through your network
+            Set how far contacts can traverse your trust graph:
           </Typography>
           
           <FormControlLabel
@@ -290,15 +245,12 @@ const RCardPrivacySettings = ({ rCard, onUpdate }: RCardPrivacySettingsProps) =>
                 onChange={(e) => handleSettingChange('reSharing', 'enabled', e.target.checked)}
               />
             }
-            label="Enable re-sharing of aggregated data"
+            label="Enable network access"
             sx={{ mb: 3 }}
           />
           
           {settings.reSharing.enabled && (
             <Box>
-              <Typography variant="body2" sx={{ mb: 2 }}>
-                Maximum sharing hops: {settings.reSharing.maxHops === 6 ? '∞' : settings.reSharing.maxHops}
-              </Typography>
               <Slider
                 value={settings.reSharing.maxHops}
                 onChange={(_, value) => handleSettingChange('reSharing', 'maxHops', value)}
@@ -317,10 +269,103 @@ const RCardPrivacySettings = ({ rCard, onUpdate }: RCardPrivacySettingsProps) =>
               />
               <Typography variant="caption" color="text.secondary">
                 {settings.reSharing.maxHops === 6 
-                  ? 'Your data can be shared unlimited times through your network'
-                  : `Your data can be shared up to ${settings.reSharing.maxHops} connections away from you`
+                  ? 'Contacts assigned to this profile can traverse your network unlimited hops away from you'
+                  : `Contacts assigned to this profile can traverse your network up to ${settings.reSharing.maxHops} hops away from you`
                 }
               </Typography>
+            </Box>
+          )}
+        </Box>
+
+        <Divider sx={{ my: 3 }} />
+
+        {/* Vouches Shared via this Trust Profile */}
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+            <CheckCircle fontSize="small" />
+            Vouches shared
+          </Typography>
+          
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            Choose which vouches to share when contacts view this profile:
+          </Typography>
+
+          {/* Shared Vouches */}
+          {sharedVouches.length > 0 && (
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="subtitle2" sx={{ mb: 2, color: 'success.main', fontWeight: 600 }}>
+                Shared Vouches
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {sharedVouches.map((vouch) => (
+                  <Box key={vouch.id} sx={{ 
+                    display: 'flex', 
+                    alignItems: 'flex-start', 
+                    gap: 2,
+                    p: 2,
+                    border: 1,
+                    borderColor: 'success.light',
+                    borderRadius: 1,
+                    bgcolor: 'success.50'
+                  }}>
+                    <Box sx={{ flex: 1 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
+                        {vouch.skill}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
+                        From {vouch.fromUserName}
+                      </Typography>
+                      <Typography variant="body2" sx={{ fontSize: '0.875rem' }}>
+                        {vouch.description}
+                      </Typography>
+                    </Box>
+                    <Switch
+                      checked={true}
+                      onChange={(e) => handleVouchToggle(vouch.id, e.target.checked)}
+                      color="success"
+                    />
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          )}
+
+          {/* Not Shared Vouches */}
+          {unsharedVouches.length > 0 && (
+            <Box>
+              <Typography variant="subtitle2" sx={{ mb: 2, color: 'text.secondary', fontWeight: 600 }}>
+                Not Shared Vouches
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {unsharedVouches.map((vouch) => (
+                  <Box key={vouch.id} sx={{ 
+                    display: 'flex', 
+                    alignItems: 'flex-start', 
+                    gap: 2,
+                    p: 2,
+                    border: 1,
+                    borderColor: 'grey.300',
+                    borderRadius: 1,
+                    bgcolor: 'grey.50'
+                  }}>
+                    <Box sx={{ flex: 1 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
+                        {vouch.skill}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
+                        From {vouch.fromUserName}
+                      </Typography>
+                      <Typography variant="body2" sx={{ fontSize: '0.875rem' }}>
+                        {vouch.description}
+                      </Typography>
+                    </Box>
+                    <Switch
+                      checked={false}
+                      onChange={(e) => handleVouchToggle(vouch.id, e.target.checked)}
+                    />
+                  </Box>
+                ))}
+              </Box>
             </Box>
           )}
         </Box>

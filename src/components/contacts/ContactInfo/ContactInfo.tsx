@@ -1,18 +1,6 @@
 import {forwardRef} from 'react';
-import {
-  Typography,
-  Card,
-  CardContent
-} from '@mui/material';
-import {
-  Email,
-  Phone,
-  Business,
-  AccountBox,
-} from '@mui/icons-material';
 import type {Contact} from '@/types/contact';
 import {MultiPropertyWithVisibility} from '../MultiPropertyWithVisibility';
-import {PropertyWithSources} from "@/components/contacts/PropertyWithSources";
 
 export interface ContactInfoProps {
   contact: Contact | null;
@@ -34,6 +22,7 @@ export const ContactInfo = forwardRef<HTMLDivElement, ContactInfoProps>(
             isEditing={isEditing}
             placeholder={"Email"}
             validateType={"email"}
+            variant={"email"}
           />
 
           <MultiPropertyWithVisibility
@@ -43,15 +32,17 @@ export const ContactInfo = forwardRef<HTMLDivElement, ContactInfoProps>(
             isEditing={isEditing}
             placeholder={"Phone number"}
             validateType={"phone"}
+            variant={"phone"}
           />
 
           <MultiPropertyWithVisibility
+            label="Accounts"
             contact={contact}
             propertyKey="account"
             isEditing={isEditing}
             placeholder={"Account"}
             variant={"accounts"}
-            hideLabel={true}
+            hideLabel={!isEditing}
           />
       </div>
     );

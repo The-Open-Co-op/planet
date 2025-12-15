@@ -18,7 +18,8 @@ import {
   Select,
   FormControl,
   InputLabel,
-  Link,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import {
   Edit,
@@ -34,7 +35,6 @@ import {
   Add,
   Delete,
   Link as LinkIcon,
-  CheckCircle,
 } from '@mui/icons-material';
 import type {CustomSocialLink, ProfileData} from '../types';
 import {useNavigate} from "react-router";
@@ -141,13 +141,20 @@ const getCardSpecificProfile = (cardName: string, initialProfileData?: ProfileDa
 interface ProfileInformationProps {
   cardName: string;
   initialProfileData?: ProfileData;
+  isEditing?: boolean;
+  onEditingChange?: (editing: boolean) => void;
 }
 
 export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationProps>(
-  ({ cardName, initialProfileData }, ref) => {
+  ({ cardName, initialProfileData, isEditing: externalIsEditing, onEditingChange }, ref) => {
     const navigate = useNavigate();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const [isEditing, setIsEditing] = useState(false);
+    // Use external editing state if provided, otherwise use internal state
+    const [internalIsEditing, setInternalIsEditing] = useState(false);
+    const isEditing = externalIsEditing !== undefined ? externalIsEditing : internalIsEditing;
+    const setIsEditing = onEditingChange || setInternalIsEditing;
     const [profileData, setProfileData] = useState<ProfileData>(getCardSpecificProfile(cardName, initialProfileData));
     const [editData, setEditData] = useState<ProfileData>(profileData);
     const [showAddSocialDialog, setShowAddSocialDialog] = useState(false);
@@ -159,7 +166,7 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
       setEditData(newProfileData);
       // Reset editing state when switching cards
       setIsEditing(false);
-    }, [cardName, initialProfileData]);
+    }, [cardName, initialProfileData, setIsEditing]);
     const [newSocialLink, setNewSocialLink] = useState<Omit<CustomSocialLink, 'id'>>({
       platform: '',
       username: '',
@@ -213,9 +220,6 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
       );
     };
 
-    const handleGreencheckConnect = () => {
-      setShowGreencheckDialog(true);
-    };
 
     const handleGreencheckSubmit = () => {
       navigate('/verify-phone/' + greencheckData.phone)
@@ -234,43 +238,59 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
 
     return (
       <Box ref={ref}>
-        <Card>
-          <CardContent>
-            {/* Header with Edit/Save/Cancel buttons */}
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                Profile Information for {cardName}
-              </Typography>
-              <Box>
-                {!isEditing ? (
+        <Card sx={{ mb: isEditing ? 4 : 0 }}>
+          <CardContent sx={{ position: 'relative' }}>
+            {/* Edit button (floating) or Save/Cancel buttons (normal flow) */}
+            {!isEditing ? (
+              <Box sx={{ 
+                position: 'absolute', 
+                top: 16, 
+                right: 16,
+                zIndex: 1
+              }}>
+                {isMobile ? (
+                  <IconButton
+                    onClick={handleEdit}
+                    sx={{ 
+                      border: 1,
+                      borderColor: 'divider',
+                      bgcolor: 'background.paper',
+                    }}
+                  >
+                    <Edit />
+                  </IconButton>
+                ) : (
                   <Button
                     variant="outlined"
                     startIcon={<Edit />}
                     onClick={handleEdit}
+                    sx={{ bgcolor: 'background.paper' }}
                   >
-                    Edit Profile
+                    Edit
                   </Button>
-                ) : (
-                  <>
-                    <Button
-                      variant="contained"
-                      startIcon={<Save />}
-                      onClick={handleSave}
-                      sx={{ mr: 1 }}
-                    >
-                      Save
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      startIcon={<Cancel />}
-                      onClick={handleCancel}
-                    >
-                      Cancel
-                    </Button>
-                  </>
                 )}
               </Box>
-            </Box>
+            ) : (
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: 3 }}>
+                <Box>
+                  <Button
+                    variant="contained"
+                    startIcon={<Save />}
+                    onClick={handleSave}
+                    sx={{ mr: 1 }}
+                  >
+                    Save
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    startIcon={<Cancel />}
+                    onClick={handleCancel}
+                  >
+                    Cancel
+                  </Button>
+                </Box>
+              </Box>
+            )}
 
             <Grid container spacing={3}>
               {/* Left side - Avatar and basic info */}
@@ -624,49 +644,6 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
                     </Box>
                   )}
 
-                  {/* Greencheck Section - only show in edit mode */}
-                  {isEditing && (
-                    <Box sx={{ mt: 2 }}>
-                      <Card sx={{ backgroundColor: 'grey.50', border: '1px solid', borderColor: 'grey.200' }}>
-                        <CardContent sx={{ py: 2 }}>
-                          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <Box>
-                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                                <CheckCircle sx={{ fontSize: 20, color: 'success.main' }} />
-                                <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                                  Claim other accounts via Greencheck
-                                </Typography>
-                              </Box>
-                              <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                                Verify and import your profiles from other platforms
-                              </Typography>
-                            </Box>
-                            <Button
-                              variant="contained"
-                              size="small"
-                              onClick={handleGreencheckConnect}
-                              sx={{ ml: 2 }}
-                            >
-                              Connect
-                            </Button>
-                          </Box>
-                          <Link
-                            href="https://greencheck.world/about"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            sx={{ 
-                              fontSize: '0.875rem', 
-                              fontWeight: 600,
-                              display: 'inline-block',
-                              mt: 2
-                            }}
-                          >
-                            Learn more about Greencheck →
-                          </Link>
-                        </CardContent>
-                      </Card>
-                    </Box>
-                  )}
                 </Box>
               </Grid>
             </Grid>

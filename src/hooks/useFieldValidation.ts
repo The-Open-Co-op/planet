@@ -27,7 +27,8 @@ const getValidationRules = (type: ValidationType, options: UseFieldValidationOpt
   switch (type) {
     case 'phone':
       rules.validate = (el: any) => {
-        return !isValidPhoneNumber(el) ? "Invalid phone format, use E.164 format, e.g. +15551234567" : true;
+        if (!el || el.trim() === '') return true; // Allow empty values
+        return isValidPhoneNumber(el) ? true : "Invalid phone format, use + country code and number";
       }
       break;
     case 'email':

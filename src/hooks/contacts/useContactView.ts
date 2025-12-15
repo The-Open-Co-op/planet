@@ -1,6 +1,7 @@
 import { dataService } from '@/services/dataService';
 import type { Contact } from '@/types/contact';
 import type { Group } from '@/types/group';
+import type { RCardType, RCardAssignment } from '@/types/rcard';
 import { useNextGraphAuth, useResource, useSubject } from '@/lib/nextgraph';
 import { isNextGraphEnabled } from '@/utils/featureFlags';
 import { SocialContactShapeType } from '@/.ldo/contact.shapeTypes';
@@ -129,14 +130,14 @@ export const useContactView = (id: string | null) => {
     }
   }, [contact, setContact]);
 
-  const inviteToNAO = useCallback(async () => {
+  const inviteToPLANET = useCallback(async () => {
     if (!contact) return;
 
     try {
       // Update locally immediately
       const updatedContact = {
         ...contact,
-        naoStatus: {
+        planetStatus: {
           '@id': `nao-status-${contact['@id']}`,
           value: 'invited' as const
         },
@@ -150,13 +151,93 @@ export const useContactView = (id: string | null) => {
 
       // In a real app, this would make an API call
       await dataService.updateContact(contact['@id'] || '', {
-        naoStatus: {
+        planetStatus: {
           '@id': `nao-status-${contact['@id']}`,
           value: 'invited'
         }
       });
     } catch (error) {
-      console.error('Failed to invite to NAO:', error);
+      console.error('Failed to invite to PLANET:', error);
+      // Revert on error
+      setContact(contact);
+    }
+  }, [contact, setContact]);
+
+  const assignRCard = useCallback(async (cardType: RCardType) => {
+    if (!contact) return;
+
+    try {
+      // Create new assignment
+      const newAssignment: RCardAssignment = {
+        cardType,
+        assignedAt: new Date(),
+        assignedBy: 'current-user' // In a real app, this would be the current user's ID
+      };
+
+      // Update locally immediately
+      const currentAssignments = contact.rCardAssignments || [];
+      const updatedAssignments = currentAssignments.filter(a => a.cardType !== cardType);
+      updatedAssignments.push(newAssignment);
+
+      const updatedContact = {
+        ...contact,
+        rCardAssignments: updatedAssignments,
+        updatedAt: {
+          '@id': `updated-at-${contact['@id']}`,
+          valueDateTime: new Date().toISOString()
+        }
+      };
+
+      setContact(updatedContact);
+
+      // In a real app, this would make an API call
+      await dataService.updateContact(contact['@id'] || '', {
+        rCardAssignments: updatedAssignments
+      });
+
+      console.log(`✅ Assigned ${cardType} Trust Profile to ${contact['@id']}`);
+    } catch (error) {
+      console.error('Failed to assign Trust Profile:', error);
+      // Revert on error
+      setContact(contact);
+    }
+  }, [contact, setContact]);
+
+  const removeRCard = useCallback(async (cardType: RCardType) => {
+    if (!contact) {
+      console.log('❌ No contact available for removing Trust Profile');
+      return;
+    }
+
+    console.log(`🗑️ Attempting to remove ${cardType} Trust Profile from ${contact['@id']}`);
+    console.log('Current assignments:', contact.rCardAssignments);
+
+    try {
+      // Update locally immediately
+      const currentAssignments = contact.rCardAssignments || [];
+      const updatedAssignments = currentAssignments.filter(a => a.cardType !== cardType);
+
+      console.log('Updated assignments after filtering:', updatedAssignments);
+
+      const updatedContact = {
+        ...contact,
+        rCardAssignments: updatedAssignments,
+        updatedAt: {
+          '@id': `updated-at-${contact['@id']}`,
+          valueDateTime: new Date().toISOString()
+        }
+      };
+
+      setContact(updatedContact);
+
+      // In a real app, this would make an API call
+      await dataService.updateContact(contact['@id'] || '', {
+        rCardAssignments: updatedAssignments
+      });
+
+      console.log(`✅ Removed ${cardType} Trust Profile from ${contact['@id']}`);
+    } catch (error) {
+      console.error('Failed to remove Trust Profile:', error);
       // Revert on error
       setContact(contact);
     }
@@ -179,7 +260,9 @@ export const useContactView = (id: string | null) => {
 
     // Actions
     toggleHumanityVerification,
-    inviteToNAO,
-    refreshContact
+    inviteToPLANET,
+    refreshContact,
+    assignRCard,
+    removeRCard
   };
 };

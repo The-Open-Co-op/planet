@@ -1,4 +1,4 @@
-import { Box, Tabs, Tab, Typography } from '@mui/material';
+import { Box, Tabs, Tab } from '@mui/material';
 import { List as ListIcon } from '@mui/icons-material';
 
 interface ContactTabsProps {
@@ -8,7 +8,7 @@ interface ContactTabsProps {
   isLoading: boolean;
 }
 
-export const ContactTabs = ({ tabValue, onTabChange, contactCount, isLoading }: ContactTabsProps) => {
+export const ContactTabs = ({ tabValue, onTabChange }: ContactTabsProps) => {
 
   return (
     <Box sx={{ 

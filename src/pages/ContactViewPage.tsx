@@ -4,8 +4,6 @@ import {
   Typography,
   Box,
   Paper,
-  Divider,
-  Grid,
   Card,
   CardContent,
   Alert,
@@ -24,10 +22,10 @@ import {
 import {
   ContactViewHeader,
   ContactInfo,
-  ContactGroups,
   ContactActions,
   RejectedVouchesAndPraises
 } from '@/components/contacts';
+import {MeContactView} from '@/components/contacts/MeContactView/MeContactView';
 import {resolveFrom} from '@/utils/contactUtils';
 import {useContactView} from "@/hooks/contacts/useContactView";
 import {VouchesAndPraises} from "@/components/contacts/VouchesAndPraises";
@@ -52,8 +50,10 @@ const ContactViewPage = () => {
     isLoading,
     error,
     toggleHumanityVerification,
-    inviteToNAO,
-    refreshContact
+    inviteToPLANET,
+    refreshContact,
+    assignRCard,
+    removeRCard
   } = useContactView(id || null);
 
   const [isEditing, setIsEditing] = useState(false);
@@ -96,8 +96,8 @@ const ContactViewPage = () => {
     }
   };
 
-  const handleInviteToNAO = () => {
-    inviteToNAO();
+  const handleInviteToPLANET = () => {
+    inviteToPLANET();
   };
 
   const handleEditToggle = () => {
@@ -170,7 +170,7 @@ const ContactViewPage = () => {
 
   return (
     <Box sx={{height: '100%', overflow: 'auto', backgroundColor: 'background.default'}}>
-      {/* Header with back arrow and edit button */}
+      {/* Header with back arrow and title/edit button */}
       <Box sx={{ 
         position: 'sticky', 
         top: 0, 
@@ -183,19 +183,35 @@ const ContactViewPage = () => {
         borderBottom: 1,
         borderColor: 'divider'
       }}>
-        <Button
-          onClick={handleBack}
-          sx={{ minWidth: 'auto', p: 1 }}
-        >
-          <ArrowBack />
-        </Button>
-        <Button
-          startIcon={<Edit/>}
-          onClick={handleEditToggle}
-          sx={{ minWidth: 'auto', px: 2 }}
-        >
-          {isEditing ? "Exit" : "Edit"}
-        </Button>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Button
+            onClick={handleBack}
+            sx={{ minWidth: 'auto', p: 1 }}
+          >
+            <ArrowBack />
+          </Button>
+          {contact.isMe && (
+            <Typography 
+              component="h1" 
+              sx={{ 
+                fontSize: '1.5rem', 
+                fontWeight: 700,
+                m: 0
+              }}
+            >
+              My Profiles
+            </Typography>
+          )}
+        </Box>
+        {!contact.isMe && (
+          <Button
+            startIcon={<Edit/>}
+            onClick={handleEditToggle}
+            sx={{ minWidth: 'auto', px: 2 }}
+          >
+            {isEditing ? "Save" : "Edit"}
+          </Button>
+        )}
       </Box>
       
       {isBlocked && contact && (
@@ -219,7 +235,7 @@ const ContactViewPage = () => {
         </Alert>
       )}
       
-      {!isBlocked && location.state?.from === 'notifications' && contact?.naoStatus?.value === 'pending' && (
+      {!isBlocked && location.state?.from === 'notifications' && contact?.planetStatus?.value === 'pending' && (
         <Alert 
           severity="info"
           action={
@@ -240,69 +256,87 @@ const ContactViewPage = () => {
       )}
       
       <Box sx={{ p: 2 }}>
-        <ContactViewHeader
-          contact={contact}
-          contactGroups={contactGroups}
-          isLoading={isLoading}
-          isEditing={isEditing}
-          showTags={false}
-          onHumanityToggle={toggleHumanityVerification}
-        />
-
-        {/* Desktop: Three column layout */}
-        {isDesktop ? (
-          <Box sx={{ display: 'flex', gap: 3, mt: 2 }}>
-            <Box sx={{ flex: 1, pl: 3 }}>
-              <ContactInfo contact={contact} isEditing={isEditing}/>
-            </Box>
-            <Box sx={{ flex: 2 }}>
-              <VouchesAndPraises 
-                contact={contact} 
-                onInviteToNAO={handleInviteToNAO}
-                refreshTrigger={vouchesRefreshKey}
-              />
-            </Box>
-          </Box>
+        {/* Special handling for "me" contact */}
+        {contact.isMe ? (
+          <MeContactView contact={contact} />
         ) : (
-          /* Mobile/Tablet: Tabs layout */
           <>
-            <Tabs 
-              value={tabValue} 
-              onChange={(e, newValue) => setTabValue(newValue)}
-              sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}
-              variant="fullWidth"
-              centered
-            >
-              <Tab label="Contact" />
-              <Tab label="Vouches" />
-            </Tabs>
-            
-            {tabValue === 0 && (
-              <ContactInfo contact={contact} isEditing={isEditing}/>
-            )}
-            
-            {tabValue === 1 && (
+            <ContactViewHeader
+              contact={contact}
+              contactGroups={contactGroups}
+              isLoading={isLoading}
+              isEditing={isEditing}
+              showTags={false}
+              showActions={!isEditing}
+              onHumanityToggle={toggleHumanityVerification}
+              onAssignRCard={assignRCard}
+              onRemoveRCard={removeRCard}
+            />
+
+            {/* Desktop: Three column layout */}
+            {isDesktop ? (
+              <Box sx={{ display: 'flex', gap: 3, mt: 2 }}>
+                <Box sx={{ flex: isEditing ? 1 : 1, pl: 3 }}>
+                  <ContactInfo contact={contact} isEditing={isEditing}/>
+                </Box>
+                {!isEditing && (
+                  <Box sx={{ flex: 2 }}>
+                    <VouchesAndPraises 
+                      contact={contact} 
+                      onInviteToPLANET={handleInviteToPLANET}
+                      refreshTrigger={vouchesRefreshKey}
+                    />
+                  </Box>
+                )}
+              </Box>
+            ) : (
+              /* Mobile/Tablet: Tabs layout */
               <>
-                <VouchesAndPraises 
-                  contact={contact} 
-                  onInviteToNAO={handleInviteToNAO}
-                  refreshTrigger={vouchesRefreshKey}
-                />
-                <RejectedVouchesAndPraises 
-                  contact={contact} 
-                  onAcceptanceChanged={handleRefreshVouches}
-                />
+                {!isEditing ? (
+                  <>
+                    <Tabs 
+                      value={tabValue} 
+                      onChange={(e, newValue) => setTabValue(newValue)}
+                      sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}
+                      variant="fullWidth"
+                      centered
+                    >
+                      <Tab label="Contact" />
+                      <Tab label="Vouches" />
+                    </Tabs>
+                    
+                    {tabValue === 0 && (
+                      <ContactInfo contact={contact} isEditing={isEditing}/>
+                    )}
+                    
+                    {tabValue === 1 && (
+                      <>
+                        <VouchesAndPraises 
+                          contact={contact} 
+                          onInviteToPLANET={handleInviteToPLANET}
+                          refreshTrigger={vouchesRefreshKey}
+                        />
+                        <RejectedVouchesAndPraises 
+                          contact={contact} 
+                          onAcceptanceChanged={handleRefreshVouches}
+                        />
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <ContactInfo contact={contact} isEditing={isEditing}/>
+                )}
               </>
             )}
+
+            {/* Contact Actions */}
+            <ContactActions
+              contact={contact}
+              onInviteToPLANET={handleInviteToPLANET}
+              onConfirmHumanity={toggleHumanityVerification}
+            />
           </>
         )}
-
-        {/* Contact Actions */}
-        <ContactActions
-          contact={contact}
-          onInviteToNAO={handleInviteToNAO}
-          onConfirmHumanity={toggleHumanityVerification}
-        />
 
         {/* Merged Contact Details Section */}
         {(contact["@id"] === '1' || contact["@id"] === '3' || contact["@id"] === '5') && (

@@ -16,7 +16,7 @@ declare global {
 describe('Avatar', () => {
   it('renders with name initial when no profile image', () => {
     render(<Avatar name="John Doe" />);
-    expect(screen.getByText('J')).toBeInTheDocument();
+    expect(screen.getByText('JD')).toBeInTheDocument();
   });
 
   it('forwards ref correctly', () => {
@@ -29,7 +29,7 @@ describe('Avatar', () => {
     const handleClick = jest.fn();
     render(<Avatar name="Test User" onClick={handleClick} />);
     
-    fireEvent.click(screen.getByText('T'));
+    fireEvent.click(screen.getByText('TU'));
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
 
@@ -63,9 +63,9 @@ describe('Avatar', () => {
     expect(container.firstChild).toBeInTheDocument();
   });
 
-  it('shows first character of name in uppercase', () => {
+  it('shows both initials from first and last name in uppercase', () => {
     render(<Avatar name="test user" />);
-    expect(screen.getByText('t')).toBeInTheDocument();
+    expect(screen.getByText('TU')).toBeInTheDocument();
   });
 
   it('applies contact photo styles when profile image exists', () => {

@@ -1,5 +1,4 @@
-import {Box, TextField, Typography} from "@mui/material";
-import {getSourceIcon, getSourceLabel} from "@/components/contacts/sourcesHelper";
+import {Box, TextField} from "@mui/material";
 import {FormPhoneField} from "@/components/ui/FormPhoneField/FormPhoneField";
 import {useFieldValidation, ValidationType} from "@/hooks/useFieldValidation";
 import {useCallback, useEffect, useState} from "react";
@@ -7,7 +6,6 @@ import {useCallback, useEffect, useState} from "react";
 interface MultiPropertyItemProps {
   itemId: string,
   value: string,
-  source: string | null,
   onChange: (e: any) => void,
   onBlur: () => void,
   placeholder: string,
@@ -23,7 +21,6 @@ export const MultiPropertyItem = ({
                                     onChange,
                                     onBlur,
                                     placeholder,
-                                    source,
                                     onKeyDown,
                                     autoFocus,
                                     validateType = "text",
@@ -74,8 +71,12 @@ export const MultiPropertyItem = ({
     };
 
     switch (validateType) {
-      case "phone":
-        return <FormPhoneField {...fieldProps} />;
+      case "phone": {
+        // FormPhoneField handles its own validation, so don't pass error/helperText from our validation
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const {error, helperText, ...phoneProps} = fieldProps;
+        return <FormPhoneField {...phoneProps} />;
+      }
       case "email":
       case "url":
       default:
@@ -92,14 +93,6 @@ export const MultiPropertyItem = ({
       width: '100%'
     }}>
       {renderTextField()}
-      {source && (
-        <Box sx={{display: 'flex', alignItems: 'center', gap: 0.5, width: "135px"}}>
-          {getSourceIcon(source)}
-          <Typography variant="caption" color="text.secondary">
-            {getSourceLabel(source)}
-          </Typography>
-        </Box>
-      )}
     </Box>
   )
     ;

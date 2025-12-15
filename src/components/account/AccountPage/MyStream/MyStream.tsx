@@ -30,10 +30,7 @@ interface PostCreateFormData {
   content: string;
 }
 
-const PostCreateForm = ({ onSubmit, onCancel }: { 
-  onSubmit: (data: PostCreateFormData) => void;
-  onCancel: () => void;
-}) => (
+const PostCreateForm = () => (
   <Box sx={{ p: 2 }}>
     <Typography>Post creation feature coming soon...</Typography>
   </Box>

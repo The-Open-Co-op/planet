@@ -73,7 +73,7 @@ const NextGraphAppContent = () => {
         }}
       >
         <Typography variant="h4" component="h2" gutterBottom>
-          Welcome to NAO
+          Welcome to PLANET
         </Typography>
         <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
           Please log in with your NextGraph wallet to continue.

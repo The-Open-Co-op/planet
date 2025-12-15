@@ -55,9 +55,9 @@ export const InvitationPage = forwardRef<HTMLDivElement, InvitationPageProps>(
           try {
             const contact = (await dataService.getContact(inviteeNuri))!;
             inviteeName = resolveFrom(contact, "name")?.value || "";
-            if (contact?.naoStatus?.value === 'member') {
+            if (contact?.planetStatus?.value === 'member') {
               isExistingMember = true;
-              console.log(`${inviteeName} NAO status:`, contact.naoStatus);
+              console.log(`${inviteeName} NAO status:`, contact.planetStatus);
             }
             setPersonalizedInvite(prev => ({
               ...prev,
@@ -209,7 +209,7 @@ export const InvitationPage = forwardRef<HTMLDivElement, InvitationPageProps>(
           );
           
           if (contact) {
-            isExistingMember = contact?.naoStatus?.value === 'member';
+            isExistingMember = contact?.planetStatus?.value === 'member';
           }
         } catch (error) {
           console.error('Failed to check contacts:', error);

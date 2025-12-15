@@ -23,14 +23,14 @@ const mockContact: Contact = transformRawContact({
   name: 'Test Contact',
   email: 'test@example.com',
   source: 'contacts',
-  naoStatus: 'not_invited',
+  planetStatus: 'not_invited',
   humanityConfidenceScore: 3,
   createdAt: '2023-01-01T00:00:00Z',
   updatedAt: '2023-01-02T00:00:00Z'
 });
 
 describe('ContactActions', () => {
-  const mockOnInviteToNAO = jest.fn();
+  const mockOnInviteToPLANET = jest.fn();
   const mockOnConfirmHumanity = jest.fn();
 
   beforeEach(() => {
@@ -42,7 +42,7 @@ describe('ContactActions', () => {
       const { container } = render(
         <ContactActions
           contact={null}
-          onInviteToNAO={mockOnInviteToNAO}
+          onInviteToPLANET={mockOnInviteToPLANET}
           onConfirmHumanity={mockOnConfirmHumanity}
         />
       );
@@ -54,12 +54,12 @@ describe('ContactActions', () => {
       render(
         <ContactActions
           contact={mockContact}
-          onInviteToNAO={mockOnInviteToNAO}
+          onInviteToPLANET={mockOnInviteToPLANET}
           onConfirmHumanity={mockOnConfirmHumanity}
         />
       );
 
-      expect(screen.getByText('Invite to NAO')).toBeInTheDocument();
+      expect(screen.getByText('Invite to PLANET')).toBeInTheDocument();
     });
 
     it('should not show invite button for invited contacts', () => {
@@ -68,7 +68,7 @@ describe('ContactActions', () => {
         name: 'Test Contact',
         email: 'test@example.com',
         source: 'contacts',
-        naoStatus: 'invited',
+        planetStatus: 'invited',
         humanityConfidenceScore: 3,
         createdAt: '2023-01-01T00:00:00Z',
         updatedAt: '2023-01-02T00:00:00Z'
@@ -77,12 +77,12 @@ describe('ContactActions', () => {
       render(
         <ContactActions
           contact={invitedContact}
-          onInviteToNAO={mockOnInviteToNAO}
+          onInviteToPLANET={mockOnInviteToPLANET}
           onConfirmHumanity={mockOnConfirmHumanity}
         />
       );
 
-      expect(screen.queryByText('Invite to NAO')).not.toBeInTheDocument();
+      expect(screen.queryByText('Invite to PLANET')).not.toBeInTheDocument();
     });
 
     it('should not show invite button for member contacts', () => {
@@ -91,7 +91,7 @@ describe('ContactActions', () => {
         name: 'Test Contact',
         email: 'test@example.com',
         source: 'contacts',
-        naoStatus: 'member',
+        planetStatus: 'member',
         humanityConfidenceScore: 3,
         createdAt: '2023-01-01T00:00:00Z',
         updatedAt: '2023-01-02T00:00:00Z'
@@ -100,27 +100,27 @@ describe('ContactActions', () => {
       render(
         <ContactActions
           contact={memberContact}
-          onInviteToNAO={mockOnInviteToNAO}
+          onInviteToPLANET={mockOnInviteToPLANET}
           onConfirmHumanity={mockOnConfirmHumanity}
         />
       );
 
-      expect(screen.queryByText('Invite to NAO')).not.toBeInTheDocument();
+      expect(screen.queryByText('Invite to PLANET')).not.toBeInTheDocument();
     });
   });
 
   describe('button interactions', () => {
-    it('should call onInviteToNAO when invite button is clicked', () => {
+    it('should call onInviteToPLANET when invite button is clicked', () => {
       render(
         <ContactActions
           contact={mockContact}
-          onInviteToNAO={mockOnInviteToNAO}
+          onInviteToPLANET={mockOnInviteToPLANET}
           onConfirmHumanity={mockOnConfirmHumanity}
         />
       );
 
-      fireEvent.click(screen.getByText('Invite to NAO'));
-      expect(mockOnInviteToNAO).toHaveBeenCalledTimes(1);
+      fireEvent.click(screen.getByText('Invite to PLANET'));
+      expect(mockOnInviteToPLANET).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -129,12 +129,12 @@ describe('ContactActions', () => {
       render(
         <ContactActions
           contact={mockContact}
-          onInviteToNAO={mockOnInviteToNAO}
+          onInviteToPLANET={mockOnInviteToPLANET}
           onConfirmHumanity={mockOnConfirmHumanity}
         />
       );
 
-      const inviteButton = screen.getByText('Invite to NAO');
+      const inviteButton = screen.getByText('Invite to PLANET');
       expect(inviteButton).toHaveAttribute('type', 'button');
     });
   });

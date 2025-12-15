@@ -1,5 +1,5 @@
 import React from 'react';
-import {LinkedIn, GitHub, Twitter, Telegram, WhatsApp} from "@mui/icons-material";
+import {LinkedIn, GitHub, Twitter, Telegram, WhatsApp, Language} from "@mui/icons-material";
 import {SvgIconOwnProps, Theme} from "@mui/material";
 import {SxProps} from "@mui/material/styles";
 
@@ -45,6 +45,11 @@ export class AccountRegistry {
     signal: {
       label: 'Signal',
       color: '#3a76f0'
+    },
+    other: {
+      label: 'Other',
+      icon: <Language/>,
+      color: '#666666'
     }
   };
 

@@ -22,8 +22,9 @@ export const ContactFilters = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const showClearFilters = filters.relationshipFilter !== 'all' ||
-    filters.naoStatusFilter !== 'all' ||
+    filters.planetStatusFilter !== 'all' ||
     filters.accountFilter !== 'all' ||
+    filters.cardAssignmentFilter !== 'all' ||
     filters.groupFilter !== 'all' ||
     (filters.searchQuery || "").length > 0 ||
     filters.sortBy !== 'mostActive';

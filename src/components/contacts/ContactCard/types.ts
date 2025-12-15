@@ -12,7 +12,7 @@ export interface BaseContactCardProps {
 
 export interface IconHelpers {
   getSourceIcon: (source: string) => React.ReactNode;
-  getNaoStatusIcon: (naoStatus?: string) => React.ReactNode;
+  getPlanetStatusIcon: (planetStatus?: string) => React.ReactNode;
   getCategoryIcon: (category?: string) => React.ReactNode;
   getRelationshipCategoryInfo: (category?: string) => { 
     name: string; 

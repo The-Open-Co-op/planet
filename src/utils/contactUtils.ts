@@ -7,7 +7,7 @@ export const contactCommonProperties = [
   "@id",
   "@context",
   "type",
-  "naoStatus",
+  "planetStatus",
   "invitedAt",
   "createdAt",
   "updatedAt",

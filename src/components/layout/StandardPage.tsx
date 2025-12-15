@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 
 interface StandardPageProps {
-  title: string;
+  title: string | ReactNode;
   children: ReactNode;
   actions?: ReactNode;
 }
@@ -22,15 +22,21 @@ export const StandardPage = ({ title, children, actions }: StandardPageProps) =>
         alignItems: 'center',
         mb: 3 
       }}>
-        <Typography 
-          component="h1" 
-          sx={{ 
-            fontSize: '1.5rem', 
-            fontWeight: 700 
-          }}
-        >
-          {title}
-        </Typography>
+        {typeof title === 'string' ? (
+          <Typography 
+            component="h1" 
+            sx={{ 
+              fontSize: '1.5rem', 
+              fontWeight: 700 
+            }}
+          >
+            {title}
+          </Typography>
+        ) : (
+          <Box component="h1" sx={{ fontSize: '1.5rem', fontWeight: 700, m: 0 }}>
+            {title}
+          </Box>
+        )}
         {actions && <Box>{actions}</Box>}
       </Box>
       

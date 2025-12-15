@@ -20,12 +20,13 @@ import {
   LinkedIn,
   Person,
   VerifiedUser,
-  CheckCircle,
-  PersonOutline, PersonSearch, Send, Favorite, Email, Add,
+  PersonSearch, Send, Favorite, Email, Add,
   Info,
+  Business, Groups, FamilyRestroom, Public, Close,
 } from '@mui/icons-material';
+import { useMediaQuery } from '@mui/material';
 import type {Contact} from '@/types/contact';
-import {useRelationshipCategories} from "@/hooks/useRelationshipCategories";
+import type {RCardType} from '@/types/rcard';
 import {resolveFrom} from '@/utils/contactUtils';
 import {getContactPhotoStyles} from "@/utils/photoStyles";
 import {PropertyWithSources} from '../PropertyWithSources';
@@ -40,13 +41,16 @@ export interface ContactViewHeaderProps {
   showActions?: boolean;
   validateParent?: (valid: boolean) => void;
   onHumanityToggle?: () => void;
+  onAssignRCard?: (cardType: RCardType) => void;
+  onRemoveRCard?: (cardType: RCardType) => void;
 }
 
 export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderProps>(
-  ({contact, contactGroups = [], isEditing = false, showTags = true, showActions = true, showStatus = true, validateParent, onHumanityToggle}, ref) => {
+  ({contact, contactGroups = [], isEditing = false, showTags = true, showActions = true, showStatus = true, validateParent, onHumanityToggle, onAssignRCard, onRemoveRCard}, ref) => {
     const theme = useTheme();
-    const {getCategoryIcon, getCategoryById} = useRelationshipCategories();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const [aboutModalOpen, setAboutModalOpen] = useState(false);
+    const [trustProfileDialogOpen, setTrustProfileDialogOpen] = useState(false);
 
     if (!contact) return null;
 
@@ -54,35 +58,36 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
     const photo = resolveFrom(contact, 'photo');
     const tags = contact.tag;
 
-    const getNaoStatusIndicator = (contact: Contact) => {
-      switch (contact.naoStatus?.value) {
-        case 'member':
-          return {
-            icon: <VerifiedUser/>,
-            label: 'PLANET Member',
-            color: theme.palette.success.main,
-            bgColor: theme.palette.success.light + '20',
-            borderColor: theme.palette.success.main
-          };
-        case 'invited':
-          return {
-            icon: <CheckCircle/>,
-            label: 'PLANET Invited',
-            color: theme.palette.warning.main,
-            bgColor: theme.palette.warning.light + '20',
-            borderColor: theme.palette.warning.main
-          };
+
+    const getRCardIcon = (cardType: RCardType, size = 20) => {
+      switch (cardType) {
+        case 'Business':
+          return <Business sx={{ fontSize: size, color: '#7b1fa2' }} />;
+        case 'Friends':
+          return <Groups sx={{ fontSize: size, color: '#388e3c' }} />;
+        case 'Family':
+          return <FamilyRestroom sx={{ fontSize: size, color: '#388e3c' }} />;
+        case 'Community':
+          return <Public sx={{ fontSize: size, color: '#1976d2' }} />;
         default:
-          return {
-            icon: <PersonOutline/>,
-            label: 'Not in PLANET',
-            color: theme.palette.text.secondary,
-            bgColor: 'transparent',
-            borderColor: theme.palette.divider
-          };
+          return null;
       }
     };
-    const naoStatus = getNaoStatusIndicator(contact);
+
+    const getRCardColor = (cardType: RCardType) => {
+      switch (cardType) {
+        case 'Business':
+          return '#7b1fa2';
+        case 'Friends':
+          return '#388e3c';
+        case 'Family':
+          return '#388e3c';
+        case 'Community':
+          return '#1976d2';
+        default:
+          return theme.palette.primary.main;
+      }
+    };
 
     return (
       <Box ref={ref}>
@@ -159,25 +164,6 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
             />
 
             {showStatus && <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mb: 2, flexWrap: 'wrap'}}>
-
-              {/* Relationship Category Indicator */}
-              {contact.relationshipCategory && (() => {
-                const categoryInfo = getCategoryById(contact.relationshipCategory);
-                return categoryInfo ? (
-                  <Chip
-                    icon={getCategoryIcon(contact.relationshipCategory, 16)}
-                    label={categoryInfo.name}
-                    variant="outlined"
-                    sx={{
-                      backgroundColor: alpha(categoryInfo.color, 0.08),
-                      borderColor: alpha(categoryInfo.color, 0.2),
-                      color: categoryInfo.color,
-                      fontWeight: 500
-                    }}
-                  />
-                ) : null;
-              })()}
-
               {/* Merged Contact Indicator */}
               {contact['@id'] === '1' || contact['@id'] === '3' || contact['@id'] === '5' ? (
                 <Chip
@@ -245,6 +231,7 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
                 />
             </Box>}
 
+
             {/* Action Buttons */}
             {showActions && <Box sx={{
               display: 'flex',
@@ -253,43 +240,141 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
               justifyContent: 'center',
               mt: 2
             }}>
-              {/* Invite to NAO button for non-members */}
-              {contact.naoStatus?.value === 'not_invited' && (
+
+              {/* Conditional buttons based on PLANET status */}
+              {contact.planetStatus?.value === 'member' ? (
+                <>
+                  {/* Show Send buttons for PLANET members */}
+                  <Button
+                    variant="contained"
+                    startIcon={<VerifiedUser/>}
+                    size="small"
+                    color="primary"
+                  >
+                    Send Vouch
+                  </Button>
+                  <Button
+                    variant="contained"
+                    startIcon={<Favorite/>}
+                    size="small"
+                    sx={{
+                      backgroundColor: '#f8bbd9',
+                      color: '#d81b60',
+                      '&:hover': {
+                        backgroundColor: '#f48fb1'
+                      }
+                    }}
+                  >
+                    Send Praise
+                  </Button>
+                </>
+              ) : contact.planetStatus?.value === 'invited' ? (
+                <Button
+                  variant="outlined"
+                  size="small"
+                  disabled
+                  sx={{ color: 'text.secondary' }}
+                >
+                  Invited
+                </Button>
+              ) : (
                 <Button
                   variant="contained"
                   startIcon={<Send/>}
                   size="small"
-                  onClick={/*handleInviteToNao*/() => {
-                  }}
                   color="primary"
+                  onClick={/*handleInviteToNao*/() => {
+                    // TODO: Implement invite logic
+                    console.log('Invite to PLANET clicked');
+                  }}
                 >
-                  Invite to NAO
+                  Invite to PLANET
                 </Button>
               )}
+            </Box>}
 
-              {/* Vouch and Praise buttons */}
-              <Button
-                variant="contained"
-                startIcon={<VerifiedUser/>}
-                size="small"
-                color="primary"
-              >
-                Send Vouch
-              </Button>
-              <Button
-                variant="contained"
-                startIcon={<Favorite/>}
-                size="small"
-                sx={{
-                  backgroundColor: '#f8bbd9',
-                  color: '#d81b60',
-                  '&:hover': {
-                    backgroundColor: '#f48fb1'
-                  }
-                }}
-              >
-                Send Praise
-              </Button>
+            {/* Divider between action buttons and Trust Profiles - Only show if Trust Profiles will be displayed */}
+            {showActions && !isEditing && (contact.planetStatus?.value === 'member' || contact.planetStatus?.value === 'invited') && <Box sx={{ 
+              width: '100%', 
+              height: '1px', 
+              backgroundColor: 'divider', 
+              my: 2, 
+              opacity: 0.3 
+            }} />}
+
+            {/* Trust Profiles Section - Only for invited/member contacts */}
+            {!isEditing && (contact.planetStatus?.value === 'member' || contact.planetStatus?.value === 'invited') && <Box sx={{ mb: 0 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: 'text.secondary', textAlign: 'center' }}>
+                Trust Profiles
+              </Typography>
+              <Box sx={{
+                display: 'flex',
+                gap: 1,
+                flexWrap: 'nowrap',
+                overflowX: 'auto',
+                justifyContent: 'center',
+                '&::-webkit-scrollbar': {
+                  height: '4px'
+                },
+                '&::-webkit-scrollbar-thumb': {
+                  backgroundColor: 'rgba(0,0,0,0.2)',
+                  borderRadius: '2px'
+                }
+              }}>
+                {contact.rCardAssignments?.map((assignment) => {
+                  const cardColor = getRCardColor(assignment.cardType);
+                  return (
+                    <Chip
+                      key={assignment.cardType}
+                      icon={getRCardIcon(assignment.cardType, 16)}
+                      label={isMobile ? '' : assignment.cardType}
+                      variant="outlined"
+                      onDelete={onRemoveRCard ? () => {
+                        console.log(`🖱️ Delete clicked for ${assignment.cardType} Trust Profile`);
+                        onRemoveRCard(assignment.cardType);
+                      } : undefined}
+                      deleteIcon={<Close fontSize="small" />}
+                      sx={{
+                        backgroundColor: alpha(cardColor, 0.08),
+                        borderColor: alpha(cardColor, 0.2),
+                        color: cardColor,
+                        fontWeight: 500,
+                        flexShrink: 0,
+                        minWidth: {xs: '40px', sm: 'auto'},
+                        '& .MuiChip-deleteIcon': {
+                          color: alpha(cardColor, 0.7),
+                          '&:hover': {
+                            color: cardColor,
+                          }
+                        }
+                      }}
+                    />
+                  );
+                })}
+                
+                {/* Add Trust Profile Button */}
+                {onAssignRCard && (
+                  <Chip
+                    variant="outlined"
+                    icon={<Add fontSize="small"/>}
+                    label={isMobile ? '' : 'Add'}
+                    size="medium"
+                    clickable
+                    onClick={() => setTrustProfileDialogOpen(true)}
+                    sx={{
+                      borderStyle: 'dashed',
+                      color: 'text.secondary',
+                      borderColor: 'text.secondary',
+                      flexShrink: 0,
+                      minWidth: {xs: '40px', sm: 'auto'},
+                      '&:hover': {
+                        borderColor: 'primary.main',
+                        color: 'primary.main',
+                      }
+                    }}
+                  />
+                )}
+              </Box>
             </Box>}
 
           </Box>
@@ -300,11 +385,45 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
           <DialogTitle>About: {name?.value || 'Contact'}</DialogTitle>
           <DialogContent>
             <Box sx={{ pt: 2 }}>
+              {/* PLANET Status */}
+              <Box sx={{ mb: 2, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+                  PLANET Status
+                </Typography>
+                {contact.planetStatus?.value === 'member' ? (
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Typography variant="body2" color="success.main" sx={{ fontWeight: 500 }}>
+                      ✓ PLANET Member
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Joined {contact.joinedAt?.valueDateTime && !isNaN(Date.parse(contact.joinedAt.valueDateTime)) 
+                        ? new Date(contact.joinedAt.valueDateTime).toLocaleDateString() 
+                        : 'January 2024'}
+                    </Typography>
+                  </Box>
+                ) : contact.planetStatus?.value === 'invited' ? (
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Typography variant="body2" color="warning.main" sx={{ fontWeight: 500 }}>
+                      Invited to PLANET
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {contact.invitedAt?.valueDateTime && !isNaN(Date.parse(contact.invitedAt.valueDateTime)) 
+                        ? new Date(contact.invitedAt.valueDateTime).toLocaleDateString() 
+                        : 'recently'}
+                    </Typography>
+                  </Box>
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    Not a PLANET member
+                  </Typography>
+                )}
+              </Box>
+              
               <FormControlLabel
                 control={
                   <Switch 
                     checked={contact.humanityConfidenceScore === 5} 
-                    onChange={(e) => {
+                    onChange={() => {
                       console.log('Toggle clicked, current score:', contact.humanityConfidenceScore);
                       if (onHumanityToggle) {
                         onHumanityToggle();
@@ -337,8 +456,8 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
               
               {/* Added/Updated/Last interaction info */}
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                <Box>
-                  <Typography variant="caption" color="text.secondary">
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Typography variant="body2" color="text.secondary">
                     Added
                   </Typography>
                   <Typography variant="body2">
@@ -348,8 +467,8 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
                   </Typography>
                 </Box>
                 
-                <Box>
-                  <Typography variant="caption" color="text.secondary">
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Typography variant="body2" color="text.secondary">
                     Updated
                   </Typography>
                   <Typography variant="body2">
@@ -359,8 +478,8 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
                   </Typography>
                 </Box>
                 
-                <Box>
-                  <Typography variant="caption" color="text.secondary">
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Typography variant="body2" color="text.secondary">
                     Last interaction
                   </Typography>
                   <Typography variant="body2">
@@ -369,6 +488,64 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
                       : new Date('2024-03-10').toLocaleDateString()}
                   </Typography>
                 </Box>
+              </Box>
+            </Box>
+          </DialogContent>
+        </Dialog>
+
+        {/* Trust Profile Selection Dialog */}
+        <Dialog open={trustProfileDialogOpen} onClose={() => setTrustProfileDialogOpen(false)} maxWidth="sm" fullWidth>
+          <DialogTitle>Add Trust Profile</DialogTitle>
+          <DialogContent>
+            <Box sx={{ pt: 1 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                {(['Friends', 'Family', 'Community', 'Business'] as RCardType[]).map((cardType) => {
+                  const isAssigned = contact.rCardAssignments?.some(a => a.cardType === cardType);
+                  const cardColor = getRCardColor(cardType);
+                  
+                  return (
+                    <Button
+                      key={cardType}
+                      variant="outlined"
+                      disabled={isAssigned}
+                      startIcon={getRCardIcon(cardType, 20)}
+                      onClick={() => {
+                        if (onAssignRCard && !isAssigned) {
+                          onAssignRCard(cardType);
+                        }
+                        setTrustProfileDialogOpen(false);
+                      }}
+                      sx={{
+                        justifyContent: 'flex-start',
+                        p: 2,
+                        backgroundColor: isAssigned ? 'action.disabledBackground' : alpha(cardColor, 0.04),
+                        borderColor: isAssigned ? 'action.disabled' : alpha(cardColor, 0.2),
+                        color: isAssigned ? 'text.disabled' : cardColor,
+                        '&:hover': {
+                          backgroundColor: isAssigned ? 'action.disabledBackground' : alpha(cardColor, 0.08),
+                          borderColor: isAssigned ? 'action.disabled' : cardColor,
+                        }
+                      }}
+                    >
+                      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', ml: 1, width: '100%' }}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 600, textAlign: 'left', textTransform: 'none' }}>
+                          {cardType}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'left', width: '100%', textTransform: 'none' }}>
+                          {cardType === 'Friends' && 'close personal connections'}
+                          {cardType === 'Family' && 'family members and relatives'}
+                          {cardType === 'Community' && 'community members and acquaintances'}
+                          {cardType === 'Business' && 'professional and business contacts'}
+                        </Typography>
+                        {isAssigned && (
+                          <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'left', width: '100%', textTransform: 'none', fontStyle: 'italic' }}>
+                            (already assigned)
+                          </Typography>
+                        )}
+                      </Box>
+                    </Button>
+                  );
+                })}
               </Box>
             </Box>
           </DialogContent>

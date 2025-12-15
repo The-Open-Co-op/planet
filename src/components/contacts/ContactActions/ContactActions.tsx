@@ -9,7 +9,6 @@ import {
   Typography
 } from '@mui/material';
 import {
-  Add,
   VerifiedUser,
   PersonSearch
 } from '@mui/icons-material';
@@ -17,12 +16,11 @@ import type { Contact } from '@/types/contact';
 
 export interface ContactActionsProps {
   contact?: Contact | null;
-  onInviteToNAO?: () => void;
   onConfirmHumanity?: () => void;
 }
 
 export const ContactActions = forwardRef<HTMLDivElement, ContactActionsProps>(
-  ({ contact, onInviteToNAO, onConfirmHumanity }, ref) => {
+  ({ contact, onConfirmHumanity }, ref) => {
     const [humanityDialogOpen, setHumanityDialogOpen] = useState(false);
 
     if (!contact) return null;
@@ -35,19 +33,6 @@ export const ContactActions = forwardRef<HTMLDivElement, ContactActionsProps>(
 
     return (
       <Box ref={ref}>
-        {/* Main Action Buttons */}
-        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 3 }}>
-          {contact.naoStatus?.value === 'not_invited' && (
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<Add />}
-              onClick={onInviteToNAO}
-            >
-              Invite to NAO
-            </Button>
-          )}
-        </Box>
 
         {/* Humanity Confirmation Dialog */}
         <Dialog

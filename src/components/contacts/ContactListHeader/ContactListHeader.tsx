@@ -105,7 +105,7 @@ export const ContactListHeader = ({
               variant="contained"
               startIcon={<Add />}
               onClick={handleAddContact}
-              sx={{ borderRadius: 2 }}
+              sx={{ borderRadius: 2, backgroundColor: '#1976d2', color: 'white', '&:hover': { backgroundColor: '#1565c0' } }}
             >
               Add Contact
             </Button>
@@ -154,7 +154,10 @@ export const ContactListHeader = ({
               sx={{ 
                 borderRadius: 2,
                 height: 44,
-                fontSize: '0.8rem'
+                fontSize: '0.8rem',
+                backgroundColor: '#1976d2', 
+                color: 'white', 
+                '&:hover': { backgroundColor: '#1565c0' }
               }}
             >
               Add

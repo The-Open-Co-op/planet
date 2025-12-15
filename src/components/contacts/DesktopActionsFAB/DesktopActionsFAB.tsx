@@ -77,7 +77,10 @@ export const DesktopActionsFAB = ({ onManageContacts }: DesktopActionsFABProps) 
           textTransform: 'none',
           height: 40,
           pl: 2,
-          pr: 1.5
+          pr: 1.5,
+          backgroundColor: '#1976d2',
+          color: 'white',
+          '&:hover': { backgroundColor: '#1565c0' }
         }}
       >
         <Add sx={{ mr: 0.5, fontSize: 20 }} />

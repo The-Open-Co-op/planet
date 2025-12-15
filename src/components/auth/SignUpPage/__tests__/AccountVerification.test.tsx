@@ -23,10 +23,10 @@ describe('AccountVerification', () => {
     jest.clearAllMocks();
   });
 
-  it('renders the NAO Social Contract title', () => {
+  it('renders the PLANET Social Contract title', () => {
     render(<AccountVerification {...defaultProps} />);
     
-    expect(screen.getAllByText('NAO Social Contract')).toHaveLength(2); // Header + link
+    expect(screen.getAllByText('PLANET Social Contract')).toHaveLength(2); // Header + link
   });
 
   it('renders all social contract principles', () => {
@@ -64,7 +64,7 @@ describe('AccountVerification', () => {
   it('calls onContractDetailsClick when contract link is clicked', () => {
     render(<AccountVerification {...defaultProps} />);
     
-    const contractLinks = screen.getAllByText('NAO Social Contract');
+    const contractLinks = screen.getAllByText('PLANET Social Contract');
     const linkElement = contractLinks.find(link => link.tagName === 'A');
     
     if (linkElement) {

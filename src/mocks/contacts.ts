@@ -13,7 +13,7 @@ export interface RawContact {
   linkedinUrl?: string;
   notes?: string;
   tags?: string[];
-  naoStatus: string;
+  planetStatus: string;
   relationshipCategory?: string;
   location?: {
     city?: string;
@@ -78,9 +78,9 @@ export function transformRawContact(rawContact: RawContact): Contact {
       value: tag,
       source: 'contacts'
     }))) : undefined,
-    // Transform naoStatus to proper structure
-    naoStatus: rawContact.naoStatus ? {
-      value: rawContact.naoStatus
+    // Transform planetStatus to proper structure
+    planetStatus: rawContact.planetStatus ? {
+      value: rawContact.planetStatus
     } : undefined,
     // Keep Contact-specific properties
     relationshipCategory: rawContact.relationshipCategory,

@@ -104,7 +104,7 @@ const mockMultiSourceContact: Contact = {
       source: 'linkedin'
     }
   ]),
-  naoStatus: {
+  planetStatus: {
     value: 'member',
     source: 'system'
   },
@@ -137,7 +137,7 @@ const mockContact: Contact = transformRawContact({
   position: 'Software Developer',
   company: 'Test Company',
   source: 'linkedin',
-  naoStatus: 'member',
+  planetStatus: 'member',
   humanityConfidenceScore: 3,
   createdAt: '2023-01-01T00:00:00Z',
   updatedAt: '2023-01-02T00:00:00Z'
@@ -221,7 +221,7 @@ describe('ContactViewHeader', () => {
             position: 'Software Developer',
             company: 'Test Company',
             source: 'linkedin',
-            naoStatus: 'member',
+            planetStatus: 'member',
             humanityConfidenceScore: 3,
             createdAt: '2023-01-01T00:00:00Z',
             updatedAt: '2023-01-02T00:00:00Z'
@@ -243,7 +243,7 @@ describe('ContactViewHeader', () => {
             position: 'Software Developer',
             company: 'Test Company',
             source: 'linkedin',
-            naoStatus: 'invited',
+            planetStatus: 'invited',
             humanityConfidenceScore: 3,
             createdAt: '2023-01-01T00:00:00Z',
             updatedAt: '2023-01-02T00:00:00Z'
@@ -265,7 +265,7 @@ describe('ContactViewHeader', () => {
             position: 'Software Developer',
             company: 'Test Company',
             source: 'linkedin',
-            naoStatus: 'not_invited',
+            planetStatus: 'not_invited',
             humanityConfidenceScore: 3,
             createdAt: '2023-01-01T00:00:00Z',
             updatedAt: '2023-01-02T00:00:00Z'
@@ -290,7 +290,7 @@ describe('ContactViewHeader', () => {
         position: 'Software Developer',
         company: 'Test Company',
         source: 'linkedin',
-        naoStatus: 'member',
+        planetStatus: 'member',
         humanityConfidenceScore: 3,
         profileImage: '/tree.jpg',
         createdAt: '2023-01-01T00:00:00Z',
@@ -316,7 +316,7 @@ describe('ContactViewHeader', () => {
         position: 'Software Developer',
         company: 'Test Company',
         source: 'linkedin',
-        naoStatus: 'member',
+        planetStatus: 'member',
         humanityConfidenceScore: 3,
         profileImage: '/duke.jpg',
         createdAt: '2023-01-01T00:00:00Z',

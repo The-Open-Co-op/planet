@@ -1,25 +1,15 @@
-import {useState, useEffect} from 'react';
-import {useSearchParams} from 'react-router-dom';
+import {useState} from 'react';
 import {useNextGraphAuth, useResource, useSubject} from '@/lib/nextgraph';
 import {isNextGraphEnabled} from '@/utils/featureFlags';
 import {
-  Typography,
   Box,
-  Tabs,
-  Tab,
   Button,
 } from '@mui/material';
 import {
-  Security,
-  Settings,
   Logout,
 } from '@mui/icons-material';
 import { StandardPage } from '@/components/layout/StandardPage';
-import {DEFAULT_RCARDS, DEFAULT_PRIVACY_SETTINGS} from '@/types/notification';
-import type {RCardWithPrivacy} from '@/types/notification';
 import type {PersonhoodCredentials} from '@/types/personhood';
-import RCardManagement from '@/components/account/RCardManagement';
-import {SettingsSection} from '../SettingsSection';
 import {AccountSettings} from '../AccountSettings';
 import type {AccountPageProps} from '../types';
 import {NextGraphAuth} from "@/types/nextgraph";
@@ -27,176 +17,37 @@ import {SocialContact} from "@/.ldo/contact.typings";
 import {SocialContactShapeType} from "@/.ldo/contact.shapeTypes";
 import {mockPersonhoodCredentials, socialContactToProfileData} from "@/mocks/profile";
 
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
 
-const TabPanel = ({children, value, index}: TabPanelProps) => {
-  return (
-    <div hidden={value !== index}>
-      {value === index && <Box sx={{pt: 0, px: 0, pb: 0}}>{children}</Box>}
-    </div>
-  );
-};
-
-export const AccountPageContent = ({initialTab = 0, profileData, handleLogout: externalHandleLogout, isNextGraph}: AccountPageProps) => {
-  const [searchParams] = useSearchParams();
-
-  const urlTab = parseInt(searchParams.get('tab') || '0', 10);
-  const [tabValue, setTabValue] = useState(initialTab || urlTab);
-
-  const [rCards, setRCards] = useState<RCardWithPrivacy[]>([]);
-  const [selectedRCard, setSelectedRCard] = useState<RCardWithPrivacy | null>(null);
-  const [showRCardManagement, setShowRCardManagement] = useState(false);
-
-  const editCardName = searchParams.get('editCard');
-  const returnToUrl = searchParams.get('returnTo');
-  const [editingRCard, setEditingRCard] = useState<RCardWithPrivacy | null>(null);
+export const AccountPageContent = ({handleLogout: externalHandleLogout}: AccountPageProps) => {
   const [personhoodCredentials] = useState<PersonhoodCredentials>(mockPersonhoodCredentials);
-
-  useEffect(() => {
-    const rCardsWithPrivacy: RCardWithPrivacy[] = DEFAULT_RCARDS.map((rCard, index) => ({
-      ...rCard,
-      id: `default-${index}`,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      privacySettings: DEFAULT_PRIVACY_SETTINGS
-    }));
-    setRCards(rCardsWithPrivacy);
-    setSelectedRCard(rCardsWithPrivacy[0] || null);
-  }, []);
-
-  useEffect(() => {
-    if (editCardName && rCards.length > 0) {
-      const cardToEdit = rCards.find(card => card.name.toLowerCase().replace(/\s+/g, '-') === editCardName);
-      if (cardToEdit) {
-        setEditingRCard(cardToEdit);
-        setShowRCardManagement(true);
-        setTabValue(1);
-      }
-    }
-  }, [editCardName, rCards]);
-
-  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
-    setTabValue(newValue);
-  };
-
-  const handleRCardSelect = (rCard: RCardWithPrivacy) => {
-    setSelectedRCard(rCard);
-  };
-
-  const handleCreateRCard = () => {
-    setEditingRCard(null);
-    setShowRCardManagement(true);
-  };
-
-  const handleEditRCard = (rCard: RCardWithPrivacy) => {
-    setEditingRCard(rCard);
-    setShowRCardManagement(true);
-  };
-
-  const handleRCardSave = (rCard: RCardWithPrivacy) => {
-    setRCards(prev => {
-      const existingIndex = prev.findIndex(card => card.id === rCard.id);
-      if (existingIndex >= 0) {
-        const newRCards = [...prev];
-        newRCards[existingIndex] = rCard;
-        return newRCards;
-      } else {
-        return [...prev, rCard];
-      }
-    });
-
-    if (selectedRCard?.id === rCard.id) {
-      setSelectedRCard(rCard);
-    }
-  };
-
-  const handleRCardDelete = (rCard: RCardWithPrivacy) => {
-    setRCards(prev => {
-      const newRCards = prev.filter(card => card.id !== rCard.id);
-      if (selectedRCard?.id === rCard.id) {
-        setSelectedRCard(newRCards[0] || null);
-      }
-      return newRCards;
-    });
-  };
-
-  const handleRCardDeleteById = (rCardId: string) => {
-    const rCard = rCards.find(card => card.id === rCardId);
-    if (rCard) {
-      handleRCardDelete(rCard);
-    }
-  };
-
-  const handleRCardUpdate = (updatedRCard: RCardWithPrivacy) => {
-    setRCards(prev =>
-      prev.map(card => card.id === updatedRCard.id ? updatedRCard : card)
-    );
-    setSelectedRCard(updatedRCard);
-  };
 
   return (
     <StandardPage title="Settings">
-      {/* Navigation Tabs */}
-      <Box sx={{ mb: 2, borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={tabValue} onChange={handleTabChange}>
-          <Tab icon={<Security />} label="My Cards" />
-          <Tab icon={<Settings />} label="Account" />
-        </Tabs>
-      </Box>
-      
-      {/* Tab Content */}
+      {/* Account Settings Content (My Cards functionality moved to contacts) */}
       <Box sx={{ mt: 2 }}>
-        <TabPanel value={tabValue} index={0}>
-          <SettingsSection
-            rCards={rCards}
-            selectedRCard={selectedRCard}
-            onRCardSelect={handleRCardSelect}
-            onCreateRCard={handleCreateRCard}
-            onEditRCard={handleEditRCard}
-            onDeleteRCard={handleRCardDelete}
-            onUpdate={handleRCardUpdate}
-            initialProfileData={profileData}
-          />
-        </TabPanel>
-        <TabPanel value={tabValue} index={1}>
-          <AccountSettings 
-            personhoodCredentials={personhoodCredentials}
-          />
-          
-          {externalHandleLogout && (
-            <Box sx={{
-              mt: 3,
-              pt: 3,
-              borderTop: 1,
-              borderColor: 'divider',
-              textAlign: 'center'
-            }}>
-              <Button
-                variant="outlined"
-                color="error"
-                startIcon={<Logout/>}
-                onClick={externalHandleLogout}
-              >
-                Logout
-              </Button>
-            </Box>
-          )}
-        </TabPanel>
+        <AccountSettings 
+          personhoodCredentials={personhoodCredentials}
+        />
+        
+        {externalHandleLogout && (
+          <Box sx={{
+            mt: 3,
+            pt: 3,
+            borderTop: 1,
+            borderColor: 'divider',
+            textAlign: 'center'
+          }}>
+            <Button
+              variant="outlined"
+              color="error"
+              startIcon={<Logout/>}
+              onClick={externalHandleLogout}
+            >
+              Logout
+            </Button>
+          </Box>
+        )}
       </Box>
-      
-      {/* RCard Management Dialog */}
-      <RCardManagement
-        open={showRCardManagement}
-        onClose={() => setShowRCardManagement(false)}
-        onSave={handleRCardSave}
-        onDelete={handleRCardDeleteById}
-        editingRCard={editingRCard || undefined}
-        isGroupJoinContext={!!returnToUrl}
-      />
     </StandardPage>
   );
 };

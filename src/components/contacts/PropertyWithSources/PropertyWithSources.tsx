@@ -299,7 +299,6 @@ export const PropertyWithSources = <K extends ResolvableKey>({
         <Typography variant={textVariant} component="h1" gutterBottom={false} sx={{ textAlign: 'center' }}>
           {currentValue}
         </Typography>
-        {getSourceSelectors()}
       </Box>
     );
   }

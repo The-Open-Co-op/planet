@@ -19,7 +19,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           height: '100%',
           backgroundColor: 'background.default',
           overflow: 'hidden',
-          paddingBottom: '80px' // Space for bottom navigation
+          paddingBottom: '40px'
         }}
       >
         {children}

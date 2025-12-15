@@ -1,29 +1,24 @@
-import { Box, Fab } from '@mui/material';
+import { Box } from '@mui/material';
 import { Button } from '@/components/ui';
-import { Check, Close, CallMerge } from '@mui/icons-material';
+import { Close, CallMerge } from '@mui/icons-material';
 
 interface FloatingActionsProps {
-  isMultiSelectMode: boolean;
   isManualMergeMode: boolean;
-  selectedContactsCount: number;
   selectedContactsForMergeCount: number;
-  onCreateGroup: () => void;
   onMergeSelected: () => void;
   onCancelManualMerge: () => void;
 }
 
 export const FloatingActions = ({
-  isMultiSelectMode,
   isManualMergeMode,
-  selectedContactsCount,
   selectedContactsForMergeCount,
-  onCreateGroup,
   onMergeSelected,
   onCancelManualMerge
 }: FloatingActionsProps) => {
   return (
     <>
-      {/* Floating Action Button for Group Creation */}
+      {/* Floating Action Button for Group Creation - Hidden until implemented */}
+      {/* TODO: Re-enable when group functionality is implemented
       {isMultiSelectMode && selectedContactsCount > 0 && (
         <Fab
           color="primary"
@@ -31,21 +26,26 @@ export const FloatingActions = ({
           variant="extended"
           sx={{
             position: 'fixed',
-            bottom: { xs: 104, md: 24 }, // Increased to clear bottom nav (80px + 24px margin)
+            bottom: { xs: 80, md: 90 }, // Mobile: 80px, Desktop: 90px to clear bottom nav
             right: 24,
             zIndex: 1000,
+            backgroundColor: '#1976d2',
+            color: 'white',
+            '&:hover': {
+              backgroundColor: '#1565c0'
+            }
           }}
         >
           <Check sx={{ mr: 1 }} />
           Add to group
         </Fab>
-      )}
+      )} */}
 
       {/* Manual Merge Mode Controls */}
       {isManualMergeMode && (
         <Box sx={{
           position: 'fixed',
-          bottom: { xs: 104, md: 24 }, // Increased to clear bottom nav (80px + 24px margin)
+          bottom: { xs: 80, md: 90 }, // Mobile: 80px, Desktop: 90px to clear bottom nav
           left: '50%',
           transform: 'translateX(-50%)',
           display: 'flex',
