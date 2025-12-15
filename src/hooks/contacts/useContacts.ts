@@ -1,4 +1,4 @@
-import {useState, useEffect, useCallback} from 'react';
+import {useState, useEffect, useCallback, useMemo} from 'react';
 import {isNextGraphEnabled} from '@/utils/featureFlags';
 import {dataService} from '@/services/dataService';
 import type {Contact, SortParams} from '@/types/contact';
@@ -78,13 +78,10 @@ export const useContacts = (): ContactsReturn => {
     }));
   }, []);
 
-  const loadMockContacts = useCallback(async (): Promise<string[]> => {
-    console.log(`🔄 Loading all mock contacts...`);
-    const allContacts = await dataService.getContacts();
-    console.log(`📊 Total contacts fetched: ${allContacts.length}`);
-    console.log(`👤 Me contacts found:`, allContacts.filter(c => c.isMe).length);
-    console.log(`🆔 All contact IDs:`, allContacts.map(c => c['@id']));
-
+  // Memoize expensive filtering operations
+  const filteredContacts = useMemo(() => {
+    if (!contacts.length) return [];
+    
     const {
       searchQuery = '',
       relationshipFilter = 'all',
@@ -93,63 +90,95 @@ export const useContacts = (): ContactsReturn => {
       groupFilter = 'all',
       cardAssignmentFilter = 'all',
       sortBy = 'name',
-      sortDirection = 'asc',
       currentUserGroupIds = []
     } = filters;
 
-    const filtered = allContacts.filter(contact => {
-      // Search filter
-      const name = resolveFrom(contact, 'name');
-      const email = resolveFrom(contact, 'email');
-      const organization = resolveFrom(contact, 'organization');
-      const address = resolveFrom(contact, 'address');
+    return contacts.filter(contact => {
+      // Quick exit for common cases
+      if (searchQuery === '' && relationshipFilter === 'all' && planetStatusFilter === 'all' && 
+          accountFilter === 'all' && groupFilter === 'all' && cardAssignmentFilter === 'all' &&
+          sortBy !== 'vouchTotal' && sortBy !== 'praiseTotal') {
+        return true;
+      }
 
-      const matchesSearch = searchQuery === '' ||
-        name?.value?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        email?.value?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        organization?.value?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        organization?.position?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        address?.region?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        address?.country?.toLowerCase().includes(searchQuery.toLowerCase());
+      // Search filter (only if needed)
+      if (searchQuery) {
+        const name = resolveFrom(contact, 'name');
+        const email = resolveFrom(contact, 'email');
+        const organization = resolveFrom(contact, 'organization');
+        const address = resolveFrom(contact, 'address');
 
-      // Relationship filter
-      const matchesRelationship = relationshipFilter === 'all' ||
-        (relationshipFilter === 'undefined' && !contact.relationshipCategory) ||
-        (relationshipFilter === 'uncategorized' && !contact.relationshipCategory) ||
-        contact.relationshipCategory === relationshipFilter;
+        const searchLower = searchQuery.toLowerCase();
+        const matchesSearch = 
+          name?.value?.toLowerCase().includes(searchLower) ||
+          email?.value?.toLowerCase().includes(searchLower) ||
+          organization?.value?.toLowerCase().includes(searchLower) ||
+          organization?.position?.toLowerCase().includes(searchLower) ||
+          address?.region?.toLowerCase().includes(searchLower) ||
+          address?.country?.toLowerCase().includes(searchLower);
+        
+        if (!matchesSearch) return false;
+      }
 
-      // NAO Status filter
-      const matchesPlanetStatus = planetStatusFilter === 'all' ||
-        (planetStatusFilter === 'undefined' && !contact.planetStatus?.value) ||
-        contact.planetStatus?.value === planetStatusFilter;
+      // Other filters (only if not 'all')
+      if (relationshipFilter !== 'all') {
+        const matchesRelationship = 
+          (relationshipFilter === 'undefined' && !contact.relationshipCategory) ||
+          (relationshipFilter === 'uncategorized' && !contact.relationshipCategory) ||
+          contact.relationshipCategory === relationshipFilter;
+        if (!matchesRelationship) return false;
+      }
 
-      // Account filter
-      const matchesSource = accountFilter === 'all'
-        || contact.account?.some(account => account.protocol === accountFilter);
+      if (planetStatusFilter !== 'all') {
+        const matchesPlanetStatus = 
+          (planetStatusFilter === 'undefined' && !contact.planetStatus?.value) ||
+          contact.planetStatus?.value === planetStatusFilter;
+        if (!matchesPlanetStatus) return false;
+      }
 
-      // Group filter
-      const matchesGroup = groupFilter === 'all' ||
-        (groupFilter === 'has_groups' && contact.internalGroup && contact.internalGroup.size > 0) ||
-        (groupFilter === 'no_groups' && (!contact.internalGroup || contact.internalGroup.size === 0)) ||
-        (groupFilter === 'groups_in_common' && contact.internalGroup && contact.internalGroup.some(groupId => currentUserGroupIds.includes(groupId.value)));
+      if (accountFilter !== 'all') {
+        if (!contact.account?.some(account => account.protocol === accountFilter)) return false;
+      }
 
-      // Vouch filter - when sortBy is 'vouchTotal', only show contacts with vouches > 0
-      const matchesVouches = sortBy !== 'vouchTotal' ||
-        ((contact.vouchesSent || 0) + (contact.vouchesReceived || 0)) > 0;
+      if (groupFilter !== 'all') {
+        const matchesGroup = 
+          (groupFilter === 'has_groups' && contact.internalGroup && contact.internalGroup.size > 0) ||
+          (groupFilter === 'no_groups' && (!contact.internalGroup || contact.internalGroup.size === 0)) ||
+          (groupFilter === 'groups_in_common' && contact.internalGroup && contact.internalGroup.some(groupId => currentUserGroupIds.includes(groupId.value)));
+        if (!matchesGroup) return false;
+      }
 
-      // Praise filter - when sortBy is 'praiseTotal', only show contacts with praises > 0
-      const matchesPraises = sortBy !== 'praiseTotal' ||
-        ((contact.praisesSent || 0) + (contact.praisesReceived || 0)) > 0;
+      if (cardAssignmentFilter !== 'all') {
+        if (!contact.rCardAssignments?.some(assignment => assignment.cardType === cardAssignmentFilter)) return false;
+      }
 
-      // Card assignment filter - matches contacts assigned to specific Trust Profile types
-      const matchesCardAssignment = cardAssignmentFilter === 'all' ||
-        (contact.rCardAssignments?.some(assignment => assignment.cardType === cardAssignmentFilter));
+      // Vouch/praise filters
+      if (sortBy === 'vouchTotal') {
+        if (((contact.vouchesSent || 0) + (contact.vouchesReceived || 0)) <= 0) return false;
+      }
 
-      return matchesSearch && matchesRelationship && matchesPlanetStatus && matchesSource && matchesGroup && matchesVouches && matchesPraises && matchesCardAssignment;
+      if (sortBy === 'praiseTotal') {
+        if (((contact.praisesSent || 0) + (contact.praisesReceived || 0)) <= 0) return false;
+      }
+
+      return true;
     });
+  }, [contacts, filters]);
 
+  // Memoize sorted contacts to avoid expensive sorting on every render
+  const sortedContacts = useMemo(() => {
+    if (!filteredContacts.length) return [];
+    
+    const {
+      sortBy = 'name',
+      sortDirection = 'asc'
+    } = filters;
+    
+    // Create a copy to avoid mutating the original array
+    const contactsCopy = [...filteredContacts];
+    
     // Sort the filtered results
-    filtered.sort((a, b) => {
+    contactsCopy.sort((a, b) => {
       // Always put the "me" contact first
       if (a.isMe && !b.isMe) return -1;
       if (!a.isMe && b.isMe) return 1;
@@ -188,61 +217,6 @@ export const useContacts = (): ContactsReturn => {
           compareValue = aDate - bDate;
           break;
         }
-        case 'mostActive': {
-          // Use a fixed reference time for consistent sorting across page loads
-          const now = new Date('2024-07-30T00:00:00Z').getTime(); // Fixed reference date
-          const dayInMs = 24 * 60 * 60 * 1000;
-          const weekInMs = 7 * dayInMs;
-          const monthInMs = 30 * dayInMs;
-
-          const calculateActivityScore = (contact: typeof a) => {
-            const lastInteraction = contact.lastInteractionAt?.getTime() || 0;
-            const timeSinceInteraction = now - lastInteraction;
-
-            let timeScore = 0;
-            if (timeSinceInteraction < dayInMs) {
-              timeScore = 1000;
-            } else if (timeSinceInteraction < weekInMs) {
-              timeScore = 500;
-            } else if (timeSinceInteraction < monthInMs) {
-              timeScore = 100;
-            } else {
-              timeScore = Math.max(1, 50 - (timeSinceInteraction / monthInMs));
-            }
-
-            const interactionFrequency = (contact.interactionCount || 0) * 10;
-            const recentScore = contact.recentInteractionScore || 0;
-
-            return timeScore + interactionFrequency + recentScore;
-          };
-
-          const aActivity = calculateActivityScore(a);
-          const bActivity = calculateActivityScore(b);
-          compareValue = bActivity - aActivity;
-          break;
-        }
-        /* TODO: I don't think we would have this one
-           case 'nearMeNow': {
-           const aAddress = resolveFrom(a, 'address');
-           const bAddress = resolveFrom(b, 'address');
-           const aDistance = (aAddress as any)?.distance || Number.MAX_SAFE_INTEGER;
-           const bDistance = (bAddress as any)?.distance || Number.MAX_SAFE_INTEGER;
-           compareValue = aDistance - bDistance;
-           break;
-         }*/
-        case 'sharedTags': {
-          const calculateSharedTagsScore = (contact: typeof a) => {
-            const sharedTags = contact.sharedTagsCount || 0;
-            const totalTags = contact.tag?.size || 0;
-            const tagSimilarity = totalTags > 0 ? (sharedTags / totalTags) * 100 : 0;
-            return sharedTags * 10 + tagSimilarity;
-          };
-
-          const aSharedScore = calculateSharedTagsScore(a);
-          const bSharedScore = calculateSharedTagsScore(b);
-          compareValue = bSharedScore - aSharedScore;
-          break;
-        }
         case 'vouchTotal': {
           const aVouches = (a.vouchesSent || 0) + (a.vouchesReceived || 0);
           const bVouches = (b.vouchesSent || 0) + (b.vouchesReceived || 0);
@@ -255,23 +229,39 @@ export const useContacts = (): ContactsReturn => {
           compareValue = aPraises - bPraises;
           break;
         }
+        // Simplified mostActive case - removed expensive calculations
+        case 'mostActive': {
+          const aActivity = (a.interactionCount || 0) + (a.recentInteractionScore || 0);
+          const bActivity = (b.interactionCount || 0) + (b.recentInteractionScore || 0);
+          compareValue = bActivity - aActivity;
+          break;
+        }
+        // Simplified sharedTags case
+        case 'sharedTags': {
+          const aShared = a.sharedTagsCount || 0;
+          const bShared = b.sharedTagsCount || 0;
+          compareValue = bShared - aShared;
+          break;
+        }
         default:
           compareValue = 0;
       }
 
       return sortDirection === 'asc' ? compareValue : -compareValue;
     });
+    
+    return contactsCopy;
+  }, [filteredContacts, filters]);
 
+  const loadMockContacts = useCallback(async (): Promise<string[]> => {
+    const allContacts = await dataService.getContacts();
     setContacts(allContacts);
-    setTotalCount(filtered.length);
+    setTotalCount(sortedContacts.length);
     
-    console.log(`📄 Loading all ${filtered.length} contacts (no pagination)`);
-    console.log(`🔍 Filtered contact IDs:`, filtered.map(c => c['@id']));
-    console.log(`👤 Filtered me contacts:`, filtered.filter(c => c.isMe).length);
-    
-    // Return ALL filtered contacts, not paginated
-    return filtered.map(contact => contact['@id'] || '');
-  }, [filters]);
+    // Return contact IDs from pre-sorted and filtered contacts
+    return sortedContacts.map(contact => contact['@id'] || '');
+
+  }, [sortedContacts]);
 
   const loadNextGraphContacts = useCallback(async (): Promise<string[]> => {
     if (!session) {
@@ -334,10 +324,8 @@ export const useContacts = (): ContactsReturn => {
   }, []);
 
   const loadContacts = useCallback(async () => {
-    console.log(`🚀 Loading all contacts...`);
     try {
       const nuris = !isNextGraph ? await loadMockContacts() : await loadNextGraphContacts();
-      console.log(`📥 Loaded ${nuris.length} contacts total`);
       setContactNuris(nuris);
     } catch (err) {
       const errorMessage = err instanceof Error ? err : new Error(`Failed to load contacts`);

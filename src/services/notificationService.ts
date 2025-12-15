@@ -14,14 +14,14 @@ export class NotificationService {
 
   // Get all notifications for a user
   async getNotifications(userId: string): Promise<Notification[]> {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 300));
+    // Removed artificial delay for better performance
+    await new Promise(resolve => setTimeout(resolve, 0));
     return this.notifications.filter(n => n.targetUserId === userId);
   }
 
   // Get notification summary
   async getNotificationSummary(userId: string): Promise<NotificationSummary> {
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise(resolve => setTimeout(resolve, 0));
     const userNotifications = this.notifications.filter(n => n.targetUserId === userId);
     
     const summary: NotificationSummary = {
@@ -41,7 +41,7 @@ export class NotificationService {
 
   // Mark notification as read
   async markAsRead(notificationId: string): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise(resolve => setTimeout(resolve, 0));
     const notification = this.notifications.find(n => n.id === notificationId);
     if (notification) {
       notification.isRead = true;
@@ -51,7 +51,7 @@ export class NotificationService {
 
   // Mark all notifications as read for a user
   async markAllAsRead(userId: string): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await new Promise(resolve => setTimeout(resolve, 0));
     this.notifications
       .filter(n => n.targetUserId === userId && !n.isRead)
       .forEach(notification => {
@@ -62,7 +62,7 @@ export class NotificationService {
 
   // Accept a vouch
   async acceptVouch(notificationId: string, rCardIds?: string[]): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, 400));
+    await new Promise(resolve => setTimeout(resolve, 0));
     const notification = this.notifications.find(n => n.id === notificationId);
     if (notification) {
       notification.status = 'accepted';
@@ -77,7 +77,7 @@ export class NotificationService {
 
   // Reject a vouch
   async rejectVouch(notificationId: string): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, 400));
+    await new Promise(resolve => setTimeout(resolve, 0));
     const notification = this.notifications.find(n => n.id === notificationId);
     if (notification) {
       notification.status = 'rejected';
@@ -89,7 +89,7 @@ export class NotificationService {
 
   // Accept praise
   async acceptPraise(notificationId: string, rCardIds?: string[]): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, 400));
+    await new Promise(resolve => setTimeout(resolve, 0));
     const notification = this.notifications.find(n => n.id === notificationId);
     if (notification) {
       notification.status = 'accepted';
@@ -104,7 +104,7 @@ export class NotificationService {
 
   // Reject praise
   async rejectPraise(notificationId: string): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, 400));
+    await new Promise(resolve => setTimeout(resolve, 0));
     const notification = this.notifications.find(n => n.id === notificationId);
     if (notification) {
       notification.status = 'rejected';
@@ -116,7 +116,7 @@ export class NotificationService {
 
   // Assign to rCard
   async assignToRCard(notificationId: string, rCardId: string): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await new Promise(resolve => setTimeout(resolve, 0));
     const notification = this.notifications.find(n => n.id === notificationId);
     if (notification && notification.metadata) {
       notification.metadata.rCardId = rCardId;
@@ -129,19 +129,19 @@ export class NotificationService {
 
   // Get vouch details
   async getVouch(vouchId: string): Promise<Vouch | null> {
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise(resolve => setTimeout(resolve, 0));
     return this.vouches.find(v => v.id === vouchId) || null;
   }
 
   // Get praise details
   async getPraise(praiseId: string): Promise<Praise | null> {
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise(resolve => setTimeout(resolve, 0));
     return this.praises.find(p => p.id === praiseId) || null;
   }
 
   // Accept connection request
   async acceptConnection(notificationId: string, selectedRCardId: string): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, 400));
+    await new Promise(resolve => setTimeout(resolve, 0));
     const notification = this.notifications.find(n => n.id === notificationId);
     if (notification && notification.type === 'connection' && notification.metadata?.contactId) {
       await dataService.acceptConnectionRequest(notificationId, selectedRCardId);
@@ -159,7 +159,7 @@ export class NotificationService {
 
   // Reject connection request
   async rejectConnection(notificationId: string): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, 400));
+    await new Promise(resolve => setTimeout(resolve, 0));
     const notification = this.notifications.find(n => n.id === notificationId);
     if (notification && notification.type === 'connection' && notification.metadata?.contactId) {
       await dataService.rejectConnectionRequest(notificationId, notification.metadata.contactId);
@@ -172,7 +172,7 @@ export class NotificationService {
 
   // Get rejected vouches/praises for a specific contact
   async getRejectedNotificationsByContact(contactId: string): Promise<Notification[]> {
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise(resolve => setTimeout(resolve, 0));
     return this.notifications.filter(n => 
       (n.fromUserId === contactId || n.metadata?.contactId === contactId) &&
       n.status === 'rejected' &&
@@ -182,7 +182,7 @@ export class NotificationService {
 
   // Get accepted vouches/praises from a specific contact
   async getAcceptedNotificationsByContact(contactId: string): Promise<Notification[]> {
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise(resolve => setTimeout(resolve, 0));
     return this.notifications.filter(n => 
       (n.fromUserId === contactId || n.metadata?.contactId === contactId) &&
       n.status === 'accepted' &&
@@ -192,7 +192,7 @@ export class NotificationService {
 
   // Reverse rejection and accept a vouch/praise
   async reverseRejectionAndAccept(notificationId: string, rCardIds?: string[]): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, 400));
+    await new Promise(resolve => setTimeout(resolve, 0));
     const notification = this.notifications.find(n => n.id === notificationId);
     if (notification && notification.status === 'rejected') {
       notification.status = 'accepted';
