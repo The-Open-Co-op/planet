@@ -291,7 +291,7 @@ export const dataService = {
           console.error("Failed to load contacts:", error);
           resolve([]);
         }
-      }, 500);
+      }, 0); // Reduced from 500ms to 0ms for faster loading
     });
   },
 
@@ -635,7 +635,7 @@ export const dataService = {
           console.error("Failed to update contact:", error);
           throw error;
         }
-      }, 100);
+      }, 0); // Reduced from 100ms to 0ms for faster updates
     });
   },
 

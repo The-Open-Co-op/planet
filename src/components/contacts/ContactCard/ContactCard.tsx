@@ -8,7 +8,6 @@ import {SocialContactShapeType} from "@/.ldo/contact.shapeTypes";
 import {SocialContact} from "@/.ldo/contact.typings";
 import {NextGraphAuth} from "@/types/nextgraph";
 import type {UseContactDragDropReturn} from '@/hooks/contacts/useContactDragDrop';
-import {dataService} from '@/services/dataService';
 import {iconFilter} from "@/hooks/contacts/useContacts";
 
 
@@ -48,17 +47,11 @@ export const ContactCard = forwardRef<HTMLDivElement, ContactCardProps>(
 
     useEffect(() => {
       if (!isNextGraph) {
-        const fetchContact = async () => {
-          try {
-            const contactData = await dataService.getContact(nuri);
-            if (contactData) {
-              setContact(contactData);
-            }
-          } catch (error) {
-            console.error('Failed to fetch contact by ID:', error);
-          }
-        };
-        fetchContact();
+        // Use already loaded contact data instead of fetching individually
+        const existingContact = contacts.find(c => c['@id'] === nuri);
+        if (existingContact) {
+          setContact(existingContact);
+        }
       } else {
         if (socialContact) {
           setContact(socialContact);
