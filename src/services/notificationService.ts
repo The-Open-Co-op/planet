@@ -208,7 +208,7 @@ export class NotificationService {
   // Create a new notification (for backend integration)
   async createNotification(notificationData: {
     userId: string;
-    type: 'group_invite' | 'vouch' | 'praise' | 'connection' | 'message' | 'system';
+    type: 'vouch' | 'praise' | 'connection' | 'system';
     title: string;
     message: string;
     actionUrl?: string;
@@ -227,8 +227,8 @@ export class NotificationService {
             fromUserAvatar: undefined,
             targetUserId: notificationData.userId,
             isRead: false,
-            isActionable: notificationData.type === 'group_invite',
-            status: notificationData.type === 'group_invite' ? 'pending' : 'completed',
+            isActionable: notificationData.type === 'system' && notificationData.metadata?.canAccept === true,
+            status: notificationData.type === 'system' && notificationData.metadata?.canAccept === true ? 'pending' : 'completed',
             metadata: notificationData.metadata || {},
             createdAt: new Date(),
             updatedAt: new Date()

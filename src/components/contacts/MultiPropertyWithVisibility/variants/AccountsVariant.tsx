@@ -107,7 +107,7 @@ export const AccountsVariant = <K extends ResolvableKey>({
 
     if (isNextgraph) {
       const resource = dataset.getResource(contact["@id"]!);
-      if (!resource.isError && resource.type !== "InvalidIdentifierResource") {
+      if (!resource.isError && resource.type !== "InvalidIdentifierResouce") {
         const changedContactObj = changeData(contact, resource);
         updateProtocolWithUserSource(changedContactObj);
         commitData(changedContactObj);
@@ -147,7 +147,6 @@ export const AccountsVariant = <K extends ResolvableKey>({
         <MultiPropertyItem
           itemId={itemId}
           value={currentValue}
-          source={item.source}
           onChange={(e) => onInputChange(itemId, e.target.value)}
           onBlur={() => onBlur(itemId)}
           placeholder={placeholder ?? ""}
@@ -239,7 +238,6 @@ export const AccountsVariant = <K extends ResolvableKey>({
             <MultiPropertyItem
               itemId={visibleItems.length.toString()}
               value={newItemValue}
-              source={"user"}
               onChange={(e) => onNewItemValueChange(e.target.value)}
               onBlur={() => {
                 if (newItemValue.trim()) {

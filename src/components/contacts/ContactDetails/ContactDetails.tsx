@@ -166,7 +166,7 @@ export const ContactDetails = forwardRef<HTMLDivElement, ContactDetailsProps>(
                 Added
               </Typography>
               <Typography variant="body1">
-                {formatDate(new Date(contact.createdAt.valueDateTime))}
+                {formatDate(new Date(typeof contact.createdAt === 'string' ? contact.createdAt : contact.createdAt.valueDateTime))}
               </Typography>
             </Box>
           </Box>}
@@ -178,7 +178,7 @@ export const ContactDetails = forwardRef<HTMLDivElement, ContactDetailsProps>(
                 Last Updated
               </Typography>
               <Typography variant="body1">
-                {formatDate(new Date(contact.updatedAt.valueDateTime))}
+                {formatDate(new Date(typeof contact.updatedAt === 'string' ? contact.updatedAt : contact.updatedAt.valueDateTime))}
               </Typography>
             </Box>
           </Box>}

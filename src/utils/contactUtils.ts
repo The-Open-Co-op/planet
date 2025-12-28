@@ -5,14 +5,14 @@ import {contactContext} from "@/.ldo/contact.context";
 
 export const contactCommonProperties = [
   "@id",
-  "@context",
+  "@context", 
   "type",
   "planetStatus",
   "invitedAt",
   "createdAt",
   "updatedAt",
   "joinedAt",
-] as const satisfies readonly (keyof SocialContact)[];
+] as const;
 
 export type ContactLdSetProperties = Omit<
   SocialContact,
@@ -88,6 +88,9 @@ export function resolveFrom<K extends ResolvableKey>(
   const set = socialContact[key];
   if (!set) return;
 
+  // Some LdSet types might not have toArray method
+  if (!('toArray' in set) || typeof set.toArray !== 'function') return;
+  
   const items = set.toArray() as ItemOf<K>[];
 
   const selectedItem = items.find(item => hasSelected(item) && item.selected || hasProperty(item, "preferred") && item.preferred);
@@ -132,6 +135,9 @@ export function getVisibleItems<K extends ResolvableKey>(
   const set = socialContact[key];
   if (!set) return [];
 
+  // Some LdSet types might not have toArray method
+  if (!('toArray' in set) || typeof set.toArray !== 'function') return [];
+
   return set.toArray().filter(item =>
     !(hasHidden(item) && item.hidden) && item["@id"]
   ) as ItemOf<K>[];
@@ -140,7 +146,11 @@ export function getVisibleItems<K extends ResolvableKey>(
 export function setUpdatedTime(contactObj: Contact) {
   const currentDateTime = new Date(Date.now()).toISOString();
   if (contactObj.updatedAt) {
-    contactObj.updatedAt.valueDateTime = currentDateTime;
+    if (typeof contactObj.updatedAt === 'string') {
+      contactObj.updatedAt = currentDateTime;
+    } else {
+      contactObj.updatedAt.valueDateTime = currentDateTime;
+    }
   } else {
     contactObj.updatedAt = {
       valueDateTime: currentDateTime,

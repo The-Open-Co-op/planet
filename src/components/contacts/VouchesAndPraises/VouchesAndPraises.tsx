@@ -4,6 +4,7 @@ import {resolveFrom} from "@/utils/contactUtils";
 import {forwardRef, useState, useEffect, useCallback} from "react";
 import type {Contact} from "@/types/contact";
 import type {Notification} from "@/types/notification";
+import type {SocialContact} from '@/.ldo/contact.typings';
 import {notificationService} from "@/services/notificationService";
 import {formatDateDiff} from "@/utils/dateHelpers";
 
@@ -65,7 +66,7 @@ export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesPro
       <Box sx={{flex: 1, borderRight: {md: 1}, borderColor: {md: 'divider'}, p: { xs: 0, md: 3 }}}>
             <Box sx={{display: 'flex', alignItems: 'center', mb: 3}}>
               <Typography variant="h6" sx={{fontWeight: 600}}>
-                Sent to {resolveFrom(contact, 'name')?.value?.split(' ')[0] || 'Contact'}
+                Sent to {resolveFrom(contact as SocialContact, 'name')?.value?.split(' ')[0] || 'Contact'}
               </Typography>
             </Box>
 
@@ -127,7 +128,7 @@ export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesPro
                 minHeight: 200
               }}>
                 <Typography variant="body2" color="text.secondary">
-                  Invite {resolveFrom(contact, 'name')?.value?.split(' ')[0] || 'them'} to PLANET to start vouching for
+                  Invite {resolveFrom(contact as SocialContact, 'name')?.value?.split(' ')[0] || 'them'} to PLANET to start vouching for
                   them!
                 </Typography>
               </Box>
@@ -139,7 +140,7 @@ export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesPro
       <Box sx={{flex: 1, p: { xs: 0, md: 3 }, pt: { xs: 3, md: 3 }}}>
             <Box sx={{display: 'flex', alignItems: 'center', mb: 3}}>
               <Typography variant="h6" sx={{fontWeight: 600}}>
-                Received from {resolveFrom(contact, 'name')?.value?.split(' ')[0] || 'Contact'}
+                Received from {resolveFrom(contact as SocialContact, 'name')?.value?.split(' ')[0] || 'Contact'}
               </Typography>
             </Box>
 
@@ -202,8 +203,8 @@ export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesPro
               }}>
                 <Typography variant="body2" color="text.secondary" textAlign="center">
                   {contact.planetStatus?.value === 'invited'
-                    ? `${resolveFrom(contact, 'name')?.value?.split(' ')[0] || 'Contact'} hasn't joined PLANET yet.`
-                    : `${resolveFrom(contact, 'name')?.value?.split(' ')[0] || 'Contact'} needs to join PLANET to send vouches.`
+                    ? `${resolveFrom(contact as SocialContact, 'name')?.value?.split(' ')[0] || 'Contact'} hasn't joined PLANET yet.`
+                    : `${resolveFrom(contact as SocialContact, 'name')?.value?.split(' ')[0] || 'Contact'} needs to join PLANET to send vouches.`
                   }
                 </Typography>
               </Box>

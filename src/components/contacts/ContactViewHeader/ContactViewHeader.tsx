@@ -27,13 +27,13 @@ import {
 import { useMediaQuery } from '@mui/material';
 import type {Contact} from '@/types/contact';
 import type {RCardType} from '@/types/rcard';
+import type {SocialContact} from '@/.ldo/contact.typings';
 import {resolveFrom} from '@/utils/contactUtils';
 import {getContactPhotoStyles} from "@/utils/photoStyles";
 import {PropertyWithSources} from '../PropertyWithSources';
 
 export interface ContactViewHeaderProps {
   contact: Contact | null;
-  contactGroups?: Array<{"@id": string; name: string}>;
   isLoading: boolean;
   isEditing?: boolean;
   showStatus?: boolean;
@@ -46,7 +46,7 @@ export interface ContactViewHeaderProps {
 }
 
 export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderProps>(
-  ({contact, contactGroups = [], isEditing = false, showTags = true, showActions = true, showStatus = true, validateParent, onHumanityToggle, onAssignRCard, onRemoveRCard}, ref) => {
+  ({contact, isEditing = false, showTags = true, showActions = true, showStatus = true, validateParent, onHumanityToggle, onAssignRCard, onRemoveRCard}, ref) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const [aboutModalOpen, setAboutModalOpen] = useState(false);
@@ -54,8 +54,8 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
 
     if (!contact) return null;
 
-    const name = resolveFrom(contact, 'name');
-    const photo = resolveFrom(contact, 'photo');
+    const name = resolveFrom(contact as SocialContact, 'name');
+    const photo = resolveFrom(contact as SocialContact, 'photo');
     const tags = contact.tag;
 
 
@@ -326,7 +326,7 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
                   return (
                     <Chip
                       key={assignment.cardType}
-                      icon={getRCardIcon(assignment.cardType, 16)}
+                      icon={getRCardIcon(assignment.cardType, 16) || undefined}
                       label={isMobile ? '' : assignment.cardType}
                       variant="outlined"
                       onDelete={onRemoveRCard ? () => {
@@ -437,21 +437,6 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
               />
               
               {/* Groups in common */}
-              {contactGroups.length > 0 && (
-                <Box sx={{ mb: 3 }}>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
-                    {contactGroups.length} Groups in common
-                  </Typography>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                    {contactGroups.map(group => (
-                      <Typography key={group['@id']} variant="body2" color="text.secondary">
-                        {group.name}
-                      </Typography>
-                    ))}
-                  </Box>
-                </Box>
-              )}
-              
               <Divider sx={{ mb: 2 }} />
               
               {/* Added/Updated/Last interaction info */}
@@ -461,8 +446,8 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
                     Added
                   </Typography>
                   <Typography variant="body2">
-                    {contact.createdAt && !isNaN(Date.parse(contact.createdAt)) 
-                      ? new Date(contact.createdAt).toLocaleDateString() 
+                    {contact.createdAt && !isNaN(Date.parse(typeof contact.createdAt === 'string' ? contact.createdAt : contact.createdAt.valueDateTime)) 
+                      ? new Date(typeof contact.createdAt === 'string' ? contact.createdAt : contact.createdAt.valueDateTime).toLocaleDateString() 
                       : new Date('2023-11-15').toLocaleDateString()}
                   </Typography>
                 </Box>
@@ -472,8 +457,8 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
                     Updated
                   </Typography>
                   <Typography variant="body2">
-                    {contact.updatedAt && !isNaN(Date.parse(contact.updatedAt)) 
-                      ? new Date(contact.updatedAt).toLocaleDateString() 
+                    {contact.updatedAt && !isNaN(Date.parse(typeof contact.updatedAt === 'string' ? contact.updatedAt : contact.updatedAt.valueDateTime)) 
+                      ? new Date(typeof contact.updatedAt === 'string' ? contact.updatedAt : contact.updatedAt.valueDateTime).toLocaleDateString() 
                       : new Date('2024-01-20').toLocaleDateString()}
                   </Typography>
                 </Box>

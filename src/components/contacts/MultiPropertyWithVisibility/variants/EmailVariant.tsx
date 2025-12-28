@@ -8,7 +8,7 @@ import {
   IconButton,
 } from '@mui/material';
 import {Add, Delete, Email, Work, Home, Person} from '@mui/icons-material';
-import React, {useCallback, useState} from 'react';
+import {useCallback, useState} from 'react';
 import type {Contact} from "@/types/contact";
 import {ContactKeysWithHidden, setUpdatedTime} from "@/utils/contactUtils";
 import {dataset, useLdo} from "@/lib/nextgraph";
@@ -105,7 +105,7 @@ export const EmailVariant = <K extends ResolvableKey>({
 
     if (isNextgraph && !contact.isDraft) {
       const resource = dataset.getResource(contact["@id"]!);
-      if (!resource.isError && resource.type !== "InvalidIdentifierResource") {
+      if (!resource.isError && resource.type !== "InvalidIdentifierResouce") {
         const changedContactObj = changeData(contact, resource);
         updateTypeWithUserSource(changedContactObj);
         commitData(changedContactObj);
@@ -151,7 +151,6 @@ export const EmailVariant = <K extends ResolvableKey>({
         <MultiPropertyItem
           itemId={itemId}
           value={currentValue}
-          source={item.source}
           onChange={(e) => onInputChange(itemId, e.target.value)}
           onBlur={() => onBlur(itemId)}
           placeholder={placeholder ?? ""}
@@ -222,7 +221,6 @@ export const EmailVariant = <K extends ResolvableKey>({
           <MultiPropertyItem
             itemId={visibleItems.length.toString()}
             value={newItemValue}
-            source={"user"}
             onChange={(e) => onNewItemValueChange(e.target.value)}
             onBlur={() => {
               if (newItemValue.trim()) {

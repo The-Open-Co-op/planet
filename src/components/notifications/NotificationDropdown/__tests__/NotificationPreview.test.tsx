@@ -49,7 +49,7 @@ const mockSummary: NotificationSummary = {
   total: 2,
   unread: 1,
   pending: 1,
-  byType: { vouch: 1, praise: 1, connection: 0, group_invite: 0, message: 0, system: 0 }
+  byType: { vouch: 1, praise: 1, connection: 0, system: 0 }
 };
 
 const defaultProps = {

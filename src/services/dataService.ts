@@ -1,4 +1,5 @@
 import type {Contact} from "@/types/contact";
+import type {SocialContact} from '@/.ldo/contact.typings';
 import type {Group} from "@/types/group";
 import {notificationService} from "./notificationService";
 import {contactCommonProperties, contactLdSetProperties, resolveFrom} from '@/utils/contactUtils';
@@ -96,7 +97,7 @@ export function processContactFromJSON(jsonContact: any, withIds = true): Contac
         }
         return el;
       });
-      contact[property] = new BasicLdSet(value);
+      contact[property] = new BasicLdSet(value) as any;
     } else {
       //@ts-expect-error whatever
       contact[property] = new BasicLdSet();
@@ -492,8 +493,8 @@ export const dataService = {
               joinedAt: new Date(),
             },
             ...contacts.map((contact: Contact) => {
-              const name = resolveFrom(contact, 'name');
-              const photo = resolveFrom(contact, 'photo');
+              const name = resolveFrom(contact as SocialContact, 'name');
+              const photo = resolveFrom(contact as SocialContact, 'photo');
               return {
                 id: contact['@id'] || '',
                 name: name?.value || 'Unknown',
@@ -514,7 +515,7 @@ export const dataService = {
           try {
             await notificationService.createNotification({
               userId: member['@id'] || '',
-              type: "group_invite",
+              type: "system",
               title: `You've been invited to join "${groupData.name}"`,
               message: `${newGroup.createdBy} has invited you to join the group "${groupData.name}". ${groupData.description ? groupData.description : "Join to connect with other members!"}`,
               actionUrl: `/groups/${groupId}/join`, // URL for accepting the invitation
@@ -529,7 +530,7 @@ export const dataService = {
               },
             });
             console.log(
-              `📧 Group invitation notification sent to ${resolveFrom(member, 'name')?.value} (${member['@id']}) for group "${groupData.name}"`,
+              `📧 Group invitation notification sent to ${resolveFrom(member as SocialContact, 'name')?.value} (${member['@id']}) for group "${groupData.name}"`,
             );
           } catch (error) {
             console.error(

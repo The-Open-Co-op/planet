@@ -242,9 +242,9 @@ WHERE {
 
     await commitData(contactObj);
 
-    await this.persistSocialContact(session, contact, commitData, changeData, resource, contactObj);
+    await this.persistSocialContact(session, contact as SocialContact, commitData, changeData, resource, contactObj);
 
-    const contactName = resolveFrom(contact, "name")?.value || 'Unknown Contact';
+    const contactName = resolveFrom(contact as SocialContact, "name")?.value || 'Unknown Contact';
     await session!.ng!.update_header(session.sessionId, resource.uri.substring(0, 53), contactName);
     return contactObj["@id"];
   }
@@ -261,7 +261,7 @@ WHERE {
 
     const protectedStoreId = "did:ng:" + session.protectedStoreId;
     const resource = dataset.getResource(protectedStoreId, "nextgraph");
-    if (resource.isError || resource.type === "InvalidIdentifierResource") {
+    if (resource.isError || resource.type === "InvalidIdentifierResouce") {
       throw new Error(`Failed to get resource ${protectedStoreId}`);
     }
     const base = "did:ng:" + session.protectedStoreId?.substring(0, 46);
@@ -301,7 +301,7 @@ WHERE {
         const importLdSet = importValue as LdSet<any>;
 
         importLdSet.forEach((el: any) => {
-          newTargetProperty?.add(el);
+          (newTargetProperty as any)?.add(el);
         });
       } else {
         newContactObj[propertyKey] = importValue;
@@ -440,13 +440,13 @@ WHERE {
     }
 
     const resource = dataset.getResource(contact["@id"]!);
-    if (resource.isError || resource.type === "InvalidIdentifierResource") {
+    if (resource.isError || resource.type === "InvalidIdentifierResouce") {
       throw new Error(`Failed to create resource`);
     }
 
     const contactObj = changeData(contact, resource);
 
-    await this.persistSocialContact(session, changes, commitData, changeData, resource, contactObj);
+    await this.persistSocialContact(session, changes as Partial<SocialContact>, commitData, changeData, resource, contactObj as SocialContact);
   }
 }
 

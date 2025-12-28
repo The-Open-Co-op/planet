@@ -31,6 +31,7 @@ import {useContactView} from "@/hooks/contacts/useContactView";
 import {VouchesAndPraises} from "@/components/contacts/VouchesAndPraises";
 import {dataService} from "@/services/dataService";
 import {Block, CheckCircle} from '@mui/icons-material';
+import {SocialContact} from '@/.ldo/contact.typings';
 
 const ContactViewPage = () => {
   const {id} = useParams<{ id: string }>();
@@ -46,7 +47,6 @@ const ContactViewPage = () => {
 
   const {
     contact,
-    contactGroups,
     isLoading,
     error,
     toggleHumanityVerification,
@@ -116,7 +116,7 @@ const ContactViewPage = () => {
       try {
         await dataService.sendConnectionRequest(id);
         // Show success message or navigate back
-        alert(`Connection request sent to ${resolveFrom(contact, 'name')?.value || 'contact'}!`);
+        alert(`Connection request sent to ${resolveFrom(contact as SocialContact, 'name')?.value || 'contact'}!`);
         handleBack();
       } catch (error) {
         console.error('Failed to send connection request:', error);
@@ -231,7 +231,7 @@ const ContactViewPage = () => {
           }
           sx={{ mb: 3 }}
         >
-          You have blocked this contact. Connection requests from {resolveFrom(contact, 'name')?.value || 'this contact'} are currently blocked.
+          You have blocked this contact. Connection requests from {resolveFrom(contact as SocialContact, 'name')?.value || 'this contact'} are currently blocked.
         </Alert>
       )}
       
@@ -251,7 +251,7 @@ const ContactViewPage = () => {
           }
           sx={{ mb: 3 }}
         >
-          You can now send a connection request to {resolveFrom(contact, 'name')?.value || 'this contact'}.
+          You can now send a connection request to {resolveFrom(contact as SocialContact, 'name')?.value || 'this contact'}.
         </Alert>
       )}
       
@@ -263,7 +263,6 @@ const ContactViewPage = () => {
           <>
             <ContactViewHeader
               contact={contact}
-              contactGroups={contactGroups}
               isLoading={isLoading}
               isEditing={isEditing}
               showTags={false}
@@ -296,7 +295,7 @@ const ContactViewPage = () => {
                   <>
                     <Tabs 
                       value={tabValue} 
-                      onChange={(e, newValue) => setTabValue(newValue)}
+                      onChange={(_, newValue) => setTabValue(newValue)}
                       sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}
                       variant="fullWidth"
                       centered
@@ -332,7 +331,6 @@ const ContactViewPage = () => {
             {/* Contact Actions */}
             <ContactActions
               contact={contact}
-              onInviteToPLANET={handleInviteToPLANET}
               onConfirmHumanity={toggleHumanityVerification}
             />
           </>
@@ -374,15 +372,15 @@ const ContactViewPage = () => {
                         flexShrink: 0
                       }}
                     >
-                      {resolveFrom(contact, 'name')?.value?.charAt(0) || '?'}
+                      {resolveFrom(contact as SocialContact, 'name')?.value?.charAt(0) || '?'}
                     </Box>
                     <Box sx={{minWidth: 0}}>
                       <Typography variant="body2" sx={{fontWeight: 600}}>
-                        LinkedIn Import - {resolveFrom(contact, 'name')?.value || 'Unknown'}
+                        LinkedIn Import - {resolveFrom(contact as SocialContact, 'name')?.value || 'Unknown'}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
                         Imported from LinkedIn
-                        • {resolveFrom(contact, 'organization')?.position || ''} at {resolveFrom(contact, 'organization')?.value || ''}
+                        • {resolveFrom(contact as SocialContact, 'organization')?.position || ''} at {resolveFrom(contact as SocialContact, 'organization')?.value || ''}
                       </Typography>
                     </Box>
                   </Box>

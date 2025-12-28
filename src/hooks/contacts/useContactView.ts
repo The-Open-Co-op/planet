@@ -1,6 +1,5 @@
 import { dataService } from '@/services/dataService';
 import type { Contact } from '@/types/contact';
-import type { Group } from '@/types/group';
 import type { RCardType, RCardAssignment } from '@/types/rcard';
 import { useNextGraphAuth, useResource, useSubject } from '@/lib/nextgraph';
 import { isNextGraphEnabled } from '@/utils/featureFlags';
@@ -66,40 +65,10 @@ const useContactData = (nuri: string | null) => {
 };
 
 export const useContactView = (id: string | null) => {
-  const [contactGroups, setContactGroups] = useState<Group[]>([]);
   const [humanityDialogOpen, setHumanityDialogOpen] = useState(false);
-  const [groupsError, setGroupsError] = useState<string | null>(null);
 
   const { contact, isLoading: contactLoading, error: contactError, setContact, refreshContact } = useContactData(id);
 
-  // Load and filter groups when contact changes
-  useEffect(() => {
-    const loadGroups = async () => {
-      if (!contact) {
-        setContactGroups([]);
-        return;
-      }
-
-      setGroupsError(null);
-
-      try {
-        const allGroups = await dataService.getGroups();
-
-        // Filter groups that the contact belongs to
-        const contactGroupsData = contact.internalGroup;
-        const contactGroupIds = contactGroupsData ? Array.from(contactGroupsData).map(group => group.value) : [];
-        const userGroups = allGroups.filter(group =>
-          contactGroupIds.includes(group.id)
-        );
-        setContactGroups(userGroups);
-      } catch (err) {
-        console.error('Failed to load groups:', err);
-        setGroupsError('Failed to load groups');
-      }
-    };
-
-    loadGroups();
-  }, [contact]);
 
   const toggleHumanityVerification = useCallback(async () => {
     if (!contact) return;
@@ -152,7 +121,6 @@ export const useContactView = (id: string | null) => {
       // In a real app, this would make an API call
       await dataService.updateContact(contact['@id'] || '', {
         planetStatus: {
-          '@id': `nao-status-${contact['@id']}`,
           value: 'invited'
         }
       });
@@ -246,13 +214,12 @@ export const useContactView = (id: string | null) => {
   return {
     // Data
     contact,
-    contactGroups,
 
     // Loading states
     isLoading: contactLoading,
 
     // Errors
-    error: contactError || groupsError,
+    error: contactError,
 
     // UI state
     humanityDialogOpen,

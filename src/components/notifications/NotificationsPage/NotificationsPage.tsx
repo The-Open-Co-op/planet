@@ -21,7 +21,7 @@ export const NotificationsPage = forwardRef<HTMLDivElement, NotificationsPagePro
       total: 0,
       unread: 0,
       pending: 0,
-      byType: { vouch: 0, praise: 0, connection: 0, group_invite: 0, message: 0, system: 0 }
+      byType: { vouch: 0, praise: 0, connection: 0, system: 0 }
     });
     const [isLoading, setIsLoading] = useState(true);
 

@@ -15,6 +15,7 @@ import type { Contact } from '@/types/contact';
 import { InvitationDetails } from './InvitationDetails';
 import { InvitationActions } from './InvitationActions';
 import {resolveFrom} from "@/utils/contactUtils";
+import type {SocialContact} from '@/.ldo/contact.typings';
 
 export interface InvitationPageProps {
   className?: string;
@@ -54,7 +55,7 @@ export const InvitationPage = forwardRef<HTMLDivElement, InvitationPageProps>(
         if (inviteeNuri) {
           try {
             const contact = (await dataService.getContact(inviteeNuri))!;
-            inviteeName = resolveFrom(contact, "name")?.value || "";
+            inviteeName = resolveFrom(contact as SocialContact, "name")?.value || "";
             if (contact?.planetStatus?.value === 'member') {
               isExistingMember = true;
               console.log(`${inviteeName} NAO status:`, contact.planetStatus);
@@ -203,7 +204,7 @@ export const InvitationPage = forwardRef<HTMLDivElement, InvitationPageProps>(
         try {
           const contacts: Contact[] = await dataService.getContacts();
           const contact = contacts.find(c => {
-            const name = resolveFrom(c, "name");
+            const name = resolveFrom(c as SocialContact, "name");
             return name?.value?.toLowerCase() === inviteeName.toLowerCase()
             }
           );

@@ -97,8 +97,6 @@ export const NotificationsList = forwardRef<HTMLDivElement, NotificationsListPro
           return <Group sx={{ fontSize: 20, color: 'info.main' }} />;
         case 'praise':
           return <Favorite sx={{ fontSize: 20, color: '#d81b60' }} />;
-        case 'group_invite':
-          return <Group sx={{ fontSize: 20, color: 'success.main' }} />;
         case 'message':
           return <Message sx={{ fontSize: 20, color: 'info.main' }} />;
         case 'system':

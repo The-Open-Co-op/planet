@@ -6,7 +6,9 @@ export interface SortParams {
   sortDirection?: 'asc' | 'desc';
 }
 
-export interface Contact extends SocialContact {
+export interface Contact extends Omit<SocialContact, 'createdAt' | 'updatedAt'> {
+  createdAt?: string | SocialContact['createdAt'];
+  updatedAt?: string | SocialContact['updatedAt'];
   humanityConfidenceScore?: number;
   vouchesSent?: number;
   vouchesReceived?: number;
@@ -15,6 +17,7 @@ export interface Contact extends SocialContact {
   relationshipCategory?: 'friends_family' | 'community' | 'business' | string;
   rCardAssignments?: RCardAssignment[];
   lastInteractionAt?: Date;
+  lastInteraction?: string;
   interactionCount?: number;
   recentInteractionScore?: number;
   sharedTagsCount?: number;

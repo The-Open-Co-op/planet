@@ -23,6 +23,7 @@ import { RCardSelectionModal } from '@/components/notifications/RCardSelectionMo
 import type { Contact } from '@/types/contact';
 import type { Notification } from '@/types/notification';
 import {formatDate} from "@/utils/dateHelpers";
+import type {SocialContact} from '@/.ldo/contact.typings';
 
 export interface RejectedVouchesAndPraisesProps {
   contact?: Contact;
@@ -98,7 +99,7 @@ export const RejectedVouchesAndPraises = ({ contact, onAcceptanceChanged }: Reje
       <Box sx={{ mb: 3 }}>
         <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
           <Cancel sx={{ color: 'error.main', fontSize: 20 }} />
-          Rejected from {resolveFrom(contact, 'name')?.value?.split(' ')[0] || 'Contact'}
+          Rejected from {resolveFrom(contact as SocialContact, 'name')?.value?.split(' ')[0] || 'Contact'}
         </Typography>
         
         <Card variant="outlined" sx={{ borderColor: alpha(theme.palette.error.main, 0.3) }}>
@@ -193,7 +194,7 @@ export const RejectedVouchesAndPraises = ({ contact, onAcceptanceChanged }: Reje
           setPendingNotificationId(null);
         }}
         onSelect={handleRCardSelect}
-        contactName={resolveFrom(contact, 'name')?.value || undefined}
+        contactName={resolveFrom(contact as SocialContact, 'name')?.value || undefined}
         isVouch={pendingNotificationType === 'vouch'}
         multiSelect={true}
       />

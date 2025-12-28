@@ -4,6 +4,7 @@ import {
   Box,
 } from '@mui/material';
 import type {Contact} from '@/types/contact';
+import type {SocialContact} from '@/.ldo/contact.typings';
 import {ContactKeysWithHidden, setUpdatedTime} from '@/utils/contactUtils';
 import {getVisibleItems} from '@/utils/contactUtils';
 import {dataset, useLdo} from "@/lib/nextgraph";
@@ -40,8 +41,6 @@ export const MultiPropertyWithVisibility = <K extends ResolvableKey>({
                                                                        placeholder,
                                                                        validateType = "text"
                                                                      }: MultiPropertyWithVisibilityProps<K>) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, setUpdateTrigger] = useState(0);
   const [editingValues, setEditingValues] = useState<Record<string, string>>({});
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [newItemValue, setNewItemValue] = useState('');
@@ -105,7 +104,7 @@ export const MultiPropertyWithVisibility = <K extends ResolvableKey>({
 
     if (isNextgraph) {
       const resource = dataset.getResource(contact["@id"]!);
-      if (!resource.isError && resource.type !== "InvalidIdentifierResource") {
+      if (!resource.isError && resource.type !== "InvalidIdentifierResouce") {
         const changedContactObj = changeData(contact, resource);
         editPropertyWithUserSource(changedContactObj);
         commitData(changedContactObj);
@@ -143,7 +142,7 @@ export const MultiPropertyWithVisibility = <K extends ResolvableKey>({
 
     if (isNextgraph) {
       const resource = dataset.getResource(contact["@id"]!);
-      if (!resource.isError && resource.type !== "InvalidIdentifierResource") {
+      if (!resource.isError && resource.type !== "InvalidIdentifierResouce") {
         const changedContactObj = changeData(contact, resource);
         addNewPropertyWithUserSource(changedContactObj);
         commitData(changedContactObj);
@@ -169,7 +168,7 @@ export const MultiPropertyWithVisibility = <K extends ResolvableKey>({
       const itemToRemove = itemsArray.find(item => item["@id"] === itemId);
       
       if (itemToRemove) {
-        fieldSet.delete(itemToRemove);
+        fieldSet.delete(itemToRemove as any);
         setUpdatedTime(contactObj);
       }
 
@@ -178,7 +177,7 @@ export const MultiPropertyWithVisibility = <K extends ResolvableKey>({
 
     if (isNextgraph) {
       const resource = dataset.getResource(contact["@id"]!);
-      if (!resource.isError && resource.type !== "InvalidIdentifierResource") {
+      if (!resource.isError && resource.type !== "InvalidIdentifierResouce") {
         const changedContactObj = changeData(contact, resource);
         removePropertyItem(changedContactObj);
         commitData(changedContactObj);
@@ -220,7 +219,7 @@ export const MultiPropertyWithVisibility = <K extends ResolvableKey>({
 
     if (isNextgraph) {
       const resource = dataset.getResource(contact["@id"]!);
-      if (!resource.isError && resource.type !== "InvalidIdentifierResource") {
+      if (!resource.isError && resource.type !== "InvalidIdentifierResouce") {
         const changedContactObj = changeData(contact, resource);
         updateTypeWithUserSource(changedContactObj);
         commitData(changedContactObj);
@@ -322,7 +321,7 @@ export const MultiPropertyWithVisibility = <K extends ResolvableKey>({
     return null;
   }
 
-  const visibleItems = getVisibleItems(contact, propertyKey);
+  const visibleItems = getVisibleItems(contact as SocialContact, propertyKey);
 
   if (visibleItems.length === 0 && !showManageButton && !isEditing) return null;
 

@@ -59,7 +59,6 @@ export const ChipsVariant = ({
         <MultiPropertyItem
           itemId={itemId}
           value={currentValue}
-          source={item.source}
           onChange={(e) => onInputChange(itemId, e.target.value)}
           onBlur={() => onBlur(itemId)}
           placeholder={placeholder ?? ""}
@@ -97,7 +96,6 @@ export const ChipsVariant = ({
       {isAddingNew && <MultiPropertyItem
         itemId={visibleItems.length.toString()}
         value={newItemValue}
-        source={"user"}
         onChange={(e) => onNewItemValueChange(e.target.value)}
         onBlur={() => {
           if (newItemValue.trim()) {

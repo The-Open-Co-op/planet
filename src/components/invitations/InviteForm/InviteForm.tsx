@@ -12,6 +12,7 @@ import {
 import { PersonAdd } from '@mui/icons-material';
 import { DEFAULT_RCARDS } from '@/types/notification';
 import type { Group } from '@/types/group';
+import type { SocialContact } from '@/.ldo/contact.typings';
 import { dataService } from '@/services/dataService';
 import { ContactSelector } from './ContactSelector';
 import type { InviteFormData, InviteFormState } from './types';
@@ -62,8 +63,8 @@ export const InviteForm = forwardRef<HTMLDivElement, InviteFormProps>(
         dataService.getContact(inviteeNuri).then(prefilledContact => {
           setFormData(prev => ({
             ...prev,
-            inviteeName: resolveFrom(prefilledContact, "name")?.value || "",
-            inviteeEmail: resolveFrom(prefilledContact, "email")?.value || "",
+            inviteeName: resolveFrom(prefilledContact as SocialContact, "name")?.value || "",
+            inviteeEmail: resolveFrom(prefilledContact as SocialContact, "email")?.value || "",
           }));
         });
       }

@@ -27,7 +27,7 @@ import {
   KeyboardArrowDown,
   ArrowBack
 } from '@mui/icons-material';
-import {useContacts} from '@/hooks/contacts/useContacts';
+import {useContacts, type ContactsFilters} from '@/hooks/contacts/useContacts';
 import {useContactDragDrop} from '@/hooks/contacts/useContactDragDrop';
 import {useRelationshipCategories} from '@/hooks/useRelationshipCategories';
 import {
@@ -139,10 +139,14 @@ const ContactListPage = () => {
       }
     };
 
-    window.addEventListener('contactCategorized', handleContactCategorized as EventListener);
+    window.addEventListener('contactCategorized', ((event: Event) => {
+      handleContactCategorized(event as CustomEvent);
+    }) as EventListener);
     
     return () => {
-      window.removeEventListener('contactCategorized', handleContactCategorized as EventListener);
+      window.removeEventListener('contactCategorized', ((event: Event) => {
+        handleContactCategorized(event as CustomEvent);
+      }) as EventListener);
     };
   }, [updateContact, reloadContacts, contacts]);
 
@@ -211,15 +215,19 @@ const ContactListPage = () => {
       delete newFilters.searchQuery;
       clearFilters();
       Object.entries(newFilters).forEach(([key, val]) => {
-        if (key !== 'searchQuery') addFilter(key, val);
+        if (key !== 'searchQuery') addFilter(key as keyof ContactsFilters, val);
       });
     }
   };
 
   // Manage mode handlers
   const handleToggleManageMode = () => {
-    setIsManageMode(!isManageMode);
+    const newManageMode = !isManageMode;
+    setIsManageMode(newManageMode);
     setSelectedContacts([]);
+    
+    // Filter out ME contact when in manage mode
+    addFilter('excludeMe', newManageMode);
   };
 
   // Merge functionality (keeping existing logic)
@@ -555,11 +563,8 @@ const ContactListPage = () => {
         />
 
         <FloatingActions
-          isMultiSelectMode={isManageMode}
           isManualMergeMode={isManualMergeMode}
-          selectedContactsCount={selectedContacts.length}
           selectedContactsForMergeCount={selectedContactsForMerge.length}
-          onCreateGroup={() => {}} // Remove group functionality
           onMergeSelected={() => {}} // TODO: Implement merge selected
           onCancelManualMerge={() => setIsManualMergeMode(false)}
         />

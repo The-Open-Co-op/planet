@@ -11,6 +11,7 @@ import {
   MoreVert,
 } from '@mui/icons-material';
 import type {Contact} from '@/types/contact';
+import type {SocialContact} from '@/.ldo/contact.typings';
 import {ContactKeysWithSelected, setUpdatedTime, updatePropertyFlag} from '@/utils/contactUtils';
 import {resolveFrom} from '@/utils/contactUtils';
 import {getSourceIcon, getSourceLabel} from "@/components/contacts/sourcesHelper";
@@ -65,7 +66,7 @@ export const PropertyWithSources = <K extends ResolvableKey>({
   const [currentItemId, setCurrentItemId] = useState<string>();
 
   const handleChange = useCallback(() => {
-    const currentItem = ((contact && resolveFrom(contact, propertyKey)) ?? {}) as Record<string, string>;
+    const currentItem = ((contact && resolveFrom(contact as SocialContact, propertyKey)) ?? {}) as Record<string, string>;
     setCurrentItemId(currentItem["@id"]);
     const value = currentItem[subKey] ?? "";
     setCurrentValue(value);
@@ -126,7 +127,7 @@ export const PropertyWithSources = <K extends ResolvableKey>({
 
     if (isNextgraph && !contact.isDraft) {
       const resource = dataset.getResource(contact["@id"]!);
-      if (!resource.isError && resource.type !== "InvalidIdentifierResource") {
+      if (!resource.isError && resource.type !== "InvalidIdentifierResouce") {
         const changedContactObj = changeData(contact, resource);
 
         editPropertyWithUserSource(changedContactObj);
@@ -169,13 +170,13 @@ export const PropertyWithSources = <K extends ResolvableKey>({
 
     if (isNextgraph) {
       const resource = dataset.getResource(contact["@id"]!);
-      if (!resource.isError && resource.type !== "InvalidIdentifierResource") {
+      if (!resource.isError && resource.type !== "InvalidIdentifierResouce") {
         const changedContactObj = changeData(contact, resource);
-        updatePropertyFlag(changedContactObj, propertyKey, item["@id"], "selected");
+        updatePropertyFlag(changedContactObj as SocialContact, propertyKey, item["@id"], "selected");
         commitData(changedContactObj);
       }
     } else {
-      updatePropertyFlag(contact, propertyKey, item["@id"], "selected");
+      updatePropertyFlag(contact as SocialContact, propertyKey, item["@id"], "selected");
     }
 
     handleClose();

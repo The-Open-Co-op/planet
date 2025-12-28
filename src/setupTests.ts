@@ -10,7 +10,7 @@ jest.mock('@/lib/nextgraph', () => ({
   dataset: {
     getResource: jest.fn(() => ({
       isError: true,
-      type: 'InvalidIdentifierResource'
+      type: 'InvalidIdentifierResouce'
     }))
   },
   useLdo: jest.fn(() => ({

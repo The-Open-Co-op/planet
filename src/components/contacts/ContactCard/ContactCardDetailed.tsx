@@ -7,7 +7,7 @@ import {Avatar, IconButton} from "@/components/ui";
 import type {Contact} from "@/types/contact";
 import {resolveFrom} from "@/utils/contactUtils";
 import {Theme} from "@mui/material/styles";
-import {Email, Name, Organization, PhoneNumber} from "@/.ldo/contact.typings";
+import {Email, Name, Organization, PhoneNumber, SocialContact} from "@/.ldo/contact.typings";
 import {iconFilter} from "@/hooks/contacts/useContacts";
 import {formatPhone} from "@/utils/phoneHelper";
 import type {RCardType} from "@/types/rcard";
@@ -143,11 +143,11 @@ export const ContactCardDetailed = forwardRef<
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-    const name = resolveFrom(contact, 'name');
-    const email = resolveFrom(contact, 'email');
-    const phoneNumber = resolveFrom(contact, 'phoneNumber');
-    const photo = resolveFrom(contact, 'photo');
-    const organization = resolveFrom(contact, 'organization');
+    const name = resolveFrom(contact as SocialContact, 'name');
+    const email = resolveFrom(contact as SocialContact, 'email');
+    const phoneNumber = resolveFrom(contact as SocialContact, 'phoneNumber');
+    const photo = resolveFrom(contact as SocialContact, 'photo');
+    const organization = resolveFrom(contact as SocialContact, 'organization');
 
     const vouches = (contact.vouchesSent || 0) + (contact.vouchesReceived || 0);
     const praises = (contact.praisesSent || 0) + (contact.praisesReceived || 0);
@@ -204,7 +204,7 @@ export const ContactCardDetailed = forwardRef<
       return assignedCards.map((assignment) => (
         <IconButton
           key={assignment.cardType}
-          variant="card-assignment"
+          variant="neutral"
           size={isMobile ? "medium" : "large"}
           onClick={() => onSetIconFilter("cardAssignmentFilter" as iconFilter, assignment.cardType)}
           info={assignment.cardType}

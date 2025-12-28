@@ -6,7 +6,6 @@ import {useContacts} from '@/hooks/contacts/useContacts';
 import {useContactDragDrop} from '@/hooks/contacts/useContactDragDrop';
 import {ContactCard, MergeDialogs} from '@/components/contacts';
 import {Grid} from '@mui/system';
-import {Waypoint} from 'react-waypoint';
 import {useMergeContacts} from "@/hooks/contacts/useMergeContacts";
 import {useRelationshipCategories} from '@/hooks/useRelationshipCategories';
 
@@ -21,11 +20,8 @@ const ManageContactsPage = () => {
     contacts,
     contactNuris,
     isLoading,
-    isLoadingMore,
     error,
     addFilter,
-    hasMore,
-    loadMore,
     updateContact,
     reloadContacts
   } = useContacts();
@@ -428,10 +424,7 @@ const ManageContactsPage = () => {
               </Grid>
             ))}
 
-            {/* Infinite scroll waypoint */}
-            {hasMore && !isLoading && !isLoadingMore && (
-              <Waypoint onEnter={loadMore}/>
-            )}
+            {/* Infinite scroll removed */}
           </Grid>
         )}
         </Box>

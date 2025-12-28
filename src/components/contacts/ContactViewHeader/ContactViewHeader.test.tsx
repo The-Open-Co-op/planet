@@ -3,6 +3,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { createTheme } from '@mui/material/styles';
 import { ContactViewHeader } from './ContactViewHeader';
 import type { Contact } from '@/types/contact';
+import type { SocialContact } from '@/.ldo/contact.typings';
 import {transformRawContact} from "@/mocks/contacts";
 import { BasicLdSet } from '@/lib/ldo/BasicLdSet';
 import { resolveFrom } from '@/utils/contactUtils';
@@ -487,11 +488,11 @@ describe('ContactViewHeader', () => {
 
     it('should resolve from correct source based on selection', () => {
       // Test the resolveFrom function directly
-      const nameResult = resolveFrom(mockMultiSourceContact, 'name');
+      const nameResult = resolveFrom(mockMultiSourceContact as SocialContact, 'name');
       expect(nameResult?.value).toBe('Alex Lion Yes!');
       expect(nameResult?.source).toBe('linkedin');
 
-      const orgResult = resolveFrom(mockMultiSourceContact, 'organization');
+      const orgResult = resolveFrom(mockMultiSourceContact as SocialContact, 'organization');
       expect(orgResult?.source).toBe('linkedin');
     });
 
@@ -512,7 +513,7 @@ describe('ContactViewHeader', () => {
         ])
       };
 
-      const emailResult = resolveFrom(contactWithHidden, 'email');
+      const emailResult = resolveFrom(contactWithHidden as SocialContact, 'email');
       expect(emailResult?.value).toBe('visible@email.com');
       expect(emailResult?.source).toBe('Android Phone');
     });
@@ -537,7 +538,7 @@ describe('ContactViewHeader', () => {
       };
 
       // Should prefer GreenCheck over linkedin over Gmail based on policy
-      const nameResult = resolveFrom(contactNoSelection, 'name');
+      const nameResult = resolveFrom(contactNoSelection as SocialContact, 'name');
       expect(nameResult?.value).toBe('GreenCheck Name');
       expect(nameResult?.source).toBe('GreenCheck');
     });

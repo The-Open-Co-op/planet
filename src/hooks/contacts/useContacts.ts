@@ -1,4 +1,4 @@
-import {useState, useEffect, useCallback, useMemo} from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import {isNextGraphEnabled} from '@/utils/featureFlags';
 import {dataService} from '@/services/dataService';
 import type {Contact, SortParams} from '@/types/contact';
@@ -6,6 +6,7 @@ import {nextgraphDataService} from "@/services/nextgraphDataService";
 import {useNextGraphAuth} from "@/lib/nextgraph";
 import {NextGraphAuth} from "@/types/nextgraph";
 import {resolveFrom} from '@/utils/contactUtils';
+import type {SocialContact} from '@/.ldo/contact.typings';
 import {useSaveContacts} from "@/hooks/contacts/useSaveContacts.ts";
 
 export interface ContactsFilters extends SortParams {
@@ -16,6 +17,7 @@ export interface ContactsFilters extends SortParams {
   groupFilter?: string;
   currentUserGroupIds?: string[];
   cardAssignmentFilter?: string;
+  excludeMe?: boolean;
 }
 
 export type iconFilter = 'relationshipFilter' | 'planetStatusFilter' | 'accountFilter' | 'vouchFilter' | 'praiseFilter' | 'cardAssignmentFilter';
@@ -78,10 +80,13 @@ export const useContacts = (): ContactsReturn => {
     }));
   }, []);
 
-  // Memoize expensive filtering operations
-  const filteredContacts = useMemo(() => {
-    if (!contacts.length) return [];
+
+
+  const loadMockContacts = useCallback(async (): Promise<string[]> => {
+    const allContacts = await dataService.getContacts();
+    setContacts(allContacts);
     
+    // Apply filters and sorting inline since we can't use memoized values during loading
     const {
       searchQuery = '',
       relationshipFilter = 'all',
@@ -90,24 +95,30 @@ export const useContacts = (): ContactsReturn => {
       groupFilter = 'all',
       cardAssignmentFilter = 'all',
       sortBy = 'name',
-      currentUserGroupIds = []
+      sortDirection = 'asc',
+      currentUserGroupIds = [],
+      excludeMe = false
     } = filters;
 
-    return contacts.filter(contact => {
+    const filtered = allContacts.filter(contact => {
+      // Filter out ME contact if excludeMe is true
+      if (excludeMe && contact.isMe) {
+        return false;
+      }
+      
       // Quick exit for common cases
       if (searchQuery === '' && relationshipFilter === 'all' && planetStatusFilter === 'all' && 
           accountFilter === 'all' && groupFilter === 'all' && cardAssignmentFilter === 'all' &&
-          sortBy !== 'vouchTotal' && sortBy !== 'praiseTotal') {
+          sortBy !== 'vouchTotal' && sortBy !== 'praiseTotal' && !excludeMe) {
         return true;
       }
 
-      // Search filter (only if needed)
+      // Apply filters (same logic as memoized version)
       if (searchQuery) {
-        const name = resolveFrom(contact, 'name');
-        const email = resolveFrom(contact, 'email');
-        const organization = resolveFrom(contact, 'organization');
-        const address = resolveFrom(contact, 'address');
-
+        const name = resolveFrom(contact as SocialContact, 'name');
+        const email = resolveFrom(contact as SocialContact, 'email');
+        const organization = resolveFrom(contact as SocialContact, 'organization');
+        const address = resolveFrom(contact as SocialContact, 'address');
         const searchLower = searchQuery.toLowerCase();
         const matchesSearch = 
           name?.value?.toLowerCase().includes(searchLower) ||
@@ -116,11 +127,9 @@ export const useContacts = (): ContactsReturn => {
           organization?.position?.toLowerCase().includes(searchLower) ||
           address?.region?.toLowerCase().includes(searchLower) ||
           address?.country?.toLowerCase().includes(searchLower);
-        
         if (!matchesSearch) return false;
       }
 
-      // Other filters (only if not 'all')
       if (relationshipFilter !== 'all') {
         const matchesRelationship = 
           (relationshipFilter === 'undefined' && !contact.relationshipCategory) ||
@@ -152,7 +161,6 @@ export const useContacts = (): ContactsReturn => {
         if (!contact.rCardAssignments?.some(assignment => assignment.cardType === cardAssignmentFilter)) return false;
       }
 
-      // Vouch/praise filters
       if (sortBy === 'vouchTotal') {
         if (((contact.vouchesSent || 0) + (contact.vouchesReceived || 0)) <= 0) return false;
       }
@@ -163,105 +171,30 @@ export const useContacts = (): ContactsReturn => {
 
       return true;
     });
-  }, [contacts, filters]);
 
-  // Memoize sorted contacts to avoid expensive sorting on every render
-  const sortedContacts = useMemo(() => {
-    if (!filteredContacts.length) return [];
-    
-    const {
-      sortBy = 'name',
-      sortDirection = 'asc'
-    } = filters;
-    
-    // Create a copy to avoid mutating the original array
-    const contactsCopy = [...filteredContacts];
-    
-    // Sort the filtered results
-    contactsCopy.sort((a, b) => {
-      // Always put the "me" contact first
+    // Apply sorting inline
+    filtered.sort((a, b) => {
       if (a.isMe && !b.isMe) return -1;
       if (!a.isMe && b.isMe) return 1;
       
       let compareValue = 0;
-
       switch (sortBy) {
-        case 'name': {
-          const aName = resolveFrom(a, 'name')?.value || '';
-          const bName = resolveFrom(b, 'name')?.value || '';
-          compareValue = aName.localeCompare(bName);
+        case 'name':
+          compareValue = (resolveFrom(a as SocialContact, 'name')?.value || '').localeCompare(resolveFrom(b as SocialContact, 'name')?.value || '');
           break;
-        }
-        case 'organization': {
-          const aOrganization = resolveFrom(a, 'organization')?.value || '';
-          const bOrganization = resolveFrom(b, 'organization')?.value || '';
-          compareValue = aOrganization.localeCompare(bOrganization);
+        case 'organization':
+          compareValue = (resolveFrom(a as SocialContact, 'organization')?.value || '').localeCompare(resolveFrom(b as SocialContact, 'organization')?.value || '');
           break;
-        }
-        case 'planetStatus': {
-          const statusOrder = {'member': 0, 'invited': 1, 'not_invited': 2};
-          const aStatus = a.planetStatus?.value as keyof typeof statusOrder;
-          const bStatus = b.planetStatus?.value as keyof typeof statusOrder;
-          compareValue = (statusOrder[aStatus] || 3) - (statusOrder[bStatus] || 3);
-          break;
-        }
-        case 'groupCount': {
-          const aGroups = a.internalGroup?.size || 0;
-          const bGroups = b.internalGroup?.size || 0;
-          compareValue = aGroups - bGroups;
-          break;
-        }
-        case 'lastInteractionAt': {
-          const aDate = a.lastInteractionAt?.getTime() || 0;
-          const bDate = b.lastInteractionAt?.getTime() || 0;
-          compareValue = aDate - bDate;
-          break;
-        }
-        case 'vouchTotal': {
-          const aVouches = (a.vouchesSent || 0) + (a.vouchesReceived || 0);
-          const bVouches = (b.vouchesSent || 0) + (b.vouchesReceived || 0);
-          compareValue = aVouches - bVouches;
-          break;
-        }
-        case 'praiseTotal': {
-          const aPraises = (a.praisesSent || 0) + (a.praisesReceived || 0);
-          const bPraises = (b.praisesSent || 0) + (b.praisesReceived || 0);
-          compareValue = aPraises - bPraises;
-          break;
-        }
-        // Simplified mostActive case - removed expensive calculations
-        case 'mostActive': {
-          const aActivity = (a.interactionCount || 0) + (a.recentInteractionScore || 0);
-          const bActivity = (b.interactionCount || 0) + (b.recentInteractionScore || 0);
-          compareValue = bActivity - aActivity;
-          break;
-        }
-        // Simplified sharedTags case
-        case 'sharedTags': {
-          const aShared = a.sharedTagsCount || 0;
-          const bShared = b.sharedTagsCount || 0;
-          compareValue = bShared - aShared;
-          break;
-        }
         default:
           compareValue = 0;
       }
-
       return sortDirection === 'asc' ? compareValue : -compareValue;
     });
     
-    return contactsCopy;
-  }, [filteredContacts, filters]);
+    setTotalCount(filtered.length);
+    return filtered.map(contact => contact['@id'] || '');
 
-  const loadMockContacts = useCallback(async (): Promise<string[]> => {
-    const allContacts = await dataService.getContacts();
-    setContacts(allContacts);
-    setTotalCount(sortedContacts.length);
-    
-    // Return contact IDs from pre-sorted and filtered contacts
-    return sortedContacts.map(contact => contact['@id'] || '');
-
-  }, [sortedContacts]);
+  }, [filters]);
 
   const loadNextGraphContacts = useCallback(async (): Promise<string[]> => {
     if (!session) {

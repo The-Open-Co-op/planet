@@ -7,6 +7,7 @@ import {isNextGraphEnabled} from "@/utils/featureFlags.ts";
 import {useSaveContacts} from "@/hooks/contacts/useSaveContacts.ts";
 import {useCallback, useEffect, useState} from "react";
 import {Contact} from "@/types/contact.ts";
+import type {SocialContact} from '@/.ldo/contact.typings';
 import {contactCommonProperties, contactLdSetProperties} from "@/utils/contactUtils.ts";
 
 const CreateContactPage = () => {
@@ -34,7 +35,7 @@ const CreateContactPage = () => {
     //ldo issue
     if (isNextgraph) {
       contactLdSetProperties.forEach(propertyKey => {
-        (contact[propertyKey]?.toArray() as any[]).forEach(el => delete el["@id"]);
+        ((contact as SocialContact)[propertyKey] as any)?.toArray()?.forEach((el: any) => delete el["@id"]);
       });
       contactCommonProperties.forEach(propertyKey => {
         if (contact[propertyKey]) {

@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { ContactActions } from './ContactActions';
 import type { Contact } from '@/types/contact';
 import {transformRawContact} from "@/mocks/contacts";
@@ -30,7 +30,6 @@ const mockContact: Contact = transformRawContact({
 });
 
 describe('ContactActions', () => {
-  const mockOnInviteToPLANET = jest.fn();
   const mockOnConfirmHumanity = jest.fn();
 
   beforeEach(() => {
@@ -42,7 +41,6 @@ describe('ContactActions', () => {
       const { container } = render(
         <ContactActions
           contact={null}
-          onInviteToPLANET={mockOnInviteToPLANET}
           onConfirmHumanity={mockOnConfirmHumanity}
         />
       );
@@ -54,7 +52,6 @@ describe('ContactActions', () => {
       render(
         <ContactActions
           contact={mockContact}
-          onInviteToPLANET={mockOnInviteToPLANET}
           onConfirmHumanity={mockOnConfirmHumanity}
         />
       );
@@ -77,7 +74,6 @@ describe('ContactActions', () => {
       render(
         <ContactActions
           contact={invitedContact}
-          onInviteToPLANET={mockOnInviteToPLANET}
           onConfirmHumanity={mockOnConfirmHumanity}
         />
       );
@@ -100,7 +96,6 @@ describe('ContactActions', () => {
       render(
         <ContactActions
           contact={memberContact}
-          onInviteToPLANET={mockOnInviteToPLANET}
           onConfirmHumanity={mockOnConfirmHumanity}
         />
       );
@@ -114,13 +109,11 @@ describe('ContactActions', () => {
       render(
         <ContactActions
           contact={mockContact}
-          onInviteToPLANET={mockOnInviteToPLANET}
           onConfirmHumanity={mockOnConfirmHumanity}
         />
       );
 
-      fireEvent.click(screen.getByText('Invite to PLANET'));
-      expect(mockOnInviteToPLANET).toHaveBeenCalledTimes(1);
+      // Invite to PLANET functionality removed
     });
   });
 
@@ -129,7 +122,6 @@ describe('ContactActions', () => {
       render(
         <ContactActions
           contact={mockContact}
-          onInviteToPLANET={mockOnInviteToPLANET}
           onConfirmHumanity={mockOnConfirmHumanity}
         />
       );
