@@ -20,13 +20,13 @@ import AppsPage from '@/pages/AppsPage';
 import { AccountPage } from '@/components/account/AccountPage';
 import { NotificationsPage } from '@/components/notifications/NotificationsPage';
 import { PhoneVerificationPage } from '@/components/account/PhoneVerificationPage';
-import { createWireframeTheme } from '@/theme/wireframeTheme';
+import { createPlanetTheme } from '@/theme/planetTheme';
 import { Box, Typography } from '@mui/material';
 import { Button } from '@/components/ui';
 import { isNextGraphEnabled } from '@/utils/featureFlags';
 import CreateContactPage from "@/pages/CreateContactPage.tsx";
 
-const theme = createWireframeTheme();
+const theme = createPlanetTheme();
 
 const NextGraphAppContent = () => {
   const nextGraphAuth = useNextGraphAuth() as unknown as NextGraphAuth | undefined;
