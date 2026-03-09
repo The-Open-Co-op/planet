@@ -1,8 +1,8 @@
 # PLANET
 
-**A Co-Operating System for a digital life you actually own.**
+**A Co-Operating System to support collaboration at scale.**
 
-PLANET is the flagship project of [The Open Co-op](https://open.coop) — an app, a network, and a cooperative, built on the [First Person Collective](https://firstpersoncollective.org) trust infrastructure stack.
+PLANET is the flagship project of [The Open Co-op](https://open.coop) — an app, a network, and a cooperative, built on the [First Person Network](https://firstperson.network) trust infrastructure stack.
 
 ## What is PLANET?
 
@@ -21,7 +21,7 @@ PLANET is a private, trusted digital space where everyone is real, everything is
 
 - [Docs site](https://docs.open.coop) — Vision, specs, research, and how to contribute
 - [Open Collective](https://opencollective.com/the-open-co-op) — Transparent finances and membership tiers
-- [Task List](https://github.com/The-Open-Co-op/planet/issues/1) — Current priorities (pinned issue)
+- [Task List](https://github.com/The-Open-Co-op/planet/issues/1) — Current priorities
 
 ## Repository Structure
 
