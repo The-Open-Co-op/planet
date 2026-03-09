@@ -1,9 +1,76 @@
 # L0: Ecosystem Map
+
 **Status:** [DRAFT] — Needs review and validation with FPC team.
 
-How PLANET's components relate to each other and to the First Person Collective stack. Defines what PLANET builds vs. what FPC provides.
+How PLANET's components relate to each other and to the First Person Collective (FPC) stack. Defines what PLANET builds vs. what FPC provides.
 
-## To Discuss
+```mermaid
+graph TB
+    subgraph "PUBLIC WEB"
+        WEB["🌐 planet.open.coop<br/>Vision, intro, links to Git, Docs, Join, Open Collective"]
+    end
+
+    subgraph "PLANET APP — Custom FPC PNM"
+        APP["📱 Minimal branded wrapper around FPC PNM<br/>Core: Vault<br/>Everything else is an app"]
+    end
+
+    subgraph "APPS — Plug into PLANET via VTA/SDK"
+        IMPORT["📥 Import<br/>Phone, LinkedIn"]
+        CONTACTS["👥 Contacts<br/>Manage, invite, connect"]
+        CHAT["💬 Chat<br/>E2EE messaging, emoji→VRCs"]
+        FPP["🌐 FP Pages<br/>Verified profile & blog"]
+        INTRO["🤝 Introducer<br/>Trusted intros"]
+        COMMUNITIES["🏘️ Communities<br/>Join & participate"]
+        OW["🔄 Offers & Wants<br/>Trust-verified exchange"]
+        AI_APP["🧠 AI<br/>Sovereign AI on vault"]
+    end
+
+    subgraph "ADMIN — Community Organiser"
+        CNM["🛠️ CNM Web App<br/>Community setup, trust schema, member mgmt, community FP Page"]
+    end
+
+    subgraph "FIRST PERSON COLLECTIVE — Infrastructure"
+        PNM_STACK["📱 PNM Stack<br/>pnm-rs, pnm-dart, pnm-react"]
+        CNM_STACK["🖥️ CNM Stack<br/>cnm-rs, cnm-web-app"]
+        VTA["☁️ VTA<br/>Trust agent + plugin architecture"]
+        VRC_ENGINE["🔗 VRC Engine"]
+        DID["🆔 DID Layer"]
+        SDK["🧰 SDKs<br/>Rust, Dart, TypeScript"]
+    end
+
+    subgraph "HOSTING — VTSP (The Open Co-op)"
+        VTSP["🏠 Vault hosting, backup, VTA instances"]
+    end
+
+    WEB -->|"download / join"| APP
+    APP -->|"built on"| PNM_STACK
+    IMPORT -->|"populates"| APP
+    CONTACTS -->|"manages contacts & invites"| APP
+    CHAT -->|"emoji reactions create VRCs"| VTA
+    FPP -->|"published to"| WEB
+    INTRO -->|"creates VRCs via"| VTA
+    COMMUNITIES -->|"managed by"| CNM
+    OW -->|"uses trust graph via"| VTA
+    AI_APP -->|"runs on"| APP
+    CNM -->|"built on"| CNM_STACK
+    VTA -->|"manages"| VRC_ENGINE
+    VTA -->|"manages"| DID
+    SDK -->|"enables"| VTA
+    VTSP -->|"hosts"| PNM_STACK
+    VTSP -->|"hosts"| VTA
+```
+
+## Key Architecture Decisions
+
+**PLANET App is a minimal wrapper.** It's a branded version of the FPC PNM with a vault and nothing else. All functionality (messaging, contacts, introductions, FP Pages, etc.) is delivered as separate apps that plug in via the VTA/SDK layer.
+
+**Apps connect to VTA directly.** Chat and Introducer create VRCs through the VTA, not through the core app. This keeps the architecture modular — apps can be added, removed, or replaced independently.
+
+**CNM is separate.** Community organisers use the CNM web app (built by FPC) to manage their communities. It's not an app within PLANET — it's a parallel tool for admins.
+
+## Open Questions
+
 - Exact boundary between PLANET experience layer and FPC frontends
-- How VTA plugin architecture works in practice
-- Where FP Pages sits architecturally (separate app or PNM feature?)
+- How does the VTA plugin architecture work in practice? Need FPC documentation.
+- How do apps discover and interact with each other via VTA/SDK?
+- What's the app installation/enablement model? Pre-installed? App store? Community admin enables?
