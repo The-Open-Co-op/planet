@@ -1,7 +1,5 @@
 # Specifications
 
-PLANET is a minimal app wrapper with functionality delivered as separate apps via the VTA/SDK layer. Specs are organised by app.
-
 **PLANET App is a minimal wrapper.** It's a branded version of the FPC PNM with a vault and nothing else. All functionality (messaging, contacts, introductions, FP Pages, etc.) is delivered as separate apps that plug in via the VTA/SDK layer.
 
 **Apps connect to VTA directly.** This keeps the architecture modular — apps can be added, removed, or replaced independently.
