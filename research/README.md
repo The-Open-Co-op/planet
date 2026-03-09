@@ -16,8 +16,8 @@ Reference material, analysis, and context that informs PLANET's design and strat
 
 ## Key References
 
-- [First Person Collective](https://firstpersoncollective.org) — The technology stack PLANET builds on
+- [First Person Network](https://firstperson.network) — The technology stack PLANET builds on
 - [Murmurations Protocol](https://murmurations.network) — Decentralised discovery (30,000 organisations)
-- [CoBot](https://cobot.open.coop) — 80,000 regenerative economy organisations mapped
-- [Collaborative Groups Protocol](https://cgp.open.coop) — Viable System Model meets cooperative principles
+- [CoBot](https://cobot.murmurations.network) — 80,000 regenerative economy organisations mapped
+- [Collaborative Groups Protocol](https://collaborativegroups.org) — Viable System Model meets cooperative principles
 - [Well-being of Future Generations Act](https://futuregenerations.wales) — Welsh legislation for intergenerational responsibility
