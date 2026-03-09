@@ -74,7 +74,6 @@ graph TB
 
 - Exact boundary between PLANET experience layer and FPC frontends
 - How does the VTA plugin architecture work in practice? Need FPC documentation.
-- Where does FP Pages sit architecturally — separate app or PNM feature?
 - How do apps discover and interact with each other via VTA/SDK?
 - What's the app installation/enablement model? Pre-installed? App store? Community admin enables?
 
