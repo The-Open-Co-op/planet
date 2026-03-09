@@ -1,27 +1,45 @@
 # UX Design System
 
-## Layered Interaction Architecture — v0.1
+**Status:** [WORKING] — Structure is sound, details need validation with FPC team.
+
+## Layered Architecture
 
 PLANET's UX is designed in four layers, each a zoom level deeper:
 
 - **Layer 0** — Ecosystem map (how components relate)
 - **Layer 1** — Journey maps (the user's path through PLANET)
-- **Layer 2** — Interaction flows (step-by-step for each feature)
-- **Layer 3** — User stories and specs (dev-ready tickets)
+- **Layer 2** — Interaction flows (step-by-step for each feature) — not yet started
+- **Layer 3** — User stories and specs (dev-ready tickets) — not yet started
 
-See the full design system document: [PLANET-UX-Design-System.md](PLANET-UX-Design-System.md)
+## Documents in This Directory
 
-## Three Primary Journeys
-
-1. **Individual Onboarding & Daily Life (PNM)** — 15 flows across 5 phases
-2. **Community Organiser Setup & Management (CNM)** — 10 flows across 4 phases
-3. **The Introducer Flow** — 7 flows bridging PNM and CNM
+| Document | Status | Description |
+|----------|--------|-------------|
+| [L0-ecosystem-map.md](L0-ecosystem-map.md) | [WORKING] | How PLANET, FPC stack, and public web relate |
+| [L1-pnm-journey.md](L1-pnm-journey.md) | [WORKING] | Individual onboarding through to daily life — 5 phases |
+| [L1-cnm-journey.md](L1-cnm-journey.md) | [WORKING] | Community organiser setup through to maturity — 4 phases |
+| [L1-introducer-flow.md](L1-introducer-flow.md) | [WORKING] | Trusted introduction mechanic — PLANET's signature feature |
+| [vrc-creation-map.md](vrc-creation-map.md) | [DRAFT] | What actions create VRCs — needs FPC validation |
+| [trust-domains.md](trust-domains.md) | [DRAFT] | Proposed emoji→trust domain taxonomy — needs discussion |
+| [flow-index.md](flow-index.md) | [WORKING] | Master list of all 32 identified flows with status |
 
 ## Design Principles
 
-1. Trust as byproduct — users never think "I'm issuing a credential"
-2. Invitation, not marketing — every member arrives via someone they trust
-3. Progressive disclosure — complexity reveals itself gradually
-4. No trust scores — trust is contextual, relational, multidimensional
-5. Cooperative by design — membership feels natural, not bureaucratic
-6. Public hooks, private depth — FP Pages attract; everything else is consent-based
+1. **Trust as byproduct.** Users never think "I am issuing a credential." They react with an emoji or make an introduction and the trust graph builds itself.
+2. **Invitation, not marketing.** Every member arrives because someone they trust invited them. The graph starts with real relationships.
+3. **Progressive disclosure.** Day 1: chat with your people. Week 1: discover communities. Month 1: trust graph enables discovery and exchange.
+4. **No trust scores.** Trust is always contextual, relational, and multidimensional. "Sarah trusts Oli's thinking on energy policy" is useful. "Oli has a trust score of 7.3" is meaningless and gameable.
+5. **Cooperative by design.** Every member is a potential co-op member. The interface makes cooperative governance feel natural, not bureaucratic.
+6. **Public hooks, private depth.** FP Pages are public and drive organic discovery. Everything else is private and consent-based.
+
+## What's PLANET vs. What's FPC
+
+PLANET builds the experience layer **above** the First Person Collective stack. We don't rebuild the PNM or CNM — we design the trust mechanics and interaction patterns that make them compelling for normal humans.
+
+| Layer | Owner |
+|-------|-------|
+| Trust interaction design (emoji→VRC, introducer, onboarding) | PLANET |
+| Consumer experience and community onboarding | PLANET |
+| PNM/CNM backend, VTA, DID/VRC infrastructure | First Person Collective |
+| VTSP hosting | The Open Co-op |
+| Narrative, movement building, community recruitment | The Open Co-op |
