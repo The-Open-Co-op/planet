@@ -1,6 +1,6 @@
 # Specifications
 
-**PLANET App is a minimal wrapper.** It's a branded version of the FPC PNM with a vault and nothing else. All functionality (messaging, contacts, introductions, FP Pages, etc.) is delivered as separate apps that plug in via the VTA/SDK layer.
+**PLANET App is a minimal wrapper.** It's a branded version of the First Person Co-op Personal Network Manager (PNM) with a vault, contacts, messaging and alerts. All other functionality (introductions, FP Pages, etc.) is delivered as separate apps that plug in via the VTA/SDK layer.
 
 **Apps connect to VTA directly.** This keeps the architecture modular — apps can be added, removed, or replaced independently.
 
@@ -76,17 +76,3 @@ graph TB
 - What's the app installation/enablement model? Pre-installed? App store? Community admin enables?
 
 
-## Structure
-
-| Folder | What | Status |
-|--------|------|--------|
-| [planet-app/](planet-app/) | Core app — vault + onboarding | [WORKING] |
-| [import/](import/) | Phone & LinkedIn contact import | Stub |
-| [contacts/](contacts/) | Contact management, invite flow | Stub |
-| [chat/](chat/) | E2EE messaging, emoji→VRC reactions | Stub |
-| [fp-pages/](fp-pages/) | Verified public profile & blog | Stub |
-| [introducer/](introducer/) | Trusted introductions | Stub |
-| [communities/](communities/) | Join & participate in communities | Stub |
-| [offers-and-wants/](offers-and-wants/) | Trust-verified exchange | Stub |
-| [ai/](ai/) | Sovereign AI on vault data | Stub — future phase |
-| [cnm/](cnm/) | Community Network Manager (admin tool) | Stub — FPC scope |
