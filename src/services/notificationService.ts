@@ -1,16 +1,14 @@
-import type { 
-  Notification, 
-  NotificationSummary, 
-  Vouch, 
-  Praise
+import type {
+  Notification,
+  NotificationSummary,
+  Vouch,
 } from '@/types/notification';
 import { dataService } from './dataService';
-import {mockNotifications, mockPraises, mockVouches} from "@/mocks/notifications";
+import {mockNotifications, mockVouches} from "@/mocks/notifications";
 
 export class NotificationService {
   private notifications: Notification[] = [...mockNotifications];
   private vouches: Vouch[] = [...mockVouches];
-  private praises: Praise[] = [...mockPraises];
 
   // Get all notifications for a user
   async getNotifications(userId: string): Promise<Notification[]> {
@@ -23,14 +21,13 @@ export class NotificationService {
   async getNotificationSummary(userId: string): Promise<NotificationSummary> {
     await new Promise(resolve => setTimeout(resolve, 0));
     const userNotifications = this.notifications.filter(n => n.targetUserId === userId);
-    
+
     const summary: NotificationSummary = {
       total: userNotifications.length,
       unread: userNotifications.filter(n => !n.isRead).length,
       pending: userNotifications.filter(n => n.status === 'pending' && n.isActionable).length,
       byType: {
         vouch: userNotifications.filter(n => n.type === 'vouch').length,
-        praise: userNotifications.filter(n => n.type === 'praise').length,
         connection: userNotifications.filter(n => n.type === 'connection').length,
         system: userNotifications.filter(n => n.type === 'system').length,
       },
@@ -87,33 +84,6 @@ export class NotificationService {
     }
   }
 
-  // Accept praise
-  async acceptPraise(notificationId: string, rCardIds?: string[]): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, 0));
-    const notification = this.notifications.find(n => n.id === notificationId);
-    if (notification) {
-      notification.status = 'accepted';
-      notification.isActionable = false; // No longer actionable after acceptance
-      notification.isRead = true; // Mark as read when accepted
-      if (rCardIds && rCardIds.length > 0) {
-        notification.metadata = { ...notification.metadata, rCardIds };
-      }
-      notification.updatedAt = new Date();
-    }
-  }
-
-  // Reject praise
-  async rejectPraise(notificationId: string): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, 0));
-    const notification = this.notifications.find(n => n.id === notificationId);
-    if (notification) {
-      notification.status = 'rejected';
-      notification.isActionable = false;
-      notification.isRead = true; // Mark as read when rejected
-      notification.updatedAt = new Date();
-    }
-  }
-
   // Assign to rCard
   async assignToRCard(notificationId: string, rCardId: string): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 0));
@@ -133,22 +103,16 @@ export class NotificationService {
     return this.vouches.find(v => v.id === vouchId) || null;
   }
 
-  // Get praise details
-  async getPraise(praiseId: string): Promise<Praise | null> {
-    await new Promise(resolve => setTimeout(resolve, 0));
-    return this.praises.find(p => p.id === praiseId) || null;
-  }
-
   // Accept connection request
   async acceptConnection(notificationId: string, selectedRCardId: string): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 0));
     const notification = this.notifications.find(n => n.id === notificationId);
     if (notification && notification.type === 'connection' && notification.metadata?.contactId) {
       await dataService.acceptConnectionRequest(notificationId, selectedRCardId);
-      
+
       // Update the contact's status to 'member' after accepting connection
       dataService.updateContactStatus(notification.metadata.contactId, 'member');
-      
+
       notification.status = 'accepted';
       notification.isActionable = false;
       notification.isRead = true; // Mark as read when accepted
@@ -170,27 +134,27 @@ export class NotificationService {
     }
   }
 
-  // Get rejected vouches/praises for a specific contact
+  // Get rejected vouches for a specific contact
   async getRejectedNotificationsByContact(contactId: string): Promise<Notification[]> {
     await new Promise(resolve => setTimeout(resolve, 0));
-    return this.notifications.filter(n => 
+    return this.notifications.filter(n =>
       (n.fromUserId === contactId || n.metadata?.contactId === contactId) &&
       n.status === 'rejected' &&
-      (n.type === 'vouch' || n.type === 'praise')
+      n.type === 'vouch'
     );
   }
 
-  // Get accepted vouches/praises from a specific contact
+  // Get accepted vouches from a specific contact
   async getAcceptedNotificationsByContact(contactId: string): Promise<Notification[]> {
     await new Promise(resolve => setTimeout(resolve, 0));
-    return this.notifications.filter(n => 
+    return this.notifications.filter(n =>
       (n.fromUserId === contactId || n.metadata?.contactId === contactId) &&
       n.status === 'accepted' &&
-      (n.type === 'vouch' || n.type === 'praise')
+      n.type === 'vouch'
     );
   }
 
-  // Reverse rejection and accept a vouch/praise
+  // Reverse rejection and accept a vouch
   async reverseRejectionAndAccept(notificationId: string, rCardIds?: string[]): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 0));
     const notification = this.notifications.find(n => n.id === notificationId);
@@ -208,7 +172,7 @@ export class NotificationService {
   // Create a new notification (for backend integration)
   async createNotification(notificationData: {
     userId: string;
-    type: 'vouch' | 'praise' | 'connection' | 'system';
+    type: 'vouch' | 'connection' | 'system';
     title: string;
     message: string;
     actionUrl?: string;
@@ -238,7 +202,7 @@ export class NotificationService {
           this.notifications.push(notification);
 
           // In a real app, this would send to the backend API
-          console.log('📱 Group invitation notification created:', {
+          console.log('Group invitation notification created:', {
             id: notification.id,
             recipient: notificationData.userId,
             type: notificationData.type,

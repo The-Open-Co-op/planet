@@ -11,10 +11,10 @@ import {
   RadioGroup,
   Typography,
   Box,
-  Avatar,
-  Divider,
+  Chip,
+  alpha,
 } from '@mui/material';
-import { DEFAULT_PROFILE_CARDS } from '@/types/notification';
+import { useTrustProfiles } from '@/hooks/useTrustProfiles';
 import * as Icons from '@mui/icons-material';
 
 interface RCardSelectionModalProps {
@@ -22,7 +22,6 @@ interface RCardSelectionModalProps {
   onClose: () => void;
   onSelect: (rCardIds: string[]) => void;
   contactName?: string;
-  isVouch?: boolean;
   multiSelect?: boolean;
 }
 
@@ -31,12 +30,10 @@ export const RCardSelectionModal = ({
   onClose,
   onSelect,
   contactName,
-  isVouch = false,
   multiSelect = true,
 }: RCardSelectionModalProps) => {
-  const [selectedCards, setSelectedCards] = useState<string[]>(
-    multiSelect ? ['rcard-default'] : ['rcard-default']
-  );
+  const { activeProfiles } = useTrustProfiles();
+  const [selectedCards, setSelectedCards] = useState<string[]>([]);
 
   const handleConfirm = () => {
     onSelect(selectedCards);
@@ -45,8 +42,8 @@ export const RCardSelectionModal = ({
 
   const handleToggleCard = (cardId: string) => {
     if (multiSelect) {
-      setSelectedCards(prev => 
-        prev.includes(cardId) 
+      setSelectedCards(prev =>
+        prev.includes(cardId)
           ? prev.filter(id => id !== cardId)
           : [...prev, cardId]
       );
@@ -60,132 +57,124 @@ export const RCardSelectionModal = ({
   };
 
   const handleSelectAll = () => {
-    const allCardIds = DEFAULT_PROFILE_CARDS.map(card => `rcard-${card.name.toLowerCase()}`);
-    setSelectedCards(allCardIds);
+    setSelectedCards(activeProfiles.map(p => p.id));
   };
 
   const handleDeselectAll = () => {
     setSelectedCards([]);
   };
 
-  const allSelected = selectedCards.length === DEFAULT_PROFILE_CARDS.length;
+  const allSelected = selectedCards.length === activeProfiles.length;
 
-  const getIcon = (iconName: string) => {
+  const getIcon = (iconName: string, size = 18) => {
     const Icon = (Icons as any)[iconName];
-    return Icon ? <Icon /> : <Icons.PersonOutline />;
+    return Icon ? <Icon sx={{ fontSize: size }} /> : <Icons.PersonOutline sx={{ fontSize: size }} />;
+  };
+
+  const firstName = contactName?.split(' ')[0] || contactName;
+
+  const ProfileOption = ({ card, selected, onClick }: {
+    card: typeof activeProfiles[0];
+    selected: boolean;
+    onClick: () => void;
+  }) => {
+    const cardColor = card.color || '#6b7280';
+    return (
+      <Box
+        onClick={onClick}
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1.5,
+          py: 1,
+          px: 0.5,
+          cursor: 'pointer',
+          borderRadius: 1,
+          '&:hover': { bgcolor: 'action.hover' },
+        }}
+      >
+        {multiSelect ? (
+          <Checkbox checked={selected} size="small" sx={{ p: 0.5 }} />
+        ) : (
+          <Radio checked={selected} size="small" sx={{ p: 0.5 }} />
+        )}
+        <Chip
+          icon={getIcon(card.icon || 'PersonOutline', 16) || undefined}
+          label={card.name}
+          variant="outlined"
+          size="small"
+          sx={{
+            backgroundColor: alpha(cardColor, 0.08),
+            borderColor: alpha(cardColor, 0.2),
+            color: cardColor,
+            fontWeight: 500,
+            '& .MuiChip-icon': { color: cardColor },
+            pointerEvents: 'none',
+          }}
+        />
+      </Box>
+    );
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>
-        {multiSelect ? 'Select Profile Cards' : 'Select Profile Card'}
+    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
+      <DialogTitle sx={{ pb: 0.5 }}>
+        Assign to...
         {contactName && (
           <Typography variant="body2" color="text.secondary">
-            {isVouch 
-              ? `Choose which profile cards to assign this vouch from ${contactName}`
-              : `Choose which profile cards to share ${multiSelect ? '' : 'with ' + contactName}`
-            }
+            Assign {firstName}'s Vouch to your profiles:
           </Typography>
         )}
       </DialogTitle>
-      <DialogContent>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+      <DialogContent sx={{ pt: 1 }}>
+        <Box>
           {multiSelect && (
-            <>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={allSelected}
-                    indeterminate={selectedCards.length > 0 && selectedCards.length < DEFAULT_PROFILE_CARDS.length}
-                    onChange={allSelected ? handleDeselectAll : handleSelectAll}
-                  />
-                }
-                label={
-                  <Typography variant="body1" fontWeight={600}>
-                    Select All
-                  </Typography>
-                }
-                sx={{ mb: 1 }}
+            <Box
+              onClick={allSelected ? handleDeselectAll : handleSelectAll}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.5,
+                py: 0.5,
+                px: 0.5,
+                cursor: 'pointer',
+                borderRadius: 1,
+                '&:hover': { bgcolor: 'action.hover' },
+              }}
+            >
+              <Checkbox
+                checked={allSelected}
+                indeterminate={selectedCards.length > 0 && selectedCards.length < activeProfiles.length}
+                size="small"
+                sx={{ p: 0.5 }}
               />
-              <Divider sx={{ mb: 1 }} />
-            </>
+              <Typography variant="body2" fontWeight={600}>
+                Select All
+              </Typography>
+            </Box>
           )}
           {multiSelect ? (
-            // Multi-select with checkboxes
-            DEFAULT_PROFILE_CARDS.map((card) => {
-              const cardId = `rcard-${card.name.toLowerCase()}`;
-              return (
-                <FormControlLabel
-                  key={card.name}
-                  control={
-                    <Checkbox
-                      checked={selectedCards.includes(cardId)}
-                      onChange={() => handleToggleCard(cardId)}
-                    />
-                  }
-                  label={
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                      <Avatar
-                        sx={{
-                          bgcolor: card.color,
-                          width: 36,
-                          height: 36,
-                        }}
-                      >
-                        {getIcon(card.icon || 'PersonOutline')}
-                      </Avatar>
-                      <Box>
-                        <Typography variant="body1" fontWeight={500}>
-                          {card.name}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {card.description}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  }
-                  sx={{ mb: 1, width: '100%' }}
-                />
-              );
-            })
+            activeProfiles.map((card) => (
+              <ProfileOption
+                key={card.id}
+                card={card}
+                selected={selectedCards.includes(card.id)}
+                onClick={() => handleToggleCard(card.id)}
+              />
+            ))
           ) : (
-            // Single select with radio buttons
             <RadioGroup
-              value={selectedCards[0] || 'rcard-default'}
+              value={selectedCards[0] || ''}
               onChange={handleRadioChange}
             >
-              {DEFAULT_PROFILE_CARDS.map((card) => {
-                const cardId = `rcard-${card.name.toLowerCase()}`;
-                return (
-                  <FormControlLabel
-                    key={card.name}
-                    value={cardId}
-                    control={<Radio />}
-                    label={
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Avatar
-                          sx={{
-                            bgcolor: card.color,
-                            width: 36,
-                            height: 36,
-                          }}
-                        >
-                          {getIcon(card.icon || 'PersonOutline')}
-                        </Avatar>
-                        <Box>
-                          <Typography variant="body1" fontWeight={500}>
-                            {card.name}
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            {card.description}
-                          </Typography>
-                        </Box>
-                      </Box>
-                    }
-                    sx={{ mb: 1, width: '100%' }}
-                  />
-                );
-              })}
+              {activeProfiles.map((card) => (
+                <ProfileOption
+                  key={card.id}
+                  card={card}
+                  selected={selectedCards[0] === card.id}
+                  onClick={() => setSelectedCards([card.id])}
+                />
+              ))}
             </RadioGroup>
           )}
         </Box>
@@ -194,13 +183,13 @@ export const RCardSelectionModal = ({
         <Button onClick={onClose} color="inherit">
           Cancel
         </Button>
-        <Button 
-          onClick={handleConfirm} 
-          variant="contained" 
+        <Button
+          onClick={handleConfirm}
+          variant="contained"
           color="primary"
           disabled={selectedCards.length === 0}
         >
-          {multiSelect ? `Assign to ${selectedCards.length} Card${selectedCards.length !== 1 ? 's' : ''}` : 'Select Card'}
+          Assign
         </Button>
       </DialogActions>
     </Dialog>

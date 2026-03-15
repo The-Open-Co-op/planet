@@ -25,7 +25,7 @@ jest.mock('@/services/notificationService', () => ({
       total: 5,
       unread: 3,
       pending: 2,
-      byType: { vouch: 1, praise: 1, connection: 1, system: 0 }
+      byType: { vouch: 1, connection: 1, system: 0 }
     }))
   }
 }));

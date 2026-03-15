@@ -20,7 +20,7 @@ export interface ContactsFilters extends SortParams {
   excludeMe?: boolean;
 }
 
-export type iconFilter = 'relationshipFilter' | 'planetStatusFilter' | 'accountFilter' | 'vouchFilter' | 'praiseFilter' | 'cardAssignmentFilter';
+export type iconFilter = 'relationshipFilter' | 'planetStatusFilter' | 'accountFilter' | 'vouchFilter' | 'cardAssignmentFilter';
 
 export interface ContactsReturn {
   contacts: Contact[];
@@ -68,13 +68,9 @@ export const useContacts = (): ContactsReturn => {
       accountFilter: key === 'accountFilter' ? value : 'all',
       cardAssignmentFilter: key === 'cardAssignmentFilter' ? value : 'all',
       groupFilter: 'all',
-      // Handle vouch and praise filters with sorting
+      // Handle vouch filters with sorting
       ...(key === 'vouchFilter' && value === 'has_vouches' && {
         sortBy: 'vouchTotal',
-        sortDirection: 'desc' as const
-      }),
-      ...(key === 'praiseFilter' && value === 'has_praises' && {
-        sortBy: 'praiseTotal',
         sortDirection: 'desc' as const
       }),
     }));
@@ -109,7 +105,7 @@ export const useContacts = (): ContactsReturn => {
       // Quick exit for common cases
       if (searchQuery === '' && relationshipFilter === 'all' && planetStatusFilter === 'all' && 
           accountFilter === 'all' && groupFilter === 'all' && cardAssignmentFilter === 'all' &&
-          sortBy !== 'vouchTotal' && sortBy !== 'praiseTotal' && !excludeMe) {
+          sortBy !== 'vouchTotal' && !excludeMe) {
         return true;
       }
 
@@ -163,10 +159,6 @@ export const useContacts = (): ContactsReturn => {
 
       if (sortBy === 'vouchTotal') {
         if (((contact.vouchesSent || 0) + (contact.vouchesReceived || 0)) <= 0) return false;
-      }
-
-      if (sortBy === 'praiseTotal') {
-        if (((contact.praisesSent || 0) + (contact.praisesReceived || 0)) <= 0) return false;
       }
 
       return true;

@@ -24,7 +24,7 @@ export const AccountPageContent = ({handleLogout: externalHandleLogout}: Account
   return (
     <StandardPage title="Settings">
       {/* Account Settings Content (My Cards functionality moved to contacts) */}
-      <Box sx={{ mt: 2 }}>
+      <Box>
         <AccountSettings 
           personhoodCredentials={personhoodCredentials}
         />

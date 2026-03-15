@@ -4,8 +4,6 @@ import {
   Typography,
   Grid,
   Card,
-  CardContent,
-  CardActions,
   Button,
   Dialog,
   DialogTitle,
@@ -15,7 +13,7 @@ import {
   TextField,
   LinearProgress
 } from '@mui/material';
-import {CloudDownload} from '@mui/icons-material';
+import {StandardPage} from '@/components/layout/StandardPage';
 import {dataService} from '@/services/dataService';
 import type {Contact} from '@/types/contact';
 import {isNextGraphEnabled} from '@/utils/featureFlags';
@@ -67,8 +65,8 @@ const ImportPageContent = ({saveContactsFn, isNextGraph}: {
   const handleConfirmImport = async () => {
     if (!selectedSource) return;
 
-    // For Contacts, show native permission request
-    if (selectedSource.name === 'Contacts') {
+    // For Contacts and Mock Data, import directly
+    if (selectedSource.type === 'contacts' || selectedSource.type === 'mockdata') {
       setIsDialogOpen(false);
       setIsImporting(true);
       startImportProcess();
@@ -76,8 +74,7 @@ const ImportPageContent = ({saveContactsFn, isNextGraph}: {
     }
 
     // For LinkedIn/Gmail, validate credentials first
-    if ((selectedSource.name === 'LinkedIn' || selectedSource.name === 'Gmail') &&
-      (!loginCredentials.email || !loginCredentials.password)) {
+    if (!loginCredentials.email || !loginCredentials.password) {
       return;
     }
 
@@ -97,7 +94,7 @@ const ImportPageContent = ({saveContactsFn, isNextGraph}: {
           clearInterval(progressInterval);
           setTimeout(() => {
             setIsImporting(false);
-            navigate('/contacts');
+            navigate('/contacts', { state: { refresh: true } });
           }, 1000);
           return 100;
         }
@@ -159,62 +156,45 @@ const ImportPageContent = ({saveContactsFn, isNextGraph}: {
   };
 
   return (
-    <Box sx={{height: '100%'}}>
-      <Box sx={{mb: 4}}>
-        <Typography variant="h4" component="h1" gutterBottom sx={{fontWeight: 700}}>
-          Import Your Contacts
-        </Typography>
-        <Typography variant="body1" sx={{color: 'text.secondary'}}>
-          Choose a source to import your contacts from
-        </Typography>
-      </Box>
+    <StandardPage title="Import">
+      <Typography variant="body2" sx={{color: 'text.secondary', mb: 2}}>
+        Choose a source to import your contacts from
+      </Typography>
 
-      <Box sx={{p: {xs: 2, md: 0}}}>
-        <Grid container spacing={3}>
-          {importSources.map((source) => (
-            <Grid size={{xs: 12, md: 4}} key={source.type}>
-              <Card
-                sx={{
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  transition: 'all 0.2s ease-in-out',
-                  border: 1,
-                  borderColor: 'divider',
-                  '&:hover': {
-                    transform: 'translateY(-2px)',
-                    boxShadow: 4,
-                    borderColor: 'primary.main',
-                  }
-                }}
-              >
-                <CardContent sx={{flexGrow: 1, textAlign: 'center', p: 3}}>
-                  <Box sx={{mb: 3}}>
-                    {getSourceIcon(source.type)}
-                  </Box>
-                  <Typography variant="h6" component="h2" gutterBottom sx={{fontWeight: 600}}>
-                    {source.name}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{lineHeight: 1.6}}>
-                    {source.description}
-                  </Typography>
-                </CardContent>
-                <CardActions sx={{justifyContent: 'center', p: 3, pt: 0}}>
-                  <Button
-                    variant="contained"
-                    onClick={() => handleImportClick(source)}
-                    disabled={!source.isAvailable}
-                    startIcon={<CloudDownload/>}
-                    sx={{borderRadius: 2}}
-                  >
-                    {source.customButtonName ? source.customButtonName : "Import from " + source.name}
-                  </Button>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
+      <Grid container spacing={2}>
+        {importSources.map((source) => (
+          <Grid size={{xs: 12, md: 4}} key={source.type}>
+            <Card
+              onClick={() => source.isAvailable && handleImportClick(source)}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.5,
+                p: 1.5,
+                cursor: source.isAvailable ? 'pointer' : 'default',
+                opacity: source.isAvailable ? 1 : 0.5,
+                transition: 'all 0.2s ease-in-out',
+                '&:hover': source.isAvailable ? {
+                  borderColor: 'primary.main',
+                  bgcolor: 'action.hover',
+                } : {},
+              }}
+            >
+              <Box sx={{ display: 'flex', flexShrink: 0 }}>
+                {getSourceIcon(source.type)}
+              </Box>
+              <Box sx={{ minWidth: 0 }}>
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  {source.name}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {source.description}
+                </Typography>
+              </Box>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
 
       {/* Platform-specific import dialogs */}
       <Dialog
@@ -224,38 +204,51 @@ const ImportPageContent = ({saveContactsFn, isNextGraph}: {
         fullWidth
       >
         <DialogTitle>
-          {selectedSource?.name === 'Contacts'
-            ? 'Allow NAO Access to Contacts'
+          {selectedSource?.type === 'contacts'
+            ? 'Import Mobile Contacts'
+            : selectedSource?.type === 'mockdata'
+            ? 'Load Sample Data'
             : `Sign in to ${selectedSource?.name}`
           }
         </DialogTitle>
         <DialogContent>
-          {selectedSource?.name === 'Contacts' ? (
-            <Box sx={{py: 2}}>
-              <Typography variant="body1" sx={{mb: 2}}>
-                NAO would like to access your contacts to import them into your network.
+          {selectedSource?.type === 'contacts' ? (
+            <Box sx={{py: 1}}>
+              <Typography variant="body2" sx={{mb: 1}}>
+                PLANET will request access to your phone's contacts to import them into your vault.
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                This will help you connect with people you already know on NAO.
+              <Typography variant="caption" color="text.secondary">
+                Your contacts stay on your device and are encrypted in your personal vault. They are never shared without your permission.
+              </Typography>
+            </Box>
+          ) : selectedSource?.type === 'mockdata' ? (
+            <Box sx={{py: 1}}>
+              <Typography variant="body2" sx={{mb: 1}}>
+                This will load a set of sample contacts for testing and demonstration purposes.
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                Sample data includes fictional contacts with vouches and trust profile assignments. You can clear this data at any time.
               </Typography>
             </Box>
           ) : (
-            <Box sx={{py: 2}}>
-              <Typography variant="body1" sx={{mb: 3}}>
+            <Box sx={{py: 1}}>
+              <Typography variant="body2" sx={{mb: 2}}>
                 Sign in to your {selectedSource?.name} account to import your contacts.
               </Typography>
               <TextField
                 fullWidth
                 label="Email Address"
                 type="email"
+                size="small"
                 value={loginCredentials.email}
                 onChange={(e) => setLoginCredentials(prev => ({...prev, email: e.target.value}))}
-                sx={{mb: 2}}
+                sx={{mb: 1.5}}
               />
               <TextField
                 fullWidth
                 label="Password"
                 type="password"
+                size="small"
                 value={loginCredentials.password}
                 onChange={(e) => setLoginCredentials(prev => ({...prev, password: e.target.value}))}
               />
@@ -267,9 +260,11 @@ const ImportPageContent = ({saveContactsFn, isNextGraph}: {
           <Button
             onClick={handleConfirmImport}
             variant="contained"
-            disabled={selectedSource?.name !== 'Contacts' && (!loginCredentials.email || !loginCredentials.password)}
+            disabled={selectedSource?.type !== 'contacts' && selectedSource?.type !== 'mockdata' && (!loginCredentials.email || !loginCredentials.password)}
           >
-            {selectedSource?.name === 'Contacts' ? 'Allow Access' : 'Sign In & Import'}
+            {selectedSource?.type === 'contacts' ? 'Allow Access'
+              : selectedSource?.type === 'mockdata' ? 'Load Data'
+              : 'Sign In & Import'}
           </Button>
         </DialogActions>
       </Dialog>
@@ -313,7 +308,7 @@ const ImportPageContent = ({saveContactsFn, isNextGraph}: {
           </Typography>
         </Box>
       </Dialog>
-    </Box>
+    </StandardPage>
   );
 };
 

@@ -28,29 +28,26 @@ import {
   LocationOn,
   Public,
 } from '@mui/icons-material';
-import { DEFAULT_RCARDS } from '@/types/notification';
 import type { Notification } from '@/types/notification';
+import { useTrustProfiles } from '@/hooks/useTrustProfiles';
 
 export interface NotificationActionsProps {
   notification: Notification;
   onMarkAsRead: (notificationId: string) => void;
   onAcceptVouch: (notificationId: string, vouchId: string) => void;
   onRejectVouch: (notificationId: string, vouchId: string) => void;
-  onAcceptPraise: (notificationId: string, praiseId: string) => void;
-  onRejectPraise: (notificationId: string, praiseId: string) => void;
   onAssignToRCard: (notificationId: string, rCardId: string) => void;
 }
 
 export const NotificationActions = forwardRef<HTMLDivElement, NotificationActionsProps>(
-  ({ 
+  ({
     notification,
     onMarkAsRead,
     onAcceptVouch,
     onRejectVouch,
-    onAcceptPraise,
-    onRejectPraise,
     onAssignToRCard,
   }, ref) => {
+    const { activeProfiles } = useTrustProfiles();
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
     const [showAssignDialog, setShowAssignDialog] = useState(false);
     const [selectedRCard, setSelectedRCard] = useState('');
@@ -69,8 +66,6 @@ export const NotificationActions = forwardRef<HTMLDivElement, NotificationAction
     const handleAccept = () => {
       if (notification.type === 'vouch' && notification.metadata?.vouchId) {
         onAcceptVouch(notification.id, notification.metadata.vouchId);
-      } else if (notification.type === 'praise' && notification.metadata?.praiseId) {
-        onAcceptPraise(notification.id, notification.metadata.praiseId);
       }
       handleMenuClose();
     };
@@ -78,8 +73,6 @@ export const NotificationActions = forwardRef<HTMLDivElement, NotificationAction
     const handleReject = () => {
       if (notification.type === 'vouch' && notification.metadata?.vouchId) {
         onRejectVouch(notification.id, notification.metadata.vouchId);
-      } else if (notification.type === 'praise' && notification.metadata?.praiseId) {
-        onRejectPraise(notification.id, notification.metadata.praiseId);
       }
       handleMenuClose();
     };
@@ -129,8 +122,8 @@ export const NotificationActions = forwardRef<HTMLDivElement, NotificationAction
       <Box ref={ref}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1 }}>
           <Typography variant="caption" color="text.secondary">
-            {new Intl.DateTimeFormat('en-US', { 
-              hour: '2-digit', 
+            {new Intl.DateTimeFormat('en-US', {
+              hour: '2-digit',
               minute: '2-digit',
               day: 'numeric',
               month: 'short'
@@ -204,8 +197,8 @@ export const NotificationActions = forwardRef<HTMLDivElement, NotificationAction
         </Menu>
 
         {/* Assign to rCard Dialog */}
-        <Dialog 
-          open={showAssignDialog} 
+        <Dialog
+          open={showAssignDialog}
           onClose={() => setShowAssignDialog(false)}
           maxWidth="sm"
           fullWidth
@@ -217,7 +210,7 @@ export const NotificationActions = forwardRef<HTMLDivElement, NotificationAction
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
               Choose which rCard category to assign this {notification.type} to. This helps organize your connections and endorsements.
             </Typography>
-            
+
             <FormControl fullWidth>
               <InputLabel>Select rCard</InputLabel>
               <Select
@@ -225,8 +218,8 @@ export const NotificationActions = forwardRef<HTMLDivElement, NotificationAction
                 label="Select rCard"
                 onChange={(e) => setSelectedRCard(e.target.value)}
               >
-                {DEFAULT_RCARDS.map((rCard, index) => (
-                  <MenuItem key={index} value={`default-${index}`}>
+                {activeProfiles.map((rCard) => (
+                  <MenuItem key={rCard.id} value={rCard.id}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                       {getRCardIcon(rCard.icon || 'PersonOutline')}
                       <Box>
@@ -245,8 +238,8 @@ export const NotificationActions = forwardRef<HTMLDivElement, NotificationAction
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setShowAssignDialog(false)}>Cancel</Button>
-            <Button 
-              onClick={handleAssignSubmit} 
+            <Button
+              onClick={handleAssignSubmit}
               variant="contained"
               disabled={!selectedRCard}
             >

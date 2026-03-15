@@ -14,24 +14,212 @@ import {
   TextField,
   Alert,
   Divider,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Avatar,
+  Chip,
+  ToggleButton,
+  ToggleButtonGroup,
 } from '@mui/material';
 import {
   SmartToy,
   Warning,
   DeleteForever,
+  ExpandMore,
+  Business,
+  PersonOutline,
+  Groups,
+  FamilyRestroom,
+  Favorite,
+  Home,
+  LocationOn,
+  Public,
+  Badge,
+  Settings,
+  Article,
+  Photo,
+  CalendarMonth,
 } from '@mui/icons-material';
 import PersonhoodCredentialsComponent from '@/components/account/PersonhoodCredentials';
+import RCardPrivacySettings from '@/components/account/RCardPrivacySettings';
 import type { PersonhoodCredentials } from '@/types/personhood';
+import type { RCardWithPrivacy, LocationSharingLevel, ArticleSharingLevel, PhotoSharingLevel, CalendarSharingLevel, GroupSharingLevel } from '@/types/notification';
+import { DEFAULT_PRIVACY_SETTINGS } from '@/types/notification';
+
+// Data sharing options
+interface DataSharingOption<T> {
+  value: T;
+  label: string;
+}
+
+const locationOptions: DataSharingOption<LocationSharingLevel>[] = [
+  { value: 'none', label: 'None' },
+  { value: 'city', label: 'City' },
+  { value: 'region', label: 'Region' },
+  { value: 'exact', label: 'Exact' },
+];
+
+const articleOptions: DataSharingOption<ArticleSharingLevel>[] = [
+  { value: 'none', label: 'None' },
+  { value: 'selected', label: 'Selected' },
+  { value: 'all', label: 'All' },
+];
+
+const photoOptions: DataSharingOption<PhotoSharingLevel>[] = [
+  { value: 'none', label: 'None' },
+  { value: 'tagged', label: 'Tagged' },
+  { value: 'events', label: 'Events' },
+  { value: 'all', label: 'All' },
+];
+
+const calendarOptions: DataSharingOption<CalendarSharingLevel>[] = [
+  { value: 'none', label: 'None' },
+  { value: 'busy_free', label: 'Busy/Free' },
+  { value: 'availability', label: 'Availability' },
+  { value: 'full', label: 'Full' },
+];
+
+const groupOptions: DataSharingOption<GroupSharingLevel>[] = [
+  { value: 'none', label: 'None' },
+  { value: 'selected', label: 'Selected' },
+  { value: 'all', label: 'All' },
+];
 
 interface AccountSettingsProps {
   personhoodCredentials: PersonhoodCredentials;
 }
+
+// Mock profile cards data
+const initialProfileCards: RCardWithPrivacy[] = [
+  {
+    id: '1',
+    name: 'Default',
+    description: 'Connections not allocated to another card',
+    color: '#6b7280',
+    icon: 'PersonOutline',
+    isDefault: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    privacySettings: {
+      keyRecoveryBuddy: false,
+      dataSharing: { location: 'none', articles: 'none', photos: 'none', calendar: 'none', groups: 'none' },
+      reSharing: { enabled: false, maxHops: 1 },
+    },
+  },
+  {
+    id: '2',
+    name: 'Friends',
+    description: 'Personal friends and social connections',
+    color: '#ef4444',
+    icon: 'Favorite',
+    isDefault: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    privacySettings: {
+      keyRecoveryBuddy: false,
+      dataSharing: { location: 'city', articles: 'all', photos: 'events', calendar: 'busy_free', groups: 'selected' },
+      reSharing: { enabled: true, maxHops: 4 },
+    },
+  },
+  {
+    id: '3',
+    name: 'Family',
+    description: 'Family members and relatives',
+    color: '#f59e0b',
+    icon: 'FamilyRestroom',
+    isDefault: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    privacySettings: {
+      keyRecoveryBuddy: true,
+      dataSharing: { location: 'exact', articles: 'all', photos: 'all', calendar: 'full', groups: 'all' },
+      reSharing: { enabled: true, maxHops: 6 },
+    },
+  },
+  {
+    id: '4',
+    name: 'Business',
+    description: 'Professional business contacts and partnerships',
+    color: '#2563eb',
+    icon: 'Business',
+    isDefault: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    privacySettings: {
+      keyRecoveryBuddy: false,
+      dataSharing: { location: 'city', articles: 'selected', photos: 'none', calendar: 'availability', groups: 'none' },
+      reSharing: { enabled: true, maxHops: 2 },
+    },
+  },
+  {
+    id: '5',
+    name: 'Community',
+    description: 'Community members and local connections',
+    color: '#059669',
+    icon: 'Public',
+    isDefault: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    privacySettings: {
+      keyRecoveryBuddy: false,
+      dataSharing: { location: 'region', articles: 'selected', photos: 'tagged', calendar: 'busy_free', groups: 'selected' },
+      reSharing: { enabled: true, maxHops: 3 },
+    },
+  },
+];
+
+const getRCardIcon = (iconName: string) => {
+  switch (iconName) {
+    case 'Business':
+      return <Business />;
+    case 'PersonOutline':
+      return <PersonOutline />;
+    case 'Groups':
+      return <Groups />;
+    case 'FamilyRestroom':
+      return <FamilyRestroom />;
+    case 'Favorite':
+      return <Favorite />;
+    case 'Home':
+      return <Home />;
+    case 'LocationOn':
+      return <LocationOn />;
+    case 'Public':
+      return <Public />;
+    default:
+      return <PersonOutline />;
+  }
+};
 
 export const AccountSettings = forwardRef<HTMLDivElement, AccountSettingsProps>(
   ({ personhoodCredentials }, ref) => {
     const [aiEnabled, setAiEnabled] = useState(true);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [deleteConfirmation, setDeleteConfirmation] = useState('');
+    const [profileCards, setProfileCards] = useState<RCardWithPrivacy[]>(initialProfileCards);
+    const [expandedCard, setExpandedCard] = useState<string | false>(false);
+    const [appSettings, setAppSettings] = useState({
+      location: 'city' as LocationSharingLevel,
+      articles: 'selected' as ArticleSharingLevel,
+      photos: 'events' as PhotoSharingLevel,
+      calendar: 'busy_free' as CalendarSharingLevel,
+      groups: 'selected' as GroupSharingLevel,
+    });
+
+    const handleAppSettingChange = <T extends string>(field: string, value: T) => {
+      setAppSettings(prev => ({ ...prev, [field]: value }));
+    };
+
+    const handleAccordionChange = (cardId: string) => (_event: React.SyntheticEvent, isExpanded: boolean) => {
+      setExpandedCard(isExpanded ? cardId : false);
+    };
+
+    const handleCardUpdate = (updatedCard: RCardWithPrivacy) => {
+      setProfileCards(prev => prev.map(card =>
+        card.id === updatedCard.id ? updatedCard : card
+      ));
+    };
 
     const handleAiToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
       setAiEnabled(event.target.checked);
@@ -153,6 +341,192 @@ export const AccountSettings = forwardRef<HTMLDivElement, AccountSettingsProps>(
             >
               Delete My Account
             </Button>
+          </CardContent>
+        </Card>
+
+        <Divider sx={{ my: 3 }} />
+
+        {/* App Settings */}
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+              <Settings color="primary" sx={{ fontSize: 28 }} />
+              <Box sx={{ flexGrow: 1 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                  App Settings
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Control what data is shared with connected apps
+                </Typography>
+              </Box>
+            </Box>
+
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+              {/* Location */}
+              <Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+                  <LocationOn fontSize="small" color="action" />
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                    Location
+                  </Typography>
+                </Box>
+                <ToggleButtonGroup
+                  value={appSettings.location}
+                  exclusive
+                  onChange={(_, value) => value && handleAppSettingChange('location', value)}
+                  size="small"
+                  fullWidth
+                  sx={{
+                    '& .MuiToggleButton-root': {
+                      textTransform: 'none',
+                      flex: 1,
+                      py: 1,
+                      '&.Mui-selected': {
+                        bgcolor: 'primary.main',
+                        color: 'primary.contrastText',
+                        '&:hover': { bgcolor: 'primary.dark' },
+                      },
+                    },
+                  }}
+                >
+                  {locationOptions.map((opt) => (
+                    <ToggleButton key={opt.value} value={opt.value}>{opt.label}</ToggleButton>
+                  ))}
+                </ToggleButtonGroup>
+              </Box>
+
+              {/* Articles */}
+              <Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+                  <Article fontSize="small" color="action" />
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                    Articles
+                  </Typography>
+                </Box>
+                <ToggleButtonGroup
+                  value={appSettings.articles}
+                  exclusive
+                  onChange={(_, value) => value && handleAppSettingChange('articles', value)}
+                  size="small"
+                  fullWidth
+                  sx={{
+                    '& .MuiToggleButton-root': {
+                      textTransform: 'none',
+                      flex: 1,
+                      py: 1,
+                      '&.Mui-selected': {
+                        bgcolor: 'primary.main',
+                        color: 'primary.contrastText',
+                        '&:hover': { bgcolor: 'primary.dark' },
+                      },
+                    },
+                  }}
+                >
+                  {articleOptions.map((opt) => (
+                    <ToggleButton key={opt.value} value={opt.value}>{opt.label}</ToggleButton>
+                  ))}
+                </ToggleButtonGroup>
+              </Box>
+
+              {/* Photos */}
+              <Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+                  <Photo fontSize="small" color="action" />
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                    Photos
+                  </Typography>
+                </Box>
+                <ToggleButtonGroup
+                  value={appSettings.photos}
+                  exclusive
+                  onChange={(_, value) => value && handleAppSettingChange('photos', value)}
+                  size="small"
+                  fullWidth
+                  sx={{
+                    '& .MuiToggleButton-root': {
+                      textTransform: 'none',
+                      flex: 1,
+                      py: 1,
+                      '&.Mui-selected': {
+                        bgcolor: 'primary.main',
+                        color: 'primary.contrastText',
+                        '&:hover': { bgcolor: 'primary.dark' },
+                      },
+                    },
+                  }}
+                >
+                  {photoOptions.map((opt) => (
+                    <ToggleButton key={opt.value} value={opt.value}>{opt.label}</ToggleButton>
+                  ))}
+                </ToggleButtonGroup>
+              </Box>
+
+              {/* Calendar */}
+              <Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+                  <CalendarMonth fontSize="small" color="action" />
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                    Calendar
+                  </Typography>
+                </Box>
+                <ToggleButtonGroup
+                  value={appSettings.calendar}
+                  exclusive
+                  onChange={(_, value) => value && handleAppSettingChange('calendar', value)}
+                  size="small"
+                  fullWidth
+                  sx={{
+                    '& .MuiToggleButton-root': {
+                      textTransform: 'none',
+                      flex: 1,
+                      py: 1,
+                      '&.Mui-selected': {
+                        bgcolor: 'primary.main',
+                        color: 'primary.contrastText',
+                        '&:hover': { bgcolor: 'primary.dark' },
+                      },
+                    },
+                  }}
+                >
+                  {calendarOptions.map((opt) => (
+                    <ToggleButton key={opt.value} value={opt.value}>{opt.label}</ToggleButton>
+                  ))}
+                </ToggleButtonGroup>
+              </Box>
+
+              {/* Groups */}
+              <Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+                  <Groups fontSize="small" color="action" />
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                    Groups
+                  </Typography>
+                </Box>
+                <ToggleButtonGroup
+                  value={appSettings.groups}
+                  exclusive
+                  onChange={(_, value) => value && handleAppSettingChange('groups', value)}
+                  size="small"
+                  fullWidth
+                  sx={{
+                    '& .MuiToggleButton-root': {
+                      textTransform: 'none',
+                      flex: 1,
+                      py: 1,
+                      '&.Mui-selected': {
+                        bgcolor: 'primary.main',
+                        color: 'primary.contrastText',
+                        '&:hover': { bgcolor: 'primary.dark' },
+                      },
+                    },
+                  }}
+                >
+                  {groupOptions.map((opt) => (
+                    <ToggleButton key={opt.value} value={opt.value}>{opt.label}</ToggleButton>
+                  ))}
+                </ToggleButtonGroup>
+              </Box>
+            </Box>
           </CardContent>
         </Card>
 

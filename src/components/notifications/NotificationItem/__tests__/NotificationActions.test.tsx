@@ -33,8 +33,6 @@ const defaultProps = {
   onMarkAsRead: jest.fn(),
   onAcceptVouch: jest.fn(),
   onRejectVouch: jest.fn(),
-  onAcceptPraise: jest.fn(),
-  onRejectPraise: jest.fn(),
   onAssignToRCard: jest.fn(),
 };
 
@@ -75,7 +73,7 @@ describe('NotificationActions', () => {
     render(<NotificationActions {...defaultProps} />);
     const menuButton = screen.getByTestId('MoreVertIcon').parentElement!;
     fireEvent.click(menuButton);
-    
+
     await waitFor(() => {
       expect(screen.getByText('Mark as read')).toBeInTheDocument();
     });
@@ -85,12 +83,12 @@ describe('NotificationActions', () => {
     render(<NotificationActions {...defaultProps} />);
     const menuButton = screen.getByTestId('MoreVertIcon').parentElement!;
     fireEvent.click(menuButton);
-    
+
     await waitFor(() => {
       const markAsReadItem = screen.getByText('Mark as read');
       fireEvent.click(markAsReadItem);
     });
-    
+
     expect(defaultProps.onMarkAsRead).toHaveBeenCalledWith('notif-1');
   });
 
@@ -101,29 +99,14 @@ describe('NotificationActions', () => {
       isActionable: false
     };
     render(<NotificationActions {...defaultProps} notification={acceptedNotification} />);
-    
+
     const assignButton = screen.getByRole('button', { name: /assign to rcard/i });
     fireEvent.click(assignButton);
-    
+
     await waitFor(() => {
       expect(screen.getAllByText('Assign to rCard')).toHaveLength(2); // Button + Dialog title
       expect(screen.getByRole('combobox')).toBeInTheDocument();
     });
-  });
-
-  it('handles praise notifications correctly', () => {
-    const praiseNotification = {
-      ...mockNotification,
-      type: 'praise' as const,
-      metadata: { praiseId: 'praise-456' }
-    };
-    render(<NotificationActions {...defaultProps} notification={praiseNotification} />);
-    
-    fireEvent.click(screen.getByText('Accept'));
-    expect(defaultProps.onAcceptPraise).toHaveBeenCalledWith('notif-1', 'praise-456');
-    
-    fireEvent.click(screen.getByText('Decline'));
-    expect(defaultProps.onRejectPraise).toHaveBeenCalledWith('notif-1', 'praise-456');
   });
 
   it('renders formatted date correctly', () => {
@@ -138,7 +121,7 @@ describe('NotificationActions', () => {
       status: 'completed' as const
     };
     render(<NotificationActions {...defaultProps} notification={nonActionableNotification} />);
-    
+
     expect(screen.queryByText('Accept')).not.toBeInTheDocument();
     expect(screen.queryByText('Decline')).not.toBeInTheDocument();
   });

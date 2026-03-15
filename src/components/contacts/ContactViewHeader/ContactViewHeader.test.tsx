@@ -124,8 +124,6 @@ const mockMultiSourceContact: Contact = {
   lastInteractionAt: new Date('2024-07-28T14:30:00Z'),
   vouchesSent: 0,
   vouchesReceived: 0,
-  praisesSent: 0,
-  praisesReceived: 0,
   interactionCount: 0,
   recentInteractionScore: 0,
   sharedTagsCount: 0

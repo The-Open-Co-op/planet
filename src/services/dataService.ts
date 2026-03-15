@@ -118,8 +118,6 @@ export function processContactFromJSON(jsonContact: any, withIds = true): Contac
     "humanityConfidenceScore",
     "vouchesSent",
     "vouchesReceived",
-    "praisesSent",
-    "praisesReceived",
     "relationshipCategory",
     "lastInteractionAt",
     "interactionCount",
@@ -151,29 +149,29 @@ const createMeContact = (): Contact => {
     "@id": "contact:me",
     "type": [{ "@id": "Individual" }],
     "name": [{
-      "value": "Oliver Sylvester-Bradley",
+      "value": "John Doe",
       "source": "user"
     }],
     "email": [{
-      "value": "oliver@opendataservices.coop",
+      "value": "john.doe@email.com",
       "source": "user"
     }],
     "phoneNumber": [{
-      "value": "+447973123456",
+      "value": "+1 (555) 123-4567",
       "source": "user"
     }],
     "organization": [{
-      "value": "Open Data Services Co-operative",
-      "position": "Co-founder & Director",
+      "value": "TechCorp",
+      "position": "Senior Software Engineer",
       "source": "user"
     }],
     "address": [{
-      "addressLocality": "London",
-      "addressCountry": "UK",
+      "addressLocality": "San Francisco",
+      "addressCountry": "USA",
       "source": "user"
     }],
     "biography": [{
-      "value": "Digital innovation specialist focused on open data standards and cooperative technology solutions",
+      "value": "Software engineer passionate about building great products and connecting with people",
       "source": "user"
     }],
     "planetStatus": {
@@ -181,15 +179,13 @@ const createMeContact = (): Contact => {
       "source": "user"
     },
     "photo": [{
-      "value": "images/Oli.jpg",
+      "value": "images/john-doe-colleauges.jpeg",
       "source": "user"
     }],
     "isMe": true,
     "humanityConfidenceScore": 5,
     "vouchesSent": 12,
     "vouchesReceived": 15,
-    "praisesSent": 8,
-    "praisesReceived": 10,
     "lastInteractionAt": new Date().toISOString()
   }, true);
 };

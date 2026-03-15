@@ -20,7 +20,7 @@ import {
   LinkedIn,
   Person,
   VerifiedUser,
-  PersonSearch, Send, Favorite, Email, Add,
+  PersonSearch, Send, Email, Add,
   Info,
   Business, Groups, FamilyRestroom, Public, Close,
 } from '@mui/icons-material';
@@ -28,6 +28,19 @@ import { useMediaQuery } from '@mui/material';
 import type {Contact} from '@/types/contact';
 import type {RCardType} from '@/types/rcard';
 import type {SocialContact} from '@/.ldo/contact.typings';
+import { DEFAULT_PROFILE_CARDS } from '@/types/notification';
+
+/** Get canonical color for a card type from the single source of truth */
+const getCardColor = (cardType: string): string => {
+  const card = DEFAULT_PROFILE_CARDS.find(c => c.name === cardType);
+  return card?.color || '#6b7280';
+};
+
+/** Get canonical icon name for a card type */
+const getCardIconName = (cardType: string): string => {
+  const card = DEFAULT_PROFILE_CARDS.find(c => c.name === cardType);
+  return card?.icon || 'PersonOutline';
+};
 import {resolveFrom} from '@/utils/contactUtils';
 import {getContactPhotoStyles} from "@/utils/photoStyles";
 import {PropertyWithSources} from '../PropertyWithSources';
@@ -60,33 +73,23 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
 
 
     const getRCardIcon = (cardType: RCardType, size = 20) => {
+      const color = getCardColor(cardType);
       switch (cardType) {
         case 'Business':
-          return <Business sx={{ fontSize: size, color: '#7b1fa2' }} />;
+          return <Business sx={{ fontSize: size, color }} />;
         case 'Friends':
-          return <Groups sx={{ fontSize: size, color: '#388e3c' }} />;
+          return <Groups sx={{ fontSize: size, color }} />;
         case 'Family':
-          return <FamilyRestroom sx={{ fontSize: size, color: '#388e3c' }} />;
+          return <FamilyRestroom sx={{ fontSize: size, color }} />;
         case 'Community':
-          return <Public sx={{ fontSize: size, color: '#1976d2' }} />;
+          return <Public sx={{ fontSize: size, color }} />;
         default:
           return null;
       }
     };
 
     const getRCardColor = (cardType: RCardType) => {
-      switch (cardType) {
-        case 'Business':
-          return '#7b1fa2';
-        case 'Friends':
-          return '#388e3c';
-        case 'Family':
-          return '#388e3c';
-        case 'Community':
-          return '#1976d2';
-        default:
-          return theme.palette.primary.main;
-      }
+      return getCardColor(cardType);
     };
 
     return (
@@ -253,20 +256,6 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
                   >
                     Send Vouch
                   </Button>
-                  <Button
-                    variant="contained"
-                    startIcon={<Favorite/>}
-                    size="small"
-                    sx={{
-                      backgroundColor: '#f8bbd9',
-                      color: '#d81b60',
-                      '&:hover': {
-                        backgroundColor: '#f48fb1'
-                      }
-                    }}
-                  >
-                    Send Praise
-                  </Button>
                 </>
               ) : contact.planetStatus?.value === 'invited' ? (
                 <Button
@@ -305,13 +294,12 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
             {/* Trust Profiles Section - Only for invited/member contacts */}
             {!isEditing && (contact.planetStatus?.value === 'member' || contact.planetStatus?.value === 'invited') && <Box sx={{ mb: 0 }}>
               <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1, color: 'text.secondary', textAlign: 'center' }}>
-                Trust Profiles
+                Assigned to
               </Typography>
               <Box sx={{
                 display: 'flex',
                 gap: 1,
-                flexWrap: 'nowrap',
-                overflowX: 'auto',
+                flexWrap: 'wrap',
                 justifyContent: 'center',
                 '&::-webkit-scrollbar': {
                   height: '4px'
@@ -327,7 +315,7 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
                     <Chip
                       key={assignment.cardType}
                       icon={getRCardIcon(assignment.cardType, 16) || undefined}
-                      label={isMobile ? '' : assignment.cardType}
+                      label={assignment.cardType}
                       variant="outlined"
                       onDelete={onRemoveRCard ? () => {
                         console.log(`🖱️ Delete clicked for ${assignment.cardType} Trust Profile`);
@@ -357,7 +345,7 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
                   <Chip
                     variant="outlined"
                     icon={<Add fontSize="small"/>}
-                    label={isMobile ? '' : 'Add'}
+                    label=""
                     size="medium"
                     clickable
                     onClick={() => setTrustProfileDialogOpen(true)}
@@ -366,7 +354,10 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
                       color: 'text.secondary',
                       borderColor: 'text.secondary',
                       flexShrink: 0,
-                      minWidth: {xs: '40px', sm: 'auto'},
+                      '& .MuiChip-label': { display: 'none' },
+                      '& .MuiChip-icon': { mx: 'auto' },
+                      width: 32,
+                      height: 32,
                       '&:hover': {
                         borderColor: 'primary.main',
                         color: 'primary.main',
@@ -391,52 +382,16 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
                   PLANET Status
                 </Typography>
                 {contact.planetStatus?.value === 'member' ? (
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Typography variant="body2" color="success.main" sx={{ fontWeight: 500 }}>
-                      ✓ PLANET Member
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Joined {contact.joinedAt?.valueDateTime && !isNaN(Date.parse(contact.joinedAt.valueDateTime)) 
-                        ? new Date(contact.joinedAt.valueDateTime).toLocaleDateString() 
-                        : 'January 2024'}
-                    </Typography>
-                  </Box>
-                ) : contact.planetStatus?.value === 'invited' ? (
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Typography variant="body2" color="warning.main" sx={{ fontWeight: 500 }}>
-                      Invited to PLANET
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {contact.invitedAt?.valueDateTime && !isNaN(Date.parse(contact.invitedAt.valueDateTime)) 
-                        ? new Date(contact.invitedAt.valueDateTime).toLocaleDateString() 
-                        : 'recently'}
-                    </Typography>
-                  </Box>
+                  <Typography variant="body2" color="success.main" sx={{ fontWeight: 500 }}>
+                    Member
+                  </Typography>
                 ) : (
                   <Typography variant="body2" color="text.secondary">
-                    Not a PLANET member
+                    None
                   </Typography>
                 )}
               </Box>
               
-              <FormControlLabel
-                control={
-                  <Switch 
-                    checked={contact.humanityConfidenceScore === 5} 
-                    onChange={() => {
-                      console.log('Toggle clicked, current score:', contact.humanityConfidenceScore);
-                      if (onHumanityToggle) {
-                        onHumanityToggle();
-                      }
-                    }}
-                  />
-                }
-                label="Vouch that this contact is human"
-                labelPlacement="start"
-                sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', ml: 0 }}
-              />
-              
-              {/* Groups in common */}
               <Divider sx={{ mb: 2 }} />
               
               {/* Added/Updated/Last interaction info */}
@@ -512,22 +467,9 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
                         }
                       }}
                     >
-                      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', ml: 1, width: '100%' }}>
-                        <Typography variant="subtitle2" sx={{ fontWeight: 600, textAlign: 'left', textTransform: 'none' }}>
-                          {cardType}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'left', width: '100%', textTransform: 'none' }}>
-                          {cardType === 'Friends' && 'close personal connections'}
-                          {cardType === 'Family' && 'family members and relatives'}
-                          {cardType === 'Community' && 'community members and acquaintances'}
-                          {cardType === 'Business' && 'professional and business contacts'}
-                        </Typography>
-                        {isAssigned && (
-                          <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'left', width: '100%', textTransform: 'none', fontStyle: 'italic' }}>
-                            (already assigned)
-                          </Typography>
-                        )}
-                      </Box>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 600, textTransform: 'none', ml: 1 }}>
+                        {cardType}{isAssigned && ' — Assigned'}
+                      </Typography>
                     </Button>
                   );
                 })}

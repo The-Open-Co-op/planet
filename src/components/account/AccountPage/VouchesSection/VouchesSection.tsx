@@ -23,20 +23,14 @@ import {
 } from '@mui/material';
 import {
   VerifiedUser,
-  Favorite,
   CheckCircle,
   Cancel,
   Edit,
 } from '@mui/icons-material';
-import type { Vouch, Praise } from '@/types/notification';
+import type { Vouch } from '@/types/notification';
 import type { RCardType } from '@/types/rcard';
 
 interface ReceivedVouch extends Vouch {
-  status: 'accepted' | 'rejected';
-  assignedToCards?: RCardType[];
-}
-
-interface ReceivedPraise extends Praise {
   status: 'accepted' | 'rejected';
   assignedToCards?: RCardType[];
 }
@@ -47,12 +41,12 @@ interface VouchesSectionProps {
 
 export const VouchesSection = ({ cardName }: VouchesSectionProps) => {
   const theme = useTheme();
-  const [editingVouch, setEditingVouch] = useState<(ReceivedVouch | ReceivedPraise) | null>(null);
+  const [editingVouch, setEditingVouch] = useState<ReceivedVouch | null>(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [selectedCards, setSelectedCards] = useState<RCardType[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<'accepted' | 'rejected'>('accepted');
 
-  // Mock vouch and praise data - filtered for this specific card
+  // Mock vouch data - filtered for this specific card
   const [receivedVouches, setReceivedVouches] = useState<ReceivedVouch[]>([
     {
       id: 'v1',
@@ -84,50 +78,15 @@ export const VouchesSection = ({ cardName }: VouchesSectionProps) => {
     },
   ]);
 
-  const [receivedPraises, setReceivedPraises] = useState<ReceivedPraise[]>([
-    {
-      id: 'p1',
-      fromUserId: 'user-321',
-      fromUserName: 'Emma Davis',
-      fromUserAvatar: '/api/placeholder/40/40',
-      toUserId: 'current-user',
-      category: 'communication',
-      title: 'Excellent Communication',
-      description: 'Always clear and helpful in discussions. Makes complex topics easy to understand.',
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3),
-      updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3),
-      status: 'accepted',
-      assignedToCards: ['Friends', 'Business'],
-    },
-    {
-      id: 'p2',
-      fromUserId: 'user-123',
-      fromUserName: 'John Smith',
-      fromUserAvatar: '/api/placeholder/40/40',
-      toUserId: 'current-user',
-      category: 'teamwork',
-      title: 'Great Team Player',
-      description: 'Fantastic collaboration skills and always willing to help others.',
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 21),
-      updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 21),
-      status: 'rejected',
-      assignedToCards: undefined,
-    },
-  ]);
-
-  // Filter vouches and praises for this specific card
-  const filteredVouches = receivedVouches.filter(vouch => 
+  // Filter vouches for this specific card
+  const filteredVouches = receivedVouches.filter(vouch =>
     vouch.status === 'accepted' && vouch.assignedToCards?.includes(cardName as RCardType)
-  );
-  
-  const filteredPraises = receivedPraises.filter(praise => 
-    praise.status === 'accepted' && praise.assignedToCards?.includes(cardName as RCardType)
   );
 
   const formatRelativeTime = (date: Date) => {
     const now = new Date();
     const diffInDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
-    
+
     if (diffInDays === 0) return 'Today';
     if (diffInDays === 1) return 'Yesterday';
     if (diffInDays < 7) return `${diffInDays} days ago`;
@@ -136,25 +95,19 @@ export const VouchesSection = ({ cardName }: VouchesSectionProps) => {
     return `${Math.floor(diffInDays / 365)} years ago`;
   };
 
-  const getTopicTag = (vouch: ReceivedVouch | ReceivedPraise) => {
-    if ('skill' in vouch) {
-      // For vouches, extract the main topic from skill
-      const skill = vouch.skill.toLowerCase();
-      if (skill.includes('react')) return 'React';
-      if (skill.includes('leadership')) return 'Leadership';
-      if (skill.includes('typescript')) return 'TypeScript';
-      if (skill.includes('javascript')) return 'JavaScript';
-      if (skill.includes('python')) return 'Python';
-      if (skill.includes('design')) return 'Design';
-      if (skill.includes('management')) return 'Management';
-      return vouch.skill; // fallback to full skill name
-    } else {
-      // For praises, use the category
-      return vouch.category.charAt(0).toUpperCase() + vouch.category.slice(1);
-    }
+  const getTopicTag = (vouch: ReceivedVouch) => {
+    const skill = vouch.skill.toLowerCase();
+    if (skill.includes('react')) return 'React';
+    if (skill.includes('leadership')) return 'Leadership';
+    if (skill.includes('typescript')) return 'TypeScript';
+    if (skill.includes('javascript')) return 'JavaScript';
+    if (skill.includes('python')) return 'Python';
+    if (skill.includes('design')) return 'Design';
+    if (skill.includes('management')) return 'Management';
+    return vouch.skill; // fallback to full skill name
   };
 
-  const handleEditVouch = (vouch: ReceivedVouch | ReceivedPraise) => {
+  const handleEditVouch = (vouch: ReceivedVouch) => {
     setEditingVouch(vouch);
     setSelectedCards(vouch.assignedToCards || []);
     setSelectedStatus(vouch.status);
@@ -163,32 +116,21 @@ export const VouchesSection = ({ cardName }: VouchesSectionProps) => {
 
   const handleSaveEdit = () => {
     if (editingVouch) {
-      const updatedVouch = { 
-        ...editingVouch, 
+      const updatedVouch = {
+        ...editingVouch,
         status: selectedStatus,
-        assignedToCards: selectedStatus === 'accepted' ? selectedCards : undefined 
+        assignedToCards: selectedStatus === 'accepted' ? selectedCards : undefined
       };
-      
+
       // Update local state
-      if ('skill' in editingVouch) {
-        // Update vouch
-        setReceivedVouches(prev => 
-          prev.map(v => v.id === editingVouch.id 
-            ? { ...v, status: selectedStatus, assignedToCards: selectedStatus === 'accepted' ? selectedCards : undefined } 
-            : v
-          )
-        );
-      } else {
-        // Update praise
-        setReceivedPraises(prev => 
-          prev.map(p => p.id === editingVouch.id 
-            ? { ...p, status: selectedStatus, assignedToCards: selectedStatus === 'accepted' ? selectedCards : undefined } 
-            : p
-          )
-        );
-      }
-      
-      console.log('Updated vouch/praise status and rCard assignments:', updatedVouch);
+      setReceivedVouches(prev =>
+        prev.map(v => v.id === editingVouch.id
+          ? { ...v, status: selectedStatus, assignedToCards: selectedStatus === 'accepted' ? selectedCards : undefined }
+          : v
+        )
+      );
+
+      console.log('Updated vouch status and rCard assignments:', updatedVouch);
     }
     setShowEditDialog(false);
     setEditingVouch(null);
@@ -210,7 +152,7 @@ export const VouchesSection = ({ cardName }: VouchesSectionProps) => {
               Vouches for {cardName}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Praises and vouches assigned to this profile card
+              Vouches assigned to this profile card
             </Typography>
           </Box>
         </Box>
@@ -252,9 +194,9 @@ export const VouchesSection = ({ cardName }: VouchesSectionProps) => {
                       <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                         "{vouch.description}" - <strong>{vouch.fromUserName}</strong>
                       </Typography>
-                      <Chip 
-                        label={getTopicTag(vouch)} 
-                        size="small" 
+                      <Chip
+                        label={getTopicTag(vouch)}
+                        size="small"
                         variant="outlined"
                         color="primary"
                       />
@@ -265,60 +207,11 @@ export const VouchesSection = ({ cardName }: VouchesSectionProps) => {
             </Box>
           ))}
 
-          {/* Received Praises for this card */}
-          {filteredPraises.map((praise) => (
-            <Box key={praise.id}>
-              <Box sx={{
-                display: 'flex',
-                gap: 2,
-                p: 2,
-                bgcolor: alpha(theme.palette.success.main, 0.04),
-                borderRadius: 2,
-                border: 1,
-                borderColor: alpha(theme.palette.success.main, 0.2),
-              }}>
-                <Avatar src={praise.fromUserAvatar} sx={{ width: 40, height: 40 }}>
-                  {praise.fromUserName.charAt(0)}
-                </Avatar>
-                <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5, flexWrap: 'wrap' }}>
-                    <Favorite sx={{ color: '#d81b60', fontSize: 20 }} />
-                    <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                      {praise.title}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      • {formatRelativeTime(praise.createdAt)}
-                    </Typography>
-                    <Box sx={{ ml: 'auto', display: 'flex', gap: 0.5 }}>
-                      <CheckCircle sx={{ color: 'success.main', fontSize: 18 }} />
-                      <IconButton size="small" onClick={() => handleEditVouch(praise)}>
-                        <Edit sx={{ fontSize: 16 }} />
-                      </IconButton>
-                    </Box>
-                  </Box>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 2 }}>
-                    <Box sx={{ flexGrow: 1 }}>
-                      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                        "{praise.description}" - <strong>{praise.fromUserName}</strong>
-                      </Typography>
-                      <Chip 
-                        label={getTopicTag(praise)} 
-                        size="small" 
-                        variant="outlined"
-                        sx={{ color: '#d81b60', borderColor: '#d81b60' }}
-                      />
-                    </Box>
-                  </Box>
-                </Box>
-              </Box>
-            </Box>
-          ))}
-
           {/* Empty state */}
-          {filteredVouches.length === 0 && filteredPraises.length === 0 && (
+          {filteredVouches.length === 0 && (
             <Box sx={{ textAlign: 'center', py: 4 }}>
               <Typography variant="body2" color="text.secondary">
-                No vouches or praises assigned to this profile card yet.
+                No vouches assigned to this profile card yet.
               </Typography>
             </Box>
           )}
@@ -328,16 +221,16 @@ export const VouchesSection = ({ cardName }: VouchesSectionProps) => {
       {/* Edit Dialog */}
       <Dialog open={showEditDialog} onClose={() => setShowEditDialog(false)} maxWidth="sm" fullWidth>
         <DialogTitle>
-          Edit {'skill' in (editingVouch || {}) ? 'Vouch' : 'Praise'}
+          Edit Vouch
         </DialogTitle>
         <DialogContent>
           <Box sx={{ pt: 2 }}>
             {editingVouch && (
               <>
                 <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
-                  {'skill' in editingVouch ? editingVouch.skill : editingVouch.title}
+                  {editingVouch.skill}
                 </Typography>
-                
+
                 {/* Status Selection */}
                 <FormControl fullWidth sx={{ mb: 3 }}>
                   <InputLabel>Status</InputLabel>
@@ -372,9 +265,9 @@ export const VouchesSection = ({ cardName }: VouchesSectionProps) => {
                 {selectedStatus === 'accepted' && (
                   <>
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                      Select which rCards this {'skill' in editingVouch ? 'vouch' : 'praise'} should appear on:
+                      Select which rCards this vouch should appear on:
                     </Typography>
-                    
+
                     <FormControl fullWidth>
                       <InputLabel>rCards</InputLabel>
                       <Select<RCardType[]>
@@ -402,7 +295,7 @@ export const VouchesSection = ({ cardName }: VouchesSectionProps) => {
 
                 {selectedStatus === 'rejected' && (
                   <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
-                    Rejected {'skill' in editingVouch ? 'vouches' : 'praises'} will not appear on any rCards.
+                    Rejected vouches will not appear on any rCards.
                   </Typography>
                 )}
               </>

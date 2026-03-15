@@ -86,8 +86,6 @@ export function useMergeContacts(): UseMergeContactsReturn {
             "humanityConfidenceScore",
             "vouchesSent",
             "vouchesReceived",
-            "praisesSent",
-            "praisesReceived",
             "relationshipCategory",
             "lastInteractionAt",
             "interactionCount",

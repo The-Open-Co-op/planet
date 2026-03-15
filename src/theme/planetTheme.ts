@@ -454,13 +454,19 @@ export const createPlanetTheme = () => {
         },
       },
       MuiDialog: {
+        defaultProps: {
+          slotProps: {
+            backdrop: {
+              sx: {
+                backgroundColor: alpha(grey[900], 0.5),
+              },
+            },
+          },
+        },
         styleOverrides: {
           paper: {
             borderRadius: 16,
             boxShadow: `0 20px 40px ${alpha(grey[1000], 0.3)}`,
-          },
-          backdrop: {
-            backgroundColor: alpha(grey[900], 0.5),
           },
         },
       },

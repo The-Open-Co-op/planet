@@ -3,27 +3,26 @@ import { useNavigate } from 'react-router-dom';
 import {
   Typography,
   Box,
-  Divider,
-  alpha,
-  useTheme,
-  Avatar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
   Chip,
-  IconButton,
+  alpha,
 } from '@mui/material';
 import {
   VerifiedUser,
-  Favorite,
   Group,
   Message,
   Settings,
   Notifications,
-  CheckCircle,
-  Schedule,
-  Close,
+  Person,
 } from '@mui/icons-material';
 import type { Notification } from '@/types/notification';
-import {formatDate} from "@/utils/dateHelpers";
 import { RCardSelectionModal } from '../RCardSelectionModal';
+import { NotificationItem } from '../NotificationItem/NotificationItem';
+import { useVRCs } from '@/hooks/useVRCs';
 
 export interface NotificationsListProps {
   notifications: Notification[];
@@ -31,38 +30,34 @@ export interface NotificationsListProps {
   onMarkAsRead: (notificationId: string) => void;
   onAcceptVouch: (notificationId: string, rCardIds?: string[]) => void;
   onRejectVouch: (notificationId: string) => void;
-  onAcceptPraise: (notificationId: string, rCardIds?: string[]) => void;
-  onRejectPraise: (notificationId: string) => void;
   onAcceptConnection: (notificationId: string, selectedRCardId: string) => void;
   onRejectConnection: (notificationId: string) => void;
 }
 
 export const NotificationsList = forwardRef<HTMLDivElement, NotificationsListProps>(
-  ({ 
-    notifications, 
-    isLoading, 
-    onMarkAsRead,
+  ({
+    notifications,
+    isLoading,
     onAcceptVouch,
     onRejectVouch,
-    onAcceptPraise,
-    onRejectPraise,
     onAcceptConnection,
     onRejectConnection,
   }, ref) => {
-    const theme = useTheme();
     const navigate = useNavigate();
+    const { getVouchById, getVouchStatus } = useVRCs();
     const [rCardModalOpen, setRCardModalOpen] = useState(false);
     const [pendingConnectionId, setPendingConnectionId] = useState<string | null>(null);
     const [pendingConnectionName, setPendingConnectionName] = useState<string | null>(null);
-    const [modalType, setModalType] = useState<'connection' | 'vouch' | 'praise'>('connection');
+    const [modalType, setModalType] = useState<'connection' | 'vouch'>('connection');
     const [pendingNotificationId, setPendingNotificationId] = useState<string | null>(null);
+    const [selectedVouchId, setSelectedVouchId] = useState<string | null>(null);
 
-    const handleOpenRCardModal = (notificationId: string, contactName?: string, type: 'connection' | 'vouch' | 'praise' = 'connection') => {
+    const handleOpenRCardModal = (notificationId: string, contactName?: string, type: 'connection' | 'vouch' = 'connection') => {
       setPendingNotificationId(notificationId);
       setPendingConnectionName(contactName || null);
       setModalType(type);
       setRCardModalOpen(true);
-      
+
       if (type === 'connection') {
         setPendingConnectionId(notificationId);
       }
@@ -74,14 +69,24 @@ export const NotificationsList = forwardRef<HTMLDivElement, NotificationsListPro
         setPendingConnectionId(null);
       } else if (modalType === 'vouch' && pendingNotificationId) {
         onAcceptVouch(pendingNotificationId, rCardIds);
-      } else if (modalType === 'praise' && pendingNotificationId) {
-        onAcceptPraise(pendingNotificationId, rCardIds);
       }
       setPendingNotificationId(null);
       setPendingConnectionName(null);
     };
 
     const handleNotificationClick = (notification: Notification) => {
+      // Don't navigate for pending connection requests
+      if (notification.type === 'connection' && notification.status === 'pending') {
+        return;
+      }
+
+      // For vouch notifications, show vouch detail dialog
+      if (notification.type === 'vouch' && notification.metadata?.vouchId) {
+        setSelectedVouchId(notification.metadata.vouchId);
+        return;
+      }
+
+      // For other types, navigate to contact
       if (notification.metadata?.contactId) {
         navigate(`/contacts/${notification.metadata.contactId}`, { state: { from: 'notifications' } });
       } else if (notification.fromUserId) {
@@ -95,8 +100,6 @@ export const NotificationsList = forwardRef<HTMLDivElement, NotificationsListPro
           return <VerifiedUser sx={{ fontSize: 20, color: 'primary.main' }} />;
         case 'connection':
           return <Group sx={{ fontSize: 20, color: 'info.main' }} />;
-        case 'praise':
-          return <Favorite sx={{ fontSize: 20, color: '#d81b60' }} />;
         case 'message':
           return <Message sx={{ fontSize: 20, color: 'info.main' }} />;
         case 'system':
@@ -123,7 +126,7 @@ export const NotificationsList = forwardRef<HTMLDivElement, NotificationsListPro
             No notifications yet
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            You'll see notifications here when you receive vouches, praises, and other updates.
+            You'll see notifications here when you receive vouches and other updates.
           </Typography>
         </Box>
       );
@@ -131,268 +134,131 @@ export const NotificationsList = forwardRef<HTMLDivElement, NotificationsListPro
 
     return (
       <>
-        <Box ref={ref} sx={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-          {notifications.map((notification, index) => (
-            <Box key={notification.id}>
-            <Box sx={{ 
-              display: 'flex', 
-              alignItems: 'flex-start', 
-              gap: 2, 
-              py: 2,
-              backgroundColor: notification.isRead ? 'transparent' : alpha(theme.palette.primary.main, 0.02),
-              borderRadius: 1,
-              position: 'relative'
-            }}>
-              {/* Notification Icon */}
-              <Box sx={{ flexShrink: 0, mt: 0.5 }}>
-                {getNotificationIcon(notification.type)}
-              </Box>
+        <Box ref={ref} sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+          {notifications.map((notification) => {
+            const getAcceptHandler = () => {
+              if (notification.type === 'vouch') {
+                return () => handleOpenRCardModal(notification.id, notification.fromUserName, 'vouch');
+              } else if (notification.type === 'connection') {
+                return () => handleOpenRCardModal(notification.id, notification.fromUserName, 'connection');
+              }
+              return undefined;
+            };
 
-              {/* Main Content */}
-              <Box 
-                sx={{ 
-                  flexGrow: 1, 
-                  minWidth: 0,
-                  cursor: 'pointer',
-                  '&:hover': {
-                    opacity: 0.8,
-                  }
-                }}
+            const getRejectHandler = () => {
+              if (notification.type === 'vouch') {
+                return () => onRejectVouch(notification.id);
+              } else if (notification.type === 'connection') {
+                return () => onRejectConnection(notification.id);
+              }
+              return undefined;
+            };
+
+            return (
+              <NotificationItem
+                key={notification.id}
+                notification={notification}
                 onClick={() => handleNotificationClick(notification)}
-              >
-                {/* Sender Info */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                  <Avatar
-                    src={notification.fromUserAvatar}
-                    alt={notification.fromUserName}
-                    sx={{ width: 24, height: 24, fontSize: '0.75rem' }}
-                  >
-                    {notification.fromUserName?.charAt(0)}
-                  </Avatar>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                    {notification.fromUserName}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    {formatDate(notification.createdAt, {month: "short"})}
-                  </Typography>
-                </Box>
+                onAccept={getAcceptHandler()}
+                onReject={getRejectHandler()}
+                getNotificationIcon={getNotificationIcon}
+              />
+            );
+          })}
+        </Box>
 
-                {/* Message */}
-                <Typography variant="body2" sx={{ mb: 1, lineHeight: 1.5 }}>
-                  {notification.message}
-                </Typography>
-
-                {/* Status and Actions */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
-                  {notification.status && (
-                    <Chip
-                      icon={notification.status === 'accepted' ? <CheckCircle /> : <Schedule />}
-                      label={notification.status}
-                      size="small"
-                      variant="outlined"
-                      sx={{
-                        fontSize: '0.75rem',
-                        height: 20,
-                        textTransform: 'capitalize',
-                        ...(notification.status === 'accepted' && {
-                          backgroundColor: alpha(theme.palette.success.main, 0.08),
-                          borderColor: alpha(theme.palette.success.main, 0.2),
-                          color: 'success.main'
-                        })
-                      }}
-                    />
-                  )}
-                  
-                  {/* Show assigned rCards for accepted vouches/praises */}
-                  {notification.status === 'accepted' && notification.metadata?.rCardIds && notification.metadata.rCardIds.length > 0 && (
-                    <>
-                      <Typography variant="caption" color="text.secondary" sx={{ mx: 0.5 }}>
-                        •
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        Assigned to:
-                      </Typography>
-                      {notification.metadata.rCardIds.map((rCardId) => {
-                        const cardName = rCardId.replace('rcard-', '').charAt(0).toUpperCase() + 
-                                       rCardId.replace('rcard-', '').slice(1);
-                        return (
-                          <Chip
-                            key={rCardId}
-                            label={cardName}
-                            size="small"
-                            variant="filled"
-                            sx={{
-                              fontSize: '0.7rem',
-                              height: 18,
-                              backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                              color: 'primary.main'
-                            }}
-                          />
-                        );
-                      })}
-                    </>
-                  )}
-
-                  {/* Action Buttons */}
-                  {notification.isActionable && notification.status === 'pending' && (
-                    <Box sx={{ display: 'flex', gap: 1, ml: 'auto' }}>
-                      {notification.type === 'vouch' && (
-                        <>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onRejectVouch(notification.id);
-                            }}
-                            style={{
-                              minWidth: 60,
-                              fontSize: '0.75rem',
-                              padding: '2px 8px',
-                              border: '1px solid',
-                              borderColor: theme.palette.grey[400],
-                              borderRadius: 4,
-                              backgroundColor: 'transparent',
-                              color: theme.palette.text.primary,
-                              cursor: 'pointer'
-                            }}
-                          >
-                            Reject
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleOpenRCardModal(notification.id, notification.fromUserName, 'vouch');
-                            }}
-                            style={{
-                              minWidth: 60,
-                              fontSize: '0.75rem',
-                              padding: '2px 8px',
-                              border: 'none',
-                              borderRadius: 4,
-                              backgroundColor: theme.palette.primary.main,
-                              color: theme.palette.primary.contrastText,
-                              cursor: 'pointer'
-                            }}
-                          >
-                            Accept
-                          </button>
-                        </>
-                      )}
-                      {notification.type === 'praise' && (
-                        <>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onRejectPraise(notification.id);
-                            }}
-                            style={{
-                              minWidth: 60,
-                              fontSize: '0.75rem',
-                              padding: '2px 8px',
-                              border: '1px solid',
-                              borderColor: theme.palette.grey[400],
-                              borderRadius: 4,
-                              backgroundColor: 'transparent',
-                              color: theme.palette.text.primary,
-                              cursor: 'pointer'
-                            }}
-                          >
-                            Reject
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleOpenRCardModal(notification.id, notification.fromUserName, 'praise');
-                            }}
-                            style={{
-                              minWidth: 60,
-                              fontSize: '0.75rem',
-                              padding: '2px 8px',
-                              border: 'none',
-                              borderRadius: 4,
-                              backgroundColor: theme.palette.primary.main,
-                              color: theme.palette.primary.contrastText,
-                              cursor: 'pointer'
-                            }}
-                          >
-                            Accept
-                          </button>
-                        </>
-                      )}
-                      {notification.type === 'connection' && (
-                        <>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onRejectConnection(notification.id);
-                            }}
-                            style={{
-                              minWidth: 60,
-                              fontSize: '0.75rem',
-                              padding: '2px 8px',
-                              border: '1px solid',
-                              borderColor: theme.palette.grey[400],
-                              borderRadius: 4,
-                              backgroundColor: 'transparent',
-                              color: theme.palette.text.primary,
-                              cursor: 'pointer'
-                            }}
-                          >
-                            Reject
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleOpenRCardModal(notification.id, notification.fromUserName);
-                            }}
-                            style={{
-                              minWidth: 60,
-                              fontSize: '0.75rem',
-                              padding: '2px 8px',
-                              border: 'none',
-                              borderRadius: 4,
-                              backgroundColor: theme.palette.primary.main,
-                              color: theme.palette.primary.contrastText,
-                              cursor: 'pointer'
-                            }}
-                          >
-                            Accept
-                          </button>
-                        </>
-                      )}
+      {/* Vouch Detail Dialog */}
+      {(() => {
+        const vouch = selectedVouchId ? getVouchById(selectedVouchId) : null;
+        const status = selectedVouchId ? getVouchStatus(selectedVouchId) : 'pending';
+        return (
+          <Dialog
+            open={!!selectedVouchId}
+            onClose={() => setSelectedVouchId(null)}
+            maxWidth="xs"
+            fullWidth
+          >
+            {vouch && (
+              <>
+                <DialogTitle sx={{ pb: 0.5 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <VerifiedUser fontSize="small" color="primary" />
+                    {vouch.skill}
+                  </Box>
+                  <Chip
+                    label={status}
+                    size="small"
+                    sx={{
+                      mt: 0.5,
+                      textTransform: 'capitalize',
+                      bgcolor: status === 'accepted' ? alpha('#22c55e', 0.1) : status === 'rejected' ? alpha('#ef4444', 0.1) : alpha('#f59e0b', 0.1),
+                      color: status === 'accepted' ? '#22c55e' : status === 'rejected' ? '#ef4444' : '#f59e0b',
+                      fontWeight: 600,
+                      fontSize: '0.7rem',
+                    }}
+                  />
+                </DialogTitle>
+                <DialogContent>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">From</Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
+                        <Person fontSize="small" color="action" />
+                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                          {vouch.fromUserName}
+                        </Typography>
+                      </Box>
                     </Box>
-                  )}
 
-                </Box>
-              </Box>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">Level</Typography>
+                      <Typography variant="body2" sx={{ textTransform: 'capitalize' }}>
+                        {vouch.level}
+                      </Typography>
+                    </Box>
 
-              {/* Unread indicator and Mark as Read Button */}
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, flexShrink: 0 }}>
-                {!notification.isRead && (
-                  <>
-                    <Box sx={{ 
-                      width: 6, 
-                      height: 6, 
-                      borderRadius: '50%', 
-                      backgroundColor: 'primary.main',
-                      mt: 1
-                    }} />
-                    <IconButton
-                      size="small"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onMarkAsRead(notification.id);
-                      }}
-                    >
-                      <Close sx={{ fontSize: 16 }} />
-                    </IconButton>
-                  </>
-                )}
-              </Box>
-            </Box>
-            {index < notifications.length - 1 && <Divider />}
-          </Box>
-        ))}
-      </Box>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">Description</Typography>
+                      <Typography variant="body2">
+                        {vouch.description}
+                      </Typography>
+                    </Box>
+
+                    {vouch.endorsementText && (
+                      <Box>
+                        <Typography variant="caption" color="text.secondary">Endorsement</Typography>
+                        <Typography variant="body2" sx={{ fontStyle: 'italic' }}>
+                          "{vouch.endorsementText}"
+                        </Typography>
+                      </Box>
+                    )}
+
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">Date</Typography>
+                      <Typography variant="body2">
+                        {vouch.createdAt.toLocaleDateString()}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={() => setSelectedVouchId(null)}>Close</Button>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() => {
+                      setSelectedVouchId(null);
+                      navigate(`/contacts/${vouch.fromUserId}`, { state: { from: 'notifications' } });
+                    }}
+                  >
+                    View Contact
+                  </Button>
+                </DialogActions>
+              </>
+            )}
+          </Dialog>
+        );
+      })()}
 
       {/* RCard Selection Modal */}
       <RCardSelectionModal
@@ -405,7 +271,6 @@ export const NotificationsList = forwardRef<HTMLDivElement, NotificationsListPro
         }}
         onSelect={handleRCardSelect}
         contactName={pendingConnectionName || undefined}
-        isVouch={modalType === 'vouch' || modalType === 'praise'}
         multiSelect={modalType !== 'connection'}
       />
     </>

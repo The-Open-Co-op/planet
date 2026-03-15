@@ -3,19 +3,19 @@ import {SocialContact} from "@/.ldo/contact.typings";
 import {PersonhoodCredentials} from "@/types/personhood";
 
 export const mockProfileData: ProfileData = {
-  name: 'Oliver Sylvester-Bradley',
-  jobTitle: 'Co-founder & Director at Open Data Services Co-operative',
-  email: 'oliver@opendataservices.coop',
-  phone: '+447973123456',
-  location: 'London, UK',
-  bio: 'Digital innovation specialist focused on open data standards and cooperative technology solutions. Passionate about building transparent, collaborative tools that help organizations share data effectively.',
-  avatar: '/images/Oli.jpg',
-  website: 'https://opendataservices.coop',
-  linkedin: 'https://linkedin.com/in/oliversylvesterbradley',
+  name: 'John Doe',
+  jobTitle: 'Software Engineer',
+  email: 'john.doe@email.com',
+  phone: '+1 (555) 123-4567',
+  location: 'San Francisco, CA',
+  bio: 'Passionate about building great software and connecting with people.',
+  avatar: '',
+  website: '',
+  linkedin: '',
   twitter: '',
   facebook: '',
   instagram: '',
-  github: 'https://github.com/olisb',
+  github: '',
   customSocialLinks: [],
 };
 

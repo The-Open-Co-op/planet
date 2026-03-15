@@ -7,7 +7,14 @@ import {
   Button,
   Chip,
 } from '@mui/material';
-import { MarkEmailRead } from '@mui/icons-material';
+import { 
+  MarkEmailRead,
+  VerifiedUser,
+  Group,
+  Message,
+  Settings,
+  Notifications,
+} from '@mui/icons-material';
 import type { Notification, NotificationSummary } from '@/types/notification';
 import { NotificationItem } from '../NotificationItem/NotificationItem';
 
@@ -15,13 +22,7 @@ export interface NotificationPreviewProps {
   notifications: Notification[];
   summary: NotificationSummary;
   filter: 'all' | 'pending' | 'unread';
-  onMarkAsRead: (notificationId: string) => void;
   onMarkAllAsRead: () => void;
-  onAcceptVouch: (notificationId: string, vouchId: string) => void;
-  onRejectVouch: (notificationId: string, vouchId: string) => void;
-  onAcceptPraise: (notificationId: string, praiseId: string) => void;
-  onRejectPraise: (notificationId: string, praiseId: string) => void;
-  onAssignToRCard: (notificationId: string, rCardId: string) => void;
   onFilterChange: (filter: 'all' | 'pending' | 'unread') => void;
 }
 
@@ -30,13 +31,7 @@ export const NotificationPreview = forwardRef<HTMLDivElement, NotificationPrevie
     notifications,
     summary,
     filter,
-    onMarkAsRead,
     onMarkAllAsRead,
-    onAcceptVouch,
-    onRejectVouch,
-    onAcceptPraise,
-    onRejectPraise,
-    onAssignToRCard,
     onFilterChange,
   }, ref) => {
     const filteredNotifications = notifications.filter(notification => {
@@ -52,6 +47,21 @@ export const NotificationPreview = forwardRef<HTMLDivElement, NotificationPrevie
 
     const getFilterChipColor = (filterType: string) => {
       return filter === filterType ? 'primary' : 'default';
+    };
+
+    const getNotificationIcon = (type: string) => {
+      switch (type) {
+        case 'vouch':
+          return <VerifiedUser sx={{ fontSize: 20, color: 'primary.main' }} />;
+        case 'connection':
+          return <Group sx={{ fontSize: 20, color: 'info.main' }} />;
+        case 'message':
+          return <Message sx={{ fontSize: 20, color: 'info.main' }} />;
+        case 'system':
+          return <Settings sx={{ fontSize: 20, color: 'warning.main' }} />;
+        default:
+          return <Notifications sx={{ fontSize: 20 }} />;
+      }
     };
 
     return (
@@ -147,12 +157,8 @@ export const NotificationPreview = forwardRef<HTMLDivElement, NotificationPrevie
                 <Box key={notification.id}>
                   <NotificationItem
                     notification={notification}
-                    onMarkAsRead={onMarkAsRead}
-                    onAcceptVouch={onAcceptVouch}
-                    onRejectVouch={onRejectVouch}
-                    onAcceptPraise={onAcceptPraise}
-                    onRejectPraise={onRejectPraise}
-                    onAssignToRCard={onAssignToRCard}
+                    onClick={() => {}}
+                    getNotificationIcon={getNotificationIcon}
                   />
                   {index < filteredNotifications.length - 1 && <Divider />}
                 </Box>

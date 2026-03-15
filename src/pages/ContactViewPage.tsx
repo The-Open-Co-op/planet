@@ -68,9 +68,14 @@ const ContactViewPage = () => {
       if (location.state?.from === 'notifications') {
         setVouchesRefreshKey(prev => prev + 1);
         refreshContact(); // Refresh contact data to get updated status
+        
+        // On mobile, auto-switch to Vouches tab when coming from vouch notifications
+        if (!isDesktop && location.state?.highlightVouchId) {
+          setTabValue(1); // Switch to Vouches tab
+        }
       }
     }
-  }, [id, location.state, refreshContact]);
+  }, [id, location.state, refreshContact, isDesktop]);
 
   // Also refresh blocked state when the page becomes visible (in case it was changed elsewhere)
   useEffect(() => {
@@ -180,10 +185,10 @@ const ContactViewPage = () => {
         display: 'flex', 
         justifyContent: 'space-between', 
         alignItems: 'center',
-        borderBottom: 1,
+        borderBottom: contact.isMe ? 0 : 1,
         borderColor: 'divider'
       }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Button
             onClick={handleBack}
             sx={{ minWidth: 'auto', p: 1 }}
@@ -191,12 +196,12 @@ const ContactViewPage = () => {
             <ArrowBack />
           </Button>
           {contact.isMe && (
-            <Typography 
-              component="h1" 
-              sx={{ 
-                fontSize: '1.5rem', 
+            <Typography
+              component="h1"
+              sx={{
+                fontSize: { xs: '1.25rem', sm: '1.5rem' },
                 fontWeight: 700,
-                m: 0
+                ml: 1,
               }}
             >
               My Profiles
@@ -255,7 +260,7 @@ const ContactViewPage = () => {
         </Alert>
       )}
       
-      <Box sx={{ p: 2 }}>
+      <Box sx={{ p: 2, pt: contact.isMe ? 1 : 2 }}>
         {/* Special handling for "me" contact */}
         {contact.isMe ? (
           <MeContactView contact={contact} />
@@ -284,6 +289,7 @@ const ContactViewPage = () => {
                       contact={contact} 
                       onInviteToPLANET={handleInviteToPLANET}
                       refreshTrigger={vouchesRefreshKey}
+                      highlightVouchId={location.state?.highlightVouchId}
                     />
                   </Box>
                 )}
@@ -293,8 +299,8 @@ const ContactViewPage = () => {
               <>
                 {!isEditing ? (
                   <>
-                    <Tabs 
-                      value={tabValue} 
+                    <Tabs
+                      value={tabValue}
                       onChange={(_, newValue) => setTabValue(newValue)}
                       sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}
                       variant="fullWidth"
@@ -303,17 +309,18 @@ const ContactViewPage = () => {
                       <Tab label="Contact" />
                       <Tab label="Vouches" />
                     </Tabs>
-                    
+
                     {tabValue === 0 && (
                       <ContactInfo contact={contact} isEditing={isEditing}/>
                     )}
-                    
+
                     {tabValue === 1 && (
                       <>
-                        <VouchesAndPraises 
-                          contact={contact} 
+                        <VouchesAndPraises
+                          contact={contact}
                           onInviteToPLANET={handleInviteToPLANET}
                           refreshTrigger={vouchesRefreshKey}
+                          highlightVouchId={location.state?.highlightVouchId}
                         />
                         <RejectedVouchesAndPraises 
                           contact={contact} 

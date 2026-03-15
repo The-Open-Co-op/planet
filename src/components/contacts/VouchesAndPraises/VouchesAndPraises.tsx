@@ -1,7 +1,7 @@
-import {Favorite, VerifiedUser} from "@mui/icons-material"
+import {VerifiedUser} from "@mui/icons-material"
 import {alpha, Box, Typography, useTheme} from "@mui/material"
 import {resolveFrom} from "@/utils/contactUtils";
-import {forwardRef, useState, useEffect, useCallback} from "react";
+import {forwardRef, useState, useEffect, useCallback, useRef} from "react";
 import type {Contact} from "@/types/contact";
 import type {Notification} from "@/types/notification";
 import type {SocialContact} from '@/.ldo/contact.typings';
@@ -12,53 +12,99 @@ export interface VouchesAndPraisesProps {
   contact?: Contact;
   onInviteToPLANET?: () => void;
   refreshTrigger?: number; // Add refresh trigger
+  highlightVouchId?: string; // Highlight specific vouch
 }
 
-export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesProps>(({contact, refreshTrigger}, ref) => {
+export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesProps>(({contact, refreshTrigger, highlightVouchId}, ref) => {
   const theme = useTheme();
   const [acceptedNotifications, setAcceptedNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  
+  const highlightedElementRef = useRef<HTMLDivElement>(null);
 
-  const loadAcceptedNotifications = useCallback(async () => {
+
+  const loadNotifications = useCallback(async () => {
     if (!contact) return;
-    
+
     setIsLoading(true);
     try {
       const contactId = contact['@id'] || '';
       const accepted = await notificationService.getAcceptedNotificationsByContact(contactId);
       setAcceptedNotifications(accepted);
     } catch (error) {
-      console.error('Failed to load accepted notifications:', error);
+      console.error('Failed to load notifications:', error);
     } finally {
       setIsLoading(false);
     }
   }, [contact]);
 
   useEffect(() => {
-    loadAcceptedNotifications();
-  }, [loadAcceptedNotifications, refreshTrigger]);
+    loadNotifications();
+  }, [loadNotifications, refreshTrigger]);
+
+  // Scroll to highlighted element after data loads and component renders
+  useEffect(() => {
+    if (!isLoading && highlightVouchId && highlightedElementRef.current) {
+      const timer = setTimeout(() => {
+        // Get the element
+        const element = highlightedElementRef.current;
+        if (!element) return;
+
+        // Find the scrollable container (the main Box with overflow: auto)
+        let scrollContainer = element.parentElement;
+        while (scrollContainer && scrollContainer !== document.body) {
+          const style = window.getComputedStyle(scrollContainer);
+          if (style.overflow === 'auto' || style.overflowY === 'auto') {
+            break;
+          }
+          scrollContainer = scrollContainer.parentElement;
+        }
+
+        if (scrollContainer && scrollContainer !== document.body) {
+          // Calculate the element's position relative to the container
+          const relativeTop = element.offsetTop;
+          const headerOffset = 150; // Offset for sticky header and some padding
+
+          // Scroll the container
+          scrollContainer.scrollTo({
+            top: relativeTop - headerOffset,
+            behavior: 'smooth'
+          });
+        } else {
+          // Fallback to regular scrollIntoView
+          element.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+          });
+        }
+
+        // Add a subtle animation to draw attention
+        element.style.transition = 'transform 0.3s ease-in-out';
+        element.style.transform = 'scale(1.02)';
+        setTimeout(() => {
+          element.style.transform = 'scale(1)';
+        }, 300);
+      }, 500); // Increased delay to ensure tabs have switched and content is rendered
+
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, highlightVouchId]);
 
 
-  const extractSkillFromMessage = (message: string, type: 'vouch' | 'praise'): string => {
+  const extractSkillFromMessage = (message: string): string => {
     try {
-      if (type === 'vouch' && message.includes('vouched for your')) {
+      if (message.includes('vouched for your')) {
         return message.split('vouched for your ')[1]?.split(' skills')[0] || 'skills';
-      } else if (type === 'praise' && message.includes('praised your')) {
-        return message.split('praised your ')[1]?.split(' skills')[0] || message.split('praised your ')[1] || 'skills';
       }
     } catch (error) {
       console.error('Error extracting skill from message:', error);
     }
-    return type === 'vouch' ? 'skills' : 'work';
+    return 'skills';
   };
 
   if (!contact) {
     return null;
   }
 
-  // const isDesktop = theme.breakpoints.up('md'); // Not used, commenting out
-  
   return <Box sx={{mb: 3}} ref={ref}>
 
     <Box sx={{display: 'flex', flexDirection: { xs: 'column', md: 'row' }, minHeight: 300}}>
@@ -88,33 +134,6 @@ export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesPro
                     </Box>
                     <Typography variant="body2" color="text.secondary">
                       "Exceptional React skills and clean code practices."
-                    </Typography>
-                  </Box>
-                </Box>
-
-                {/* Praise items */}
-                <Box sx={{display: 'flex', gap: 2, p: 2, bgcolor: alpha('#f8bbd9', 0.15), borderRadius: 2}}>
-                  <Favorite sx={{color: '#d81b60', fontSize: 20, mt: 0.5, flexShrink: 0}}/>
-                  <Box sx={{minWidth: 0}}>
-                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1, mb: 0.5}}>
-                      <Typography variant="body2" sx={{fontWeight: 600}}>Leadership</Typography>
-                      <Typography variant="caption" color="text.secondary">• 3 days ago</Typography>
-                    </Box>
-                    <Typography variant="body2" color="text.secondary">
-                      "Great leadership during project crunch time!"
-                    </Typography>
-                  </Box>
-                </Box>
-
-                <Box sx={{display: 'flex', gap: 2, p: 2, bgcolor: alpha('#f8bbd9', 0.15), borderRadius: 2}}>
-                  <Favorite sx={{color: '#d81b60', fontSize: 20, mt: 0.5, flexShrink: 0}}/>
-                  <Box sx={{minWidth: 0}}>
-                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1, mb: 0.5}}>
-                      <Typography variant="body2" sx={{fontWeight: 600}}>Communication</Typography>
-                      <Typography variant="caption" color="text.secondary">• 1 week ago</Typography>
-                    </Box>
-                    <Typography variant="body2" color="text.secondary">
-                      "Always clear and helpful in discussions."
                     </Typography>
                   </Box>
                 </Box>
@@ -151,28 +170,33 @@ export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesPro
                     Loading...
                   </Typography>
                 ) : acceptedNotifications.length > 0 ? (
-                  acceptedNotifications.map((notification) => (
-                    <Box 
-                      key={notification.id}
-                      sx={{
-                        display: 'flex',
-                        gap: 2,
-                        p: 2,
-                        bgcolor: notification.type === 'vouch' 
-                          ? alpha(theme.palette.primary.main, 0.04)
-                          : alpha('#f8bbd9', 0.15),
-                        borderRadius: 2
-                      }}
-                    >
-                      {notification.type === 'vouch' ? (
-                        <VerifiedUser sx={{color: 'primary.main', fontSize: 20, mt: 0.5, flexShrink: 0}}/>
-                      ) : (
-                        <Favorite sx={{color: '#d81b60', fontSize: 20, mt: 0.5, flexShrink: 0}}/>
-                      )}
+                  acceptedNotifications.map((notification) => {
+                    // Check if this notification should be highlighted
+                    const isHighlighted =
+                      notification.type === 'vouch' && notification.metadata?.vouchId === highlightVouchId;
+
+                    return (
+                      <Box
+                        key={notification.id}
+                        ref={isHighlighted ? highlightedElementRef : undefined}
+                        sx={{
+                          display: 'flex',
+                          gap: 2,
+                          p: 2,
+                          bgcolor: alpha(theme.palette.primary.main, 0.04),
+                          borderRadius: 2,
+                          // Highlighting styles
+                          ...(isHighlighted && {
+                            border: `2px solid ${theme.palette.primary.main}`,
+                            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`,
+                          })
+                        }}
+                      >
+                      <VerifiedUser sx={{color: 'primary.main', fontSize: 20, mt: 0.5, flexShrink: 0}}/>
                       <Box sx={{minWidth: 0}}>
                         <Box sx={{display: 'flex', alignItems: 'center', gap: 1, mb: 0.5}}>
                           <Typography variant="body2" sx={{fontWeight: 600}}>
-                            {extractSkillFromMessage(notification.message, notification.type as 'vouch' | 'praise')}
+                            {extractSkillFromMessage(notification.message)}
                           </Typography>
                           <Typography variant="caption" color="text.secondary">
                             • {formatDateDiff(new Date(notification.updatedAt))}
@@ -183,11 +207,12 @@ export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesPro
                         </Typography>
                       </Box>
                     </Box>
-                  ))
+                  );
+                  })
                 ) : (
                   <Box sx={{textAlign: 'center', py: 4}}>
                     <Typography variant="body2" color="text.secondary">
-                      No vouches or praises received yet
+                      No vouches received yet
                     </Typography>
                   </Box>
                 )}

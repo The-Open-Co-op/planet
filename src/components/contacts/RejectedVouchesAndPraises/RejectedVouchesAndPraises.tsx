@@ -12,7 +12,6 @@ import {
 } from '@mui/material';
 import {
   VerifiedUser,
-  Favorite,
   Cancel,
   RestoreFromTrash,
   Schedule
@@ -36,12 +35,11 @@ export const RejectedVouchesAndPraises = ({ contact, onAcceptanceChanged }: Reje
   const [isLoading, setIsLoading] = useState(true);
   const [rCardModalOpen, setRCardModalOpen] = useState(false);
   const [pendingNotificationId, setPendingNotificationId] = useState<string | null>(null);
-  const [pendingNotificationType, setPendingNotificationType] = useState<'vouch' | 'praise'>('vouch');
 
   useEffect(() => {
     const loadRejectedNotifications = async () => {
       if (!contact) return;
-      
+
       setIsLoading(true);
       try {
         const contactId = contact['@id'] || '';
@@ -57,9 +55,8 @@ export const RejectedVouchesAndPraises = ({ contact, onAcceptanceChanged }: Reje
     loadRejectedNotifications();
   }, [contact]);
 
-  const handleAcceptRejected = (notificationId: string, type: 'vouch' | 'praise') => {
+  const handleAcceptRejected = (notificationId: string) => {
     setPendingNotificationId(notificationId);
-    setPendingNotificationType(type);
     setRCardModalOpen(true);
   };
 
@@ -68,12 +65,12 @@ export const RejectedVouchesAndPraises = ({ contact, onAcceptanceChanged }: Reje
 
     try {
       await notificationService.reverseRejectionAndAccept(pendingNotificationId, rCardIds);
-      
+
       // Remove from rejected list and update state
-      setRejectedNotifications(prev => 
+      setRejectedNotifications(prev =>
         prev.filter(n => n.id !== pendingNotificationId)
       );
-      
+
       // Notify parent component that data has changed
       if (onAcceptanceChanged) {
         onAcceptanceChanged();
@@ -101,13 +98,13 @@ export const RejectedVouchesAndPraises = ({ contact, onAcceptanceChanged }: Reje
           <Cancel sx={{ color: 'error.main', fontSize: 20 }} />
           Rejected from {resolveFrom(contact as SocialContact, 'name')?.value?.split(' ')[0] || 'Contact'}
         </Typography>
-        
+
         <Card variant="outlined" sx={{ borderColor: alpha(theme.palette.error.main, 0.3) }}>
           <CardContent sx={{ p: 3 }}>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              These vouches and praises were previously rejected. You can still accept them if you change your mind.
+              These vouches were previously rejected. You can still accept them if you change your mind.
             </Typography>
-            
+
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               {rejectedNotifications.map((notification) => (
                 <Box
@@ -122,46 +119,40 @@ export const RejectedVouchesAndPraises = ({ contact, onAcceptanceChanged }: Reje
                     borderColor: alpha(theme.palette.error.main, 0.2)
                   }}
                 >
-                  {notification.type === 'vouch' ? (
-                    <VerifiedUser sx={{ color: 'error.main', fontSize: 20, mt: 0.5, flexShrink: 0 }} />
-                  ) : (
-                    <Favorite sx={{ color: 'error.main', fontSize: 20, mt: 0.5, flexShrink: 0 }} />
-                  )}
-                  
+                  <VerifiedUser sx={{ color: 'error.main', fontSize: 20, mt: 0.5, flexShrink: 0 }} />
+
                   <Box sx={{ flexGrow: 1, minWidth: 0 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
                       <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                        {notification.type === 'vouch' ? 'Skill Vouch' : 'Praise'}
-                        {notification.message.includes('vouched for your') && 
+                        Skill Vouch
+                        {notification.message.includes('vouched for your') &&
                           ` - ${notification.message.split('vouched for your ')[1]?.split(' skills')[0] || 'Skills'}`}
-                        {notification.message.includes('praised your') && 
-                          ` - ${notification.message.split('praised your ')[1]?.split(' skills')[0] || notification.message.split('praised your ')[1] || 'Skills'}`}
                       </Typography>
-                      <Chip 
-                        label="Rejected" 
-                        size="small" 
-                        color="error" 
+                      <Chip
+                        label="Rejected"
+                        size="small"
+                        color="error"
                         variant="outlined"
                         sx={{ fontSize: '0.7rem', height: 20 }}
                       />
                     </Box>
-                    
+
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                       "{notification.message}"
                     </Typography>
-                    
+
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                       <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                         <Schedule sx={{ fontSize: 12 }} />
                         Rejected {formatDate(notification.updatedAt, {month: "short"})}
                       </Typography>
-                      
-                      <Tooltip title="Accept this vouch/praise">
+
+                      <Tooltip title="Accept this vouch">
                         <Button
                           size="small"
                           variant="outlined"
                           startIcon={<RestoreFromTrash />}
-                          onClick={() => handleAcceptRejected(notification.id, notification.type as 'vouch' | 'praise')}
+                          onClick={() => handleAcceptRejected(notification.id)}
                           sx={{
                             fontSize: '0.75rem',
                             py: 0.5,
@@ -195,7 +186,6 @@ export const RejectedVouchesAndPraises = ({ contact, onAcceptanceChanged }: Reje
         }}
         onSelect={handleRCardSelect}
         contactName={resolveFrom(contact as SocialContact, 'name')?.value || undefined}
-        isVouch={pendingNotificationType === 'vouch'}
         multiSelect={true}
       />
     </>

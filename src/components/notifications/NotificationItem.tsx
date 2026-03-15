@@ -21,7 +21,6 @@ import {
 } from '@mui/material';
 import {
   ThumbUp,
-  StarBorder,
   CheckCircle,
   Cancel,
   Assignment,
@@ -36,15 +35,13 @@ import {
   Public,
 } from '@mui/icons-material';
 import type { Notification } from '@/types/notification';
-import { DEFAULT_RCARDS } from '@/types/notification';
+import { useTrustProfiles } from '@/hooks/useTrustProfiles';
 
 interface NotificationItemProps {
   notification: Notification;
   onMarkAsRead: (notificationId: string) => void;
   onAcceptVouch: (notificationId: string, vouchId: string) => void;
   onRejectVouch: (notificationId: string, vouchId: string) => void;
-  onAcceptPraise: (notificationId: string, praiseId: string) => void;
-  onRejectPraise: (notificationId: string, praiseId: string) => void;
   onAssignToRCard: (notificationId: string, rCardId: string) => void;
 }
 
@@ -53,11 +50,10 @@ const NotificationItem = ({
   onMarkAsRead,
   onAcceptVouch,
   onRejectVouch,
-  onAcceptPraise,
-  onRejectPraise,
   onAssignToRCard,
 }: NotificationItemProps) => {
   const theme = useTheme();
+  const { activeProfiles } = useTrustProfiles();
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [showAssignDialog, setShowAssignDialog] = useState(false);
   const [selectedRCard, setSelectedRCard] = useState('');
@@ -76,8 +72,6 @@ const NotificationItem = ({
   const handleAccept = () => {
     if (notification.type === 'vouch' && notification.metadata?.vouchId) {
       onAcceptVouch(notification.id, notification.metadata.vouchId);
-    } else if (notification.type === 'praise' && notification.metadata?.praiseId) {
-      onAcceptPraise(notification.id, notification.metadata.praiseId);
     }
     handleMenuClose();
   };
@@ -85,8 +79,6 @@ const NotificationItem = ({
   const handleReject = () => {
     if (notification.type === 'vouch' && notification.metadata?.vouchId) {
       onRejectVouch(notification.id, notification.metadata.vouchId);
-    } else if (notification.type === 'praise' && notification.metadata?.praiseId) {
-      onRejectPraise(notification.id, notification.metadata.praiseId);
     }
     handleMenuClose();
   };
@@ -113,8 +105,6 @@ const NotificationItem = ({
     switch (notification.type) {
       case 'vouch':
         return <ThumbUp sx={{ color: 'primary.main' }} />;
-      case 'praise':
-        return <StarBorder sx={{ color: 'warning.main' }} />;
       default:
         return null;
     }
@@ -341,8 +331,8 @@ const NotificationItem = ({
               label="Select rCard"
               onChange={(e) => setSelectedRCard(e.target.value)}
             >
-              {DEFAULT_RCARDS.map((rCard, index) => (
-                <MenuItem key={index} value={`default-${index}`}>
+              {activeProfiles.map((rCard) => (
+                <MenuItem key={rCard.id} value={rCard.id}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     {getRCardIcon(rCard.icon || 'PersonOutline')}
                     <Box>

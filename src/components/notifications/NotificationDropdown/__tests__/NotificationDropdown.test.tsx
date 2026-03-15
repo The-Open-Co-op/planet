@@ -34,19 +34,13 @@ const mockSummary: NotificationSummary = {
   total: 1,
   unread: 1,
   pending: 1,
-  byType: { vouch: 1, praise: 0, connection: 0, system: 0 }
+  byType: { vouch: 1, connection: 0, system: 0 }
 };
 
 const defaultProps = {
   notifications: mockNotifications,
   summary: mockSummary,
-  onMarkAsRead: jest.fn(),
   onMarkAllAsRead: jest.fn(),
-  onAcceptVouch: jest.fn(),
-  onRejectVouch: jest.fn(),
-  onAcceptPraise: jest.fn(),
-  onRejectPraise: jest.fn(),
-  onAssignToRCard: jest.fn(),
 };
 
 describe('NotificationDropdown', () => {
@@ -119,7 +113,7 @@ describe('NotificationDropdown', () => {
     await waitFor(() => {
       expect(screen.getByText('Notifications')).toBeInTheDocument();
     });
-    
+
     expect(screen.queryByText('View All Notifications')).not.toBeInTheDocument();
   });
 
@@ -171,7 +165,7 @@ describe('NotificationDropdown', () => {
   it('renders with proper accessibility attributes', () => {
     render(<NotificationDropdown {...defaultProps} />);
     const bellButton = screen.getByLabelText('notifications');
-    
+
     expect(bellButton).toHaveAttribute('aria-haspopup', 'true');
     expect(bellButton).toHaveAttribute('aria-expanded', 'false');
   });
@@ -179,9 +173,9 @@ describe('NotificationDropdown', () => {
   it('updates aria-expanded when menu is opened', async () => {
     render(<NotificationDropdown {...defaultProps} />);
     const bellButton = screen.getByLabelText('notifications');
-    
+
     fireEvent.click(bellButton);
-    
+
     await waitFor(() => {
       expect(bellButton).toHaveAttribute('aria-expanded', 'true');
     });

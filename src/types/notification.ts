@@ -26,20 +26,6 @@ export interface Vouch {
   updatedAt: Date;
 }
 
-export interface Praise {
-  id: string;
-  fromUserId: string;
-  fromUserName: string;
-  fromUserAvatar?: string;
-  toUserId: string;
-  category: 'professional' | 'personal' | 'leadership' | 'teamwork' | 'communication' | 'creativity' | 'other';
-  title: string;
-  description: string;
-  tags?: string[];
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 export interface NotificationAction {
   id: string;
   type: 'accept' | 'reject' | 'assign' | 'view' | 'select_rcard';
@@ -50,7 +36,7 @@ export interface NotificationAction {
 
 export interface Notification {
   id: string;
-  type: 'vouch' | 'praise' | 'connection' | 'system';
+  type: 'vouch' | 'connection' | 'system';
   title: string;
   message: string;
   fromUserId?: string;
@@ -63,7 +49,6 @@ export interface Notification {
   actions?: NotificationAction[];
   metadata?: {
     vouchId?: string;
-    praiseId?: string;
     groupId?: string;
     messageId?: string;
     profileCardId?: string;
@@ -86,15 +71,6 @@ export interface VouchNotification extends Notification {
   };
 }
 
-export interface PraiseNotification extends Notification {
-  type: 'praise';
-  metadata: {
-    praiseId: string;
-    profileCardId?: string;
-    rCardId?: string; // Legacy alias
-  };
-}
-
 export interface ConnectionNotification extends Notification {
   type: 'connection';
   metadata: {
@@ -109,25 +85,26 @@ export interface NotificationSummary {
   pending: number;
   byType: {
     vouch: number;
-    praise: number;
     connection: number;
     system: number;
   };
 }
 
 export type PrivacyLevel = 'none' | 'limited' | 'moderate' | 'intimate';
-export type LocationSharingLevel = 'never' | 'limited' | 'always';
+export type LocationSharingLevel = 'none' | 'city' | 'region' | 'exact';
+export type ArticleSharingLevel = 'none' | 'selected' | 'all';
+export type PhotoSharingLevel = 'none' | 'tagged' | 'events' | 'all';
+export type CalendarSharingLevel = 'none' | 'busy_free' | 'availability' | 'full';
+export type GroupSharingLevel = 'none' | 'selected' | 'all';
 
 export interface PrivacySettings {
   keyRecoveryBuddy: boolean;
-  locationSharing: LocationSharingLevel;
-  locationDeletionHours: number;
   dataSharing: {
-    posts: boolean;
-    offers: boolean;
-    wants: boolean;
-    vouches: boolean;
-    praise: boolean;
+    location: LocationSharingLevel;
+    articles: ArticleSharingLevel;
+    photos: PhotoSharingLevel;
+    calendar: CalendarSharingLevel;
+    groups: GroupSharingLevel;
   };
   reSharing: {
     enabled: boolean;
@@ -154,14 +131,12 @@ export interface ContactPrivacyOverride {
 // Default privacy settings template
 export const DEFAULT_PRIVACY_SETTINGS: PrivacySettings = {
   keyRecoveryBuddy: false,
-  locationSharing: 'never',
-  locationDeletionHours: 8,
   dataSharing: {
-    posts: true,
-    offers: true,
-    wants: true,
-    vouches: true,
-    praise: true,
+    location: 'none',
+    articles: 'none',
+    photos: 'none',
+    calendar: 'none',
+    groups: 'none',
   },
   reSharing: {
     enabled: true,
@@ -179,17 +154,17 @@ export const DEFAULT_PROFILE_CARDS: Omit<ProfileCard, 'id' | 'createdAt' | 'upda
     isDefault: true,
   },
   {
-    name: 'Friends',
-    description: 'Personal friends and social connections',
-    color: '#ef4444',
-    icon: 'Favorite',
-    isDefault: true,
-  },
-  {
     name: 'Family',
     description: 'Family members and relatives',
     color: '#f59e0b',
     icon: 'FamilyRestroom',
+    isDefault: true,
+  },
+  {
+    name: 'Friends',
+    description: 'Personal friends and social connections',
+    color: '#7c3aed',
+    icon: 'Favorite',
     isDefault: true,
   },
   {

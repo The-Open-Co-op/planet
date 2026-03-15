@@ -25,8 +25,6 @@ interface NotificationDropdownProps {
   onMarkAllAsRead: () => void;
   onAcceptVouch: (notificationId: string, vouchId: string) => void;
   onRejectVouch: (notificationId: string, vouchId: string) => void;
-  onAcceptPraise: (notificationId: string, praiseId: string) => void;
-  onRejectPraise: (notificationId: string, praiseId: string) => void;
   onAssignToRCard: (notificationId: string, rCardId: string) => void;
 }
 
@@ -37,8 +35,6 @@ const NotificationDropdown = ({
   onMarkAllAsRead,
   onAcceptVouch,
   onRejectVouch,
-  onAcceptPraise,
-  onRejectPraise,
   onAssignToRCard,
 }: NotificationDropdownProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -216,8 +212,6 @@ const NotificationDropdown = ({
                     onMarkAsRead={onMarkAsRead}
                     onAcceptVouch={onAcceptVouch}
                     onRejectVouch={onRejectVouch}
-                    onAcceptPraise={onAcceptPraise}
-                    onRejectPraise={onRejectPraise}
                     onAssignToRCard={onAssignToRCard}
                   />
                   {index < filteredNotifications.length - 1 && <Divider />}

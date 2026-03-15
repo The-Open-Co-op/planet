@@ -2,7 +2,7 @@ import React, {forwardRef} from "react";
 import {Box, Typography, Chip, Skeleton} from "@mui/material";
 import {alpha, useTheme} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import {Favorite, VerifiedUser, Business, Groups, FamilyRestroom, Public} from "@mui/icons-material";
+import {VerifiedUser, Business, Groups, FamilyRestroom, Public} from "@mui/icons-material";
 import {Avatar, IconButton} from "@/components/ui";
 import type {Contact} from "@/types/contact";
 import {resolveFrom} from "@/utils/contactUtils";
@@ -11,6 +11,7 @@ import {Email, Name, Organization, PhoneNumber, SocialContact} from "@/.ldo/cont
 import {iconFilter} from "@/hooks/contacts/useContacts";
 import {formatPhone} from "@/utils/phoneHelper";
 import type {RCardType} from "@/types/rcard";
+import {DEFAULT_PROFILE_CARDS} from "@/types/notification";
 
 const renderContactName = (name?: Name, isLoading?: boolean) => (
   <Typography
@@ -149,44 +150,19 @@ export const ContactCardDetailed = forwardRef<
     const photo = resolveFrom(contact as SocialContact, 'photo');
     const organization = resolveFrom(contact as SocialContact, 'organization');
 
-    const vouches = (contact.vouchesSent || 0) + (contact.vouchesReceived || 0);
-    const praises = (contact.praisesSent || 0) + (contact.praisesReceived || 0);
-
-    const renderVouchesButton = () => (
-      vouches > 0 ?
-        <IconButton
-          variant="vouches"
-          size={isMobile ? "medium" : "large"}
-          count={vouches}
-          onClick={() => onSetIconFilter("vouchFilter", "has_vouches")}
-        >
-          <VerifiedUser/>
-        </IconButton> : null
-    );
-
-    const renderPraisesButton = () => (
-      praises > 0 ?
-        <IconButton
-          variant="praise"
-          size={isMobile ? "medium" : "large"}
-          count={praises}
-          onClick={() => onSetIconFilter("praiseFilter", "has_praises")}
-        >
-          <Favorite/>
-        </IconButton> : null
-    );
 
 
     const getRCardIcon = (cardType: RCardType) => {
+      const color = DEFAULT_PROFILE_CARDS.find(c => c.name === cardType)?.color || '#6b7280';
       switch (cardType) {
         case 'Business':
-          return <Business sx={{ fontSize: 16, color: '#7b1fa2' }} />;
+          return <Business sx={{ fontSize: 16, color }} />;
         case 'Friends':
-          return <Groups sx={{ fontSize: 16, color: '#388e3c' }} />;
+          return <Groups sx={{ fontSize: 16, color }} />;
         case 'Family':
-          return <FamilyRestroom sx={{ fontSize: 16, color: '#388e3c' }} />;
+          return <FamilyRestroom sx={{ fontSize: 16, color }} />;
         case 'Community':
-          return <Public sx={{ fontSize: 16, color: '#1976d2' }} />;
+          return <Public sx={{ fontSize: 16, color }} />;
         default:
           return null;
       }
@@ -216,8 +192,6 @@ export const ContactCardDetailed = forwardRef<
 
     const renderAccountFilers = () => (
       <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
-        {!isMobile && renderVouchesButton()}
-        {!isMobile && renderPraisesButton()}
         {renderCardAssignmentButtons()}
       </Box>
     );
@@ -242,7 +216,7 @@ export const ContactCardDetailed = forwardRef<
             size={isMobile ? "medium" : "large"}
           />
 
-          {/* Name & "My Profile" Label */}
+          {/* Name & "My Profiles" Label */}
           <Box
             sx={{
               minWidth: 0,
@@ -254,7 +228,7 @@ export const ContactCardDetailed = forwardRef<
               {renderContactName(name)}
             </Box>
             <Typography variant="body2" sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.75rem' }}>
-              My Profile
+              My Profiles
             </Typography>
             {!isMobile && renderJobTitleAndCompany(organization)}
           </Box>

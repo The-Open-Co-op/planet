@@ -12,8 +12,6 @@ export interface Contact extends Omit<SocialContact, 'createdAt' | 'updatedAt'> 
   humanityConfidenceScore?: number;
   vouchesSent?: number;
   vouchesReceived?: number;
-  praisesSent?: number;
-  praisesReceived?: number;
   relationshipCategory?: 'friends_family' | 'community' | 'business' | string;
   rCardAssignments?: RCardAssignment[];
   lastInteractionAt?: Date;

@@ -1,6 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { NotificationItem } from '../NotificationItem';
 import type { Notification } from '@/types/notification';
+import React from 'react';
+import { VerifiedUser } from '@mui/icons-material';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -28,14 +30,19 @@ const mockNotification: Notification = {
   metadata: { vouchId: 'vouch-123' }
 };
 
+const getNotificationIcon = (type: string): React.ReactNode => {
+  switch (type) {
+    case 'vouch':
+      return <VerifiedUser data-testid="VerifiedUserIcon" />;
+    default:
+      return null;
+  }
+};
+
 const defaultProps = {
   notification: mockNotification,
-  onMarkAsRead: jest.fn(),
-  onAcceptVouch: jest.fn(),
-  onRejectVouch: jest.fn(),
-  onAcceptPraise: jest.fn(),
-  onRejectPraise: jest.fn(),
-  onAssignToRCard: jest.fn(),
+  onClick: jest.fn(),
+  getNotificationIcon,
 };
 
 describe('NotificationItem', () => {
@@ -45,7 +52,6 @@ describe('NotificationItem', () => {
 
   it('renders notification content', () => {
     render(<NotificationItem {...defaultProps} />);
-    expect(screen.getByText('New vouch from John')).toBeInTheDocument();
     expect(screen.getByText('John vouched for your professional skills')).toBeInTheDocument();
   });
 
@@ -66,70 +72,72 @@ describe('NotificationItem', () => {
 
   it('shows vouch icon for vouch notifications', () => {
     render(<NotificationItem {...defaultProps} />);
-    expect(screen.getByTestId('ThumbUpIcon')).toBeInTheDocument();
+    expect(screen.getByTestId('VerifiedUserIcon')).toBeInTheDocument();
   });
 
-  it('shows praise icon for praise notifications', () => {
-    const praiseNotification = {
-      ...mockNotification,
-      type: 'praise' as const
-    };
-    render(<NotificationItem {...defaultProps} notification={praiseNotification} />);
-    expect(screen.getByTestId('StarBorderIcon')).toBeInTheDocument();
-  });
-
-  it('renders status chips correctly', () => {
+  it('renders status text correctly', () => {
     render(<NotificationItem {...defaultProps} />);
-    expect(screen.getByText('Pending')).toBeInTheDocument();
+    // For pending actionable notifications, we show Accept/Reject buttons instead of status text
+    expect(screen.getByText('Accept')).toBeInTheDocument();
+    expect(screen.getByText('Reject')).toBeInTheDocument();
   });
 
-  it('renders accepted status chip', () => {
+  it('renders accepted status', () => {
     const acceptedNotification = {
       ...mockNotification,
-      status: 'accepted' as const
+      status: 'accepted' as const,
+      isActionable: false
     };
     render(<NotificationItem {...defaultProps} notification={acceptedNotification} />);
-    expect(screen.getByText('Accepted')).toBeInTheDocument();
+    expect(screen.getByText('accepted')).toBeInTheDocument();
   });
 
-  it('renders rejected status chip', () => {
+  it('renders rejected status', () => {
     const rejectedNotification = {
       ...mockNotification,
-      status: 'rejected' as const
+      status: 'rejected' as const,
+      isActionable: false
     };
     render(<NotificationItem {...defaultProps} notification={rejectedNotification} />);
-    expect(screen.getByText('Declined')).toBeInTheDocument();
+    expect(screen.getByText('rejected')).toBeInTheDocument();
   });
 
-  it('renders completed status chip', () => {
+  it('renders completed status', () => {
     const completedNotification = {
       ...mockNotification,
-      status: 'completed' as const
+      status: 'completed' as const,
+      isActionable: false
     };
     render(<NotificationItem {...defaultProps} notification={completedNotification} />);
-    expect(screen.getByText('Assigned')).toBeInTheDocument();
+    expect(screen.getByText('completed')).toBeInTheDocument();
   });
 
-  it('renders notification actions', () => {
+  it('renders notification actions for pending actionable notifications', () => {
     render(<NotificationItem {...defaultProps} />);
     expect(screen.getByText('Accept')).toBeInTheDocument();
-    expect(screen.getByText('Decline')).toBeInTheDocument();
+    expect(screen.getByText('Reject')).toBeInTheDocument();
   });
 
-  it('highlights unread notifications with border', () => {
-    const { container } = render(<NotificationItem {...defaultProps} />);
-    const listItem = container.querySelector('.MuiListItem-root');
-    expect(listItem).toBeInTheDocument();
+  it('calls onClick when card is clicked', () => {
+    render(<NotificationItem {...defaultProps} />);
+    const card = screen.getByRole('button', { hidden: true });
+    card.click();
+    expect(defaultProps.onClick).toHaveBeenCalledTimes(1);
   });
 
-  it('does not highlight read notifications', () => {
-    const readNotification = {
+  it('does not call onClick for pending connection requests', () => {
+    const connectionNotification = {
       ...mockNotification,
-      isRead: true
+      type: 'connection' as const,
+      status: 'pending' as const
     };
-    const { container } = render(<NotificationItem {...defaultProps} notification={readNotification} />);
-    const listItem = container.querySelector('.MuiListItem-root');
-    expect(listItem).toBeInTheDocument();
+    const { container } = render(<NotificationItem {...defaultProps} notification={connectionNotification} />);
+    const card = container.querySelector('.MuiCard-root');
+    expect(card).toBeInTheDocument();
+    if (card && card instanceof HTMLElement) {
+      card.click();
+    }
+    expect(defaultProps.onClick).not.toHaveBeenCalled();
   });
 
   it('handles notifications without titles gracefully', () => {
@@ -141,12 +149,8 @@ describe('NotificationItem', () => {
     expect(screen.getByText('John vouched for your professional skills')).toBeInTheDocument();
   });
 
-  it('truncates long messages correctly', () => {
-    const longMessageNotification = {
-      ...mockNotification,
-      message: 'This is a very long message that should be truncated because it exceeds the maximum number of lines that should be displayed in the notification item preview'
-    };
-    render(<NotificationItem {...defaultProps} notification={longMessageNotification} />);
-    expect(screen.getByText(/This is a very long message/)).toBeInTheDocument();
+  it('displays formatted date', () => {
+    render(<NotificationItem {...defaultProps} />);
+    expect(screen.getByText('1 Jan')).toBeInTheDocument();
   });
 });

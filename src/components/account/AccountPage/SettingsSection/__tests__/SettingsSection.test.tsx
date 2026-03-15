@@ -13,42 +13,38 @@ declare global {
 }
 
 const mockRCards: RCardWithPrivacy[] = [
-  { 
-    id: 'personal', 
-    name: 'Personal', 
-    isDefault: true, 
-    createdAt: new Date(), 
+  {
+    id: 'personal',
+    name: 'Personal',
+    isDefault: true,
+    createdAt: new Date(),
     updatedAt: new Date(),
     privacySettings: {
       keyRecoveryBuddy: false,
-      locationSharing: 'never',
-      locationDeletionHours: 8,
       dataSharing: {
-        posts: true,
-        offers: true,
-        wants: true,
-        vouches: true,
-        praise: true
+        location: 'city',
+        articles: 'all',
+        photos: 'events',
+        calendar: 'busy_free',
+        groups: 'selected'
       },
       reSharing: { enabled: true, maxHops: 3 }
     }
   },
-  { 
-    id: 'business', 
-    name: 'Business', 
-    isDefault: false, 
-    createdAt: new Date(), 
+  {
+    id: 'business',
+    name: 'Business',
+    isDefault: false,
+    createdAt: new Date(),
     updatedAt: new Date(),
     privacySettings: {
       keyRecoveryBuddy: false,
-      locationSharing: 'never',
-      locationDeletionHours: 8,
       dataSharing: {
-        posts: false,
-        offers: true,
-        wants: true,
-        vouches: false,
-        praise: false
+        location: 'none',
+        articles: 'selected',
+        photos: 'none',
+        calendar: 'availability',
+        groups: 'none'
       },
       reSharing: { enabled: false, maxHops: 1 }
     }

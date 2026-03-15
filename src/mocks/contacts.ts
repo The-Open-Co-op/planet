@@ -34,8 +34,6 @@ export interface RawContact {
   updatedAt: string;
   vouchesSent?: number;
   vouchesReceived?: number;
-  praisesReceived?: number;
-  praisesSent?: number;
   interactionCount?: number;
   recentInteractionScore?: number;
   sharedTagsCount?: number;
@@ -87,8 +85,6 @@ export function transformRawContact(rawContact: RawContact): Contact {
     humanityConfidenceScore: rawContact.humanityConfidenceScore || 0,
     vouchesSent: rawContact.vouchesSent || 0,
     vouchesReceived: rawContact.vouchesReceived || 0,
-    praisesSent: rawContact.praisesReceived || 0,
-    praisesReceived: rawContact.praisesReceived || 0,
     lastInteractionAt: rawContact.lastInteractionAt ? new Date(rawContact.lastInteractionAt) : undefined,
     interactionCount: rawContact.interactionCount || 0,
     recentInteractionScore: rawContact.recentInteractionScore || 0,

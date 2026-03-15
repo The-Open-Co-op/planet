@@ -3,8 +3,6 @@ import {
   Typography,
   Box,
   Grid,
-  Card,
-  CardContent,
   Avatar,
   Button,
   TextField,
@@ -26,7 +24,6 @@ import {
   Save,
   Cancel,
   LinkedIn,
-  Twitter,
   Facebook,
   Instagram,
   GitHub,
@@ -36,6 +33,13 @@ import {
   Delete,
   Link as LinkIcon,
 } from '@mui/icons-material';
+import { SvgIcon } from '@mui/material';
+
+const XIcon = (props: React.ComponentProps<typeof SvgIcon>) => (
+  <SvgIcon {...props} viewBox="0 0 24 24">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </SvgIcon>
+);
 import type {CustomSocialLink, ProfileData} from '../types';
 import {useNavigate} from "react-router";
 import {mockProfileData} from "@/mocks/profile";
@@ -67,69 +71,73 @@ const getCardSpecificProfile = (cardName: string, initialProfileData?: ProfileDa
   const baseProfile = initialProfileData ?? mockProfileData;
   const baseName = baseProfile.name || 'John Doe';
   const baseLocation = baseProfile.location || 'New York, NY';
-  
+
   switch (cardName) {
-    case 'Business':
-      return {
-        ...baseProfile,
-        name: baseName,
-        jobTitle: 'Senior Software Engineer',
-        email: `${baseName.toLowerCase().replace(' ', '.')}@techcorp.com`,
-        phone: '+1 (555) 123-4567',
-        location: baseLocation,
-        bio: 'Experienced software engineer specializing in React and Node.js. Leading development teams and building scalable web applications.',
-        website: `https://${baseName.toLowerCase().replace(' ', '')}.dev`,
-        linkedin: `${baseName.toLowerCase().replace(' ', '')}-dev`,
-        github: baseName.toLowerCase().replace(' ', ''),
-        twitter: '',
-        facebook: '',
-        instagram: '',
-      };
-    case 'Friends':
-      return {
-        ...baseProfile,
-        name: baseName.split(' ')[0], // Just first name for friends
-        jobTitle: 'Software Developer & Music Enthusiast',
-        email: `${baseName.toLowerCase().replace(' ', '.')}.personal@gmail.com`,
-        phone: '+1 (555) 987-6543',
-        location: baseLocation.includes(',') ? baseLocation.split(',')[0] + ' Area' : baseLocation,
-        bio: 'Love coding, playing guitar, hiking, and hanging out with friends. Always up for a good coffee chat or jam session!',
-        website: `https://${baseName.toLowerCase().replace(' ', '')}-music.com`,
-        linkedin: '',
-        github: '',
-        twitter: `${baseName.toLowerCase().replace(' ', '_')}_music`,
-        facebook: `${baseName.toLowerCase().replace(' ', '.')}.personal`,
-        instagram: `${baseName.toLowerCase().replace(' ', '_')}_adventures`,
-      };
     case 'Family':
       return {
         ...baseProfile,
-        name: baseName,
-        jobTitle: 'Software Developer',
-        email: `${baseName.toLowerCase().replace(' ', '.')}.family@gmail.com`,
+        name: 'Johnny',
+        jobTitle: 'Dad, husband, terrible cook',
+        email: 'johnny@doe-family.com',
         phone: '+1 (555) 456-7890',
-        location: baseLocation,
-        bio: 'Working in tech, living in the area. Love spending time with family, cooking, and weekend trips.',
+        location: 'San Francisco, CA',
+        bio: 'Family first, always. Love our Sunday roasts (even when I burn them), camping trips with the kids, and movie nights on the couch. Call me anytime.',
+        avatar: '/images/john-doe-chef.jpg',
         website: '',
         linkedin: '',
         github: '',
         twitter: '',
-        facebook: `${baseName.toLowerCase().replace(' ', '.')}.family`,
-        instagram: `${baseName.toLowerCase().replace(' ', '_')}_family_life`,
+        facebook: '',
+        instagram: 'doe_family_moments',
+      };
+    case 'Friends':
+      return {
+        ...baseProfile,
+        name: 'JD',
+        jobTitle: 'Part-time DJ, full-time liability',
+        email: 'jd@protonmail.com',
+        phone: '+1 (555) 987-6543',
+        location: 'SF Bay Area',
+        bio: 'Will trade debugging for beer. Weekend DJ who clears dancefloors. Hiking, surfing, terrible karaoke. Send memes.',
+        avatar: '/images/john-doe-frinds.jpeg',
+        website: '',
+        linkedin: '',
+        github: '',
+        twitter: 'jd_spins',
+        facebook: '',
+        instagram: 'jd_adventures',
+      };
+    case 'Business':
+      return {
+        ...baseProfile,
+        name: 'John Doe',
+        jobTitle: 'Principal Engineer, TechCorp',
+        email: 'john.doe@techcorp.com',
+        phone: '+1 (555) 123-4567',
+        location: 'San Francisco, CA',
+        bio: 'Principal Engineer leading platform architecture at TechCorp. 12 years building distributed systems, API platforms, and engineering teams. Open to advisory roles and speaking engagements.',
+        avatar: '/images/john-doe-colleauges.jpeg',
+        website: 'https://johndoe.dev',
+        linkedin: 'johndoe',
+        github: 'johndoe',
+        twitter: '',
+        facebook: '',
+        instagram: '',
       };
     case 'Community':
       return {
         ...baseProfile,
-        name: baseName,
-        jobTitle: 'Tech Volunteer & Community Organizer',
-        email: `${baseName.toLowerCase().replace(' ', '.')}@techforgood.org`,
+        name: 'John Doe',
+        jobTitle: 'Open Source Contributor & Local Mentor',
+        email: 'john@sfcoders.org',
         phone: '+1 (555) 321-0987',
-        location: baseLocation,
-        bio: 'Passionate about using technology for social good. Organize coding bootcamps for underrepresented communities and mentor new developers.',
-        website: `https://techforgood.org/${baseName.toLowerCase().replace(' ', '')}`,
-        linkedin: `${baseName.toLowerCase().replace(' ', '')}-community`,
-        github: `${baseName.toLowerCase().replace(' ', '')}-community`,
-        twitter: `${baseName.toLowerCase().replace(' ', '_')}_tech4good`,
+        location: 'San Francisco, CA',
+        bio: 'Running free coding workshops for underrepresented communities in SF. Core contributor to several open source projects. Believe tech should be accessible to everyone.',
+        avatar: '/images/john-doe-colleauges.jpeg',
+        website: 'https://sfcoders.org/john',
+        linkedin: 'johndoe-community',
+        github: 'johndoe-oss',
+        twitter: 'john_sfcoders',
         facebook: '',
         instagram: '',
       };
@@ -151,7 +159,6 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    // Use external editing state if provided, otherwise use internal state
     const [internalIsEditing, setInternalIsEditing] = useState(false);
     const isEditing = externalIsEditing !== undefined ? externalIsEditing : internalIsEditing;
     const setIsEditing = onEditingChange || setInternalIsEditing;
@@ -159,12 +166,10 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
     const [editData, setEditData] = useState<ProfileData>(profileData);
     const [showAddSocialDialog, setShowAddSocialDialog] = useState(false);
 
-    // Update profile data when cardName changes
     useEffect(() => {
       const newProfileData = getCardSpecificProfile(cardName, initialProfileData);
       setProfileData(newProfileData);
       setEditData(newProfileData);
-      // Reset editing state when switching cards
       setIsEditing(false);
     }, [cardName, initialProfileData, setIsEditing]);
     const [newSocialLink, setNewSocialLink] = useState<Omit<CustomSocialLink, 'id'>>({
@@ -220,7 +225,6 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
       );
     };
 
-
     const handleGreencheckSubmit = () => {
       navigate('/verify-phone/' + greencheckData.phone)
     };
@@ -238,20 +242,19 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
 
     return (
       <Box ref={ref}>
-        <Card sx={{ mb: isEditing ? 4 : 0 }}>
-          <CardContent sx={{ position: 'relative' }}>
+        <Box sx={{ p: { xs: 2, md: 3 }, position: 'relative' }}>
             {/* Edit button (floating) or Save/Cancel buttons (normal flow) */}
             {!isEditing ? (
-              <Box sx={{ 
-                position: 'absolute', 
-                top: 16, 
+              <Box sx={{
+                position: 'absolute',
+                top: 16,
                 right: 16,
                 zIndex: 1
               }}>
                 {isMobile ? (
                   <IconButton
                     onClick={handleEdit}
-                    sx={{ 
+                    sx={{
                       border: 1,
                       borderColor: 'divider',
                       bgcolor: 'background.paper',
@@ -374,7 +377,7 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
                   {/* Basic contact info */}
                   <Grid container spacing={2}>
                     <Grid size={{ xs: 12, sm: 6 }}>
-                      <Typography variant="subtitle2" color="text.secondary">Email</Typography>
+                      <Typography variant="caption" color="text.secondary">Email</Typography>
                       {isEditing ? (
                         <TextField
                           fullWidth
@@ -388,7 +391,7 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
                       )}
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6 }}>
-                      <Typography variant="subtitle2" color="text.secondary">Phone</Typography>
+                      <Typography variant="caption" color="text.secondary">Phone</Typography>
                       {isEditing ? (
                         <TextField
                           fullWidth
@@ -402,7 +405,7 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
                       )}
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6 }}>
-                      <Typography variant="subtitle2" color="text.secondary">Location</Typography>
+                      <Typography variant="caption" color="text.secondary">Location</Typography>
                       {isEditing ? (
                         <TextField
                           fullWidth
@@ -415,33 +418,35 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
                         <Typography variant="body1">{profileData.location}</Typography>
                       )}
                     </Grid>
-                    <Grid size={{ xs: 12, sm: 6 }}>
-                      <Typography variant="subtitle2" color="text.secondary">Website</Typography>
-                      {isEditing ? (
-                        <TextField
-                          fullWidth
-                          value={editData.website}
-                          onChange={(e) => handleFieldChange('website', e.target.value)}
-                          variant="outlined"
-                          size="small"
-                          placeholder="https://yourwebsite.com"
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <Language fontSize="small" />
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                      ) : (
-                        <Typography variant="body1">{profileData.website || '-'}</Typography>
-                      )}
-                    </Grid>
+                    {(isEditing || profileData.website) && (
+                      <Grid size={{ xs: 12, sm: 6 }}>
+                        <Typography variant="caption" color="text.secondary">Website</Typography>
+                        {isEditing ? (
+                          <TextField
+                            fullWidth
+                            value={editData.website}
+                            onChange={(e) => handleFieldChange('website', e.target.value)}
+                            variant="outlined"
+                            size="small"
+                            placeholder="https://yourwebsite.com"
+                            InputProps={{
+                              startAdornment: (
+                                <InputAdornment position="start">
+                                  <Language fontSize="small" />
+                                </InputAdornment>
+                              ),
+                            }}
+                          />
+                        ) : (
+                          <Typography variant="body1">{profileData.website}</Typography>
+                        )}
+                      </Grid>
+                    )}
                   </Grid>
 
                   {/* Bio */}
                   <Box>
-                    <Typography variant="subtitle2" color="text.secondary">Bio</Typography>
+                    <Typography variant="caption" color="text.secondary">Bio</Typography>
                     {isEditing ? (
                       <TextField
                         fullWidth
@@ -460,8 +465,8 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
                   {/* Social Networks - only show in edit mode or if values exist */}
                   {(isEditing || profileData.linkedin || profileData.twitter || profileData.github || profileData.facebook || profileData.instagram || profileData.customSocialLinks.length > 0) && (
                     <Box>
-                      <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>Social Networks</Typography>
-                      <Grid container spacing={2}>
+                      <Typography variant="caption" color="text.secondary">Social Networks</Typography>
+                      <Grid container spacing={1}>
                         <Grid size={{ xs: 12, sm: 6 }}>
                           {isEditing ? (
                             <TextField
@@ -518,18 +523,18 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
                               onChange={(e) => handleFieldChange('twitter', e.target.value)}
                               variant="outlined"
                               size="small"
-                              placeholder="Twitter username"
+                              placeholder="X username"
                               InputProps={{
                                 startAdornment: (
                                   <InputAdornment position="start">
-                                    <Twitter fontSize="small" />
+                                    <XIcon fontSize="small" />
                                   </InputAdornment>
                                 ),
                               }}
                             />
                           ) : profileData.twitter && (
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                              <Twitter fontSize="small" color="action" />
+                              <XIcon fontSize="small" color="action" />
                               <Typography variant="body2">{profileData.twitter}</Typography>
                             </Box>
                           )}
@@ -582,7 +587,7 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
                             </Box>
                           )}
                         </Grid>
-                        
+
                         {/* Custom Social Links */}
                         {(isEditing ? editData.customSocialLinks : profileData.customSocialLinks).map((link) => (
                           <Grid size={{ xs: 12, sm: 6 }} key={link.id}>
@@ -624,7 +629,7 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
                             )}
                           </Grid>
                         ))}
-                        
+
                         {/* Add Custom Social Button */}
                         {isEditing && (
                           <Grid size={{ xs: 12, sm: 6 }}>
@@ -647,8 +652,7 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
                 </Box>
               </Grid>
             </Grid>
-          </CardContent>
-        </Card>
+        </Box>
 
         {/* Add Social Dialog */}
         <Dialog open={showAddSocialDialog} onClose={() => setShowAddSocialDialog(false)} maxWidth="sm" fullWidth>
@@ -697,7 +701,7 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
               Enter your details to verify and claim your accounts from other platforms via Greencheck.
             </Typography>
-            
+
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
               <FormPhoneField
                 fullWidth

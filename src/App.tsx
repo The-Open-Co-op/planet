@@ -109,7 +109,7 @@ const AppRoutes = () => (
           <DashboardLayout>
             <Routes>
               <Route path="/onboarding/welcome" element={<WelcomeToVaultPage />} />
-              <Route path="/" element={<Navigate to="/contacts" replace />} />
+              <Route path="/" element={<Navigate to="/apps" replace />} />
               <Route path="/import" element={<ImportPage />} />
               <Route path="/contacts" element={<ContactListPage />} />
               <Route path="/contacts/create" element={<CreateContactPage />} />

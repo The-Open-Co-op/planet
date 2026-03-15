@@ -148,14 +148,6 @@ export const ContactGrid = ({
           )}
         </Box>
       )}
-      {/* Top line for scrolling under */}
-      <Box sx={{
-        width: '100%',
-        height: '1px',
-        backgroundColor: 'divider',
-        mb: 0,
-        opacity: 0.3
-      }} />
       {/* Scrollable content area */}
       <Box sx={{
         py: 1,

@@ -14,16 +14,14 @@ export interface IconHelpers {
   getSourceIcon: (source: string) => React.ReactNode;
   getPlanetStatusIcon: (planetStatus?: string) => React.ReactNode;
   getCategoryIcon: (category?: string) => React.ReactNode;
-  getRelationshipCategoryInfo: (category?: string) => { 
-    name: string; 
-    icon: React.ReactNode; 
-    color: string; 
+  getRelationshipCategoryInfo: (category?: string) => {
+    name: string;
+    icon: React.ReactNode;
+    color: string;
   } | null;
 }
 
-export interface VouchPraiseCounts {
+export interface VouchCounts {
   vouchesSent: number;
   vouchesReceived: number;
-  praisesSent: number;
-  praisesReceived: number;
 }

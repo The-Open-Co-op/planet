@@ -16,26 +16,14 @@ import { NotificationPreview } from './NotificationPreview';
 export interface NotificationDropdownProps {
   notifications: Notification[];
   summary: NotificationSummary;
-  onMarkAsRead: (notificationId: string) => void;
   onMarkAllAsRead: () => void;
-  onAcceptVouch: (notificationId: string, vouchId: string) => void;
-  onRejectVouch: (notificationId: string, vouchId: string) => void;
-  onAcceptPraise: (notificationId: string, praiseId: string) => void;
-  onRejectPraise: (notificationId: string, praiseId: string) => void;
-  onAssignToRCard: (notificationId: string, rCardId: string) => void;
 }
 
 export const NotificationDropdown = forwardRef<HTMLDivElement, NotificationDropdownProps>(
   ({
     notifications,
     summary,
-    onMarkAsRead,
     onMarkAllAsRead,
-    onAcceptVouch,
-    onRejectVouch,
-    onAcceptPraise,
-    onRejectPraise,
-    onAssignToRCard,
   }, ref) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [filter, setFilter] = useState<'all' | 'pending' | 'unread'>('all');
@@ -111,13 +99,7 @@ export const NotificationDropdown = forwardRef<HTMLDivElement, NotificationDropd
               notifications={notifications}
               summary={summary}
               filter={filter}
-              onMarkAsRead={onMarkAsRead}
               onMarkAllAsRead={onMarkAllAsRead}
-              onAcceptVouch={onAcceptVouch}
-              onRejectVouch={onRejectVouch}
-              onAcceptPraise={onAcceptPraise}
-              onRejectPraise={onRejectPraise}
-              onAssignToRCard={onAssignToRCard}
               onFilterChange={handleFilterChange}
             />
 

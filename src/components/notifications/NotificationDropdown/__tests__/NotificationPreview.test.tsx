@@ -30,9 +30,9 @@ const mockNotifications: Notification[] = [
   },
   {
     id: 'notif-2',
-    type: 'praise',
-    title: 'Praise received',
-    message: 'Test praise message',
+    type: 'vouch',
+    title: 'Vouch accepted',
+    message: 'Test accepted vouch message',
     fromUserName: 'Alice Smith',
     fromUserAvatar: '/alice.jpg',
     targetUserId: 'current-user',
@@ -41,7 +41,7 @@ const mockNotifications: Notification[] = [
     status: 'accepted',
     createdAt: new Date('2024-01-02T14:30:00.000Z'),
     updatedAt: new Date('2024-01-02T14:30:00.000Z'),
-    metadata: { praiseId: 'praise-456' }
+    metadata: { vouchId: 'vouch-456' }
   }
 ];
 
@@ -49,7 +49,7 @@ const mockSummary: NotificationSummary = {
   total: 2,
   unread: 1,
   pending: 1,
-  byType: { vouch: 1, praise: 1, connection: 0, system: 0 }
+  byType: { vouch: 2, connection: 0, system: 0 }
 };
 
 const defaultProps = {
@@ -60,8 +60,6 @@ const defaultProps = {
   onMarkAllAsRead: jest.fn(),
   onAcceptVouch: jest.fn(),
   onRejectVouch: jest.fn(),
-  onAcceptPraise: jest.fn(),
-  onRejectPraise: jest.fn(),
   onAssignToRCard: jest.fn(),
   onFilterChange: jest.fn(),
 };
@@ -106,7 +104,7 @@ describe('NotificationPreview', () => {
     // Find the filter chips section specifically (after summary chips)
     const filterChips = container.querySelectorAll('.MuiChip-root');
     // The filter chips come after the summary chips, so we look for the clickable ones
-    const clickableChips = Array.from(filterChips).filter(chip => 
+    const clickableChips = Array.from(filterChips).filter(chip =>
       chip.textContent && ['All', 'Pending', 'Unread'].includes(chip.textContent)
     );
     const pendingChip = clickableChips.find(chip => chip.textContent === 'Pending');
@@ -119,7 +117,7 @@ describe('NotificationPreview', () => {
   it('shows active filter with filled variant', () => {
     const { container } = render(<NotificationPreview {...defaultProps} filter="pending" />);
     const filterChips = container.querySelectorAll('.MuiChip-root');
-    const clickableChips = Array.from(filterChips).filter(chip => 
+    const clickableChips = Array.from(filterChips).filter(chip =>
       chip.textContent && ['All', 'Pending', 'Unread'].includes(chip.textContent)
     );
     const pendingChip = clickableChips.find(chip => chip.textContent === 'Pending');
@@ -135,19 +133,19 @@ describe('NotificationPreview', () => {
   it('filters notifications based on filter prop', () => {
     render(<NotificationPreview {...defaultProps} filter="pending" />);
     expect(screen.getByText('New vouch')).toBeInTheDocument();
-    expect(screen.queryByText('Praise received')).not.toBeInTheDocument();
+    expect(screen.queryByText('Vouch accepted')).not.toBeInTheDocument();
   });
 
   it('filters unread notifications correctly', () => {
     render(<NotificationPreview {...defaultProps} filter="unread" />);
     expect(screen.getByText('New vouch')).toBeInTheDocument();
-    expect(screen.queryByText('Praise received')).not.toBeInTheDocument();
+    expect(screen.queryByText('Vouch accepted')).not.toBeInTheDocument();
   });
 
   it('shows all notifications with all filter', () => {
     render(<NotificationPreview {...defaultProps} filter="all" />);
     expect(screen.getByText('New vouch')).toBeInTheDocument();
-    expect(screen.getByText('Praise received')).toBeInTheDocument();
+    expect(screen.getByText('Vouch accepted')).toBeInTheDocument();
   });
 
   it('shows empty state for filtered results', () => {
@@ -183,7 +181,7 @@ describe('NotificationPreview', () => {
   it('renders notification items in list', () => {
     render(<NotificationPreview {...defaultProps} />);
     expect(screen.getByText('Test vouch message')).toBeInTheDocument();
-    expect(screen.getByText('Test praise message')).toBeInTheDocument();
+    expect(screen.getByText('Test accepted vouch message')).toBeInTheDocument();
   });
 
   it('does not show mark all read button when no unread notifications', () => {

@@ -1,5 +1,5 @@
 import {useState, useEffect, useMemo} from 'react';
-import {useNavigate, useSearchParams} from 'react-router-dom';
+import {useNavigate, useSearchParams, useLocation} from 'react-router-dom';
 import {
   Typography, 
   Box, 
@@ -40,6 +40,7 @@ import {useMergeContacts} from "@/hooks/contacts/useMergeContacts.ts";
 const ContactListPage = () => {
   const currentUserGroupIds = useMemo(() => ['group1', 'group2', 'group3'], []);
   const navigate = useNavigate();
+  const location = useLocation();
   useSearchParams();
   
   // State
@@ -73,6 +74,13 @@ const ContactListPage = () => {
 
   const {getDuplicatedContacts, mergeContacts} = useMergeContacts();
   const {getCategoriesArray, getCategoryIcon} = useRelationshipCategories();
+
+  // Reload contacts when navigating back from import
+  useEffect(() => {
+    if (location.state?.refresh) {
+      reloadContacts();
+    }
+  }, [location.state, reloadContacts]);
 
   useEffect(() => {
     addFilter("currentUserGroupIds", currentUserGroupIds);
@@ -356,9 +364,10 @@ const ContactListPage = () => {
       ) : null}
     >
       {/* Search Bar with Relationship Filter */}
-      <Box sx={{ display: 'flex', gap: 2, mb: 2, alignItems: 'center' }}>
+      <Box sx={{ display: 'flex', gap: 1, mb: 1, pt: 1, alignItems: 'center' }}>
         <TextField
           fullWidth
+          size="small"
           placeholder="Search..."
           value={searchQuery}
           onChange={handleSearchChange}
@@ -370,7 +379,7 @@ const ContactListPage = () => {
             ),
           }}
         />
-        <FormControl size="small" sx={{ minWidth: 140 }}>
+        <FormControl size="small" sx={{ minWidth: 140, '& .MuiInputLabel-root': { overflow: 'visible' } }}>
           <InputLabel>Relationships</InputLabel>
           <Select
             value={filters.relationshipFilter || 'all'}

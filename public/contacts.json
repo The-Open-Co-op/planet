@@ -64,8 +64,6 @@
     "humanityConfidenceScore": 4,
     "vouchesSent": 8,
     "vouchesReceived": 5,
-    "praisesSent": 15,
-    "praisesReceived": 12,
     "relationshipCategory": "business",
     "lastInteractionAt": "2024-01-20T10:30:00Z",
     "interactionCount": 45,
@@ -116,8 +114,6 @@
     "humanityConfidenceScore": 5,
     "vouchesSent": 6,
     "vouchesReceived": 9,
-    "praisesSent": 11,
-    "praisesReceived": 8,
     "relationshipCategory": "business",
     "lastInteractionAt": "2024-02-15T14:20:00Z",
     "interactionCount": 32
@@ -167,8 +163,6 @@
     "humanityConfidenceScore": 4,
     "vouchesSent": 3,
     "vouchesReceived": 7,
-    "praisesSent": 20,
-    "praisesReceived": 18,
     "relationshipCategory": "friends_family",
     "lastInteractionAt": "2024-03-10T09:15:00Z",
     "interactionCount": 68
@@ -264,8 +258,6 @@
     "humanityConfidenceScore": 5,
     "vouchesSent": 10,
     "vouchesReceived": 12,
-    "praisesSent": 25,
-    "praisesReceived": 30,
     "relationshipCategory": "community",
     "lastInteractionAt": "2024-03-18T11:30:00Z",
     "interactionCount": 89,
@@ -318,8 +310,6 @@
     "humanityConfidenceScore": 4,
     "vouchesSent": 7,
     "vouchesReceived": 6,
-    "praisesSent": 14,
-    "praisesReceived": 16,
     "relationshipCategory": "community",
     "lastInteractionAt": "2024-02-28T13:20:00Z",
     "interactionCount": 56
@@ -363,10 +353,12 @@
       }
     ],
     "planetStatus": {
-      "value": "not_invited",
+      "value": "member",
       "source": "system"
     },
     "humanityConfidenceScore": 2,
+    "vouchesSent": 3,
+    "vouchesReceived": 2,
     "lastInteractionAt": "2023-12-15T10:00:00Z",
     "interactionCount": 8
   },
@@ -415,8 +407,6 @@
     "humanityConfidenceScore": 4,
     "vouchesSent": 9,
     "vouchesReceived": 11,
-    "praisesSent": 18,
-    "praisesReceived": 20,
     "relationshipCategory": "business",
     "lastInteractionAt": "2024-03-12T15:45:00Z",
     "interactionCount": 73
@@ -466,8 +456,6 @@
     "humanityConfidenceScore": 3,
     "vouchesSent": 4,
     "vouchesReceived": 5,
-    "praisesSent": 22,
-    "praisesReceived": 19,
     "relationshipCategory": "friends_family",
     "lastInteractionAt": "2024-02-20T09:30:00Z",
     "interactionCount": 41
@@ -517,8 +505,6 @@
     "humanityConfidenceScore": 5,
     "vouchesSent": 12,
     "vouchesReceived": 15,
-    "praisesSent": 8,
-    "praisesReceived": 10,
     "relationshipCategory": "business",
     "lastInteractionAt": "2024-03-15T14:00:00Z",
     "interactionCount": 95
@@ -568,8 +554,6 @@
     "humanityConfidenceScore": 4,
     "vouchesSent": 6,
     "vouchesReceived": 8,
-    "praisesSent": 13,
-    "praisesReceived": 17,
     "relationshipCategory": "community",
     "lastInteractionAt": "2024-03-01T11:15:00Z",
     "interactionCount": 62
@@ -665,8 +649,6 @@
     "humanityConfidenceScore": 3,
     "vouchesSent": 2,
     "vouchesReceived": 4,
-    "praisesSent": 16,
-    "praisesReceived": 14,
     "relationshipCategory": "friends_family",
     "lastInteractionAt": "2024-02-25T12:00:00Z",
     "interactionCount": 38
@@ -716,8 +698,6 @@
     "humanityConfidenceScore": 4,
     "vouchesSent": 11,
     "vouchesReceived": 9,
-    "praisesSent": 21,
-    "praisesReceived": 23,
     "relationshipCategory": "business",
     "lastInteractionAt": "2024-03-08T16:30:00Z",
     "interactionCount": 77
@@ -767,8 +747,6 @@
     "humanityConfidenceScore": 5,
     "vouchesSent": 13,
     "vouchesReceived": 16,
-    "praisesSent": 28,
-    "praisesReceived": 32,
     "relationshipCategory": "community",
     "lastInteractionAt": "2024-03-19T10:45:00Z",
     "interactionCount": 104
@@ -864,8 +842,6 @@
     "humanityConfidenceScore": 3,
     "vouchesSent": 5,
     "vouchesReceived": 7,
-    "praisesSent": 10,
-    "praisesReceived": 12,
     "relationshipCategory": "business",
     "lastInteractionAt": "2024-02-10T13:00:00Z",
     "interactionCount": 29
@@ -915,8 +891,6 @@
     "humanityConfidenceScore": 4,
     "vouchesSent": 8,
     "vouchesReceived": 10,
-    "praisesSent": 17,
-    "praisesReceived": 19,
     "relationshipCategory": "community",
     "lastInteractionAt": "2024-03-05T11:30:00Z",
     "interactionCount": 64
@@ -966,8 +940,6 @@
     "humanityConfidenceScore": 5,
     "vouchesSent": 14,
     "vouchesReceived": 18,
-    "praisesSent": 35,
-    "praisesReceived": 40,
     "relationshipCategory": "business",
     "lastInteractionAt": "2024-03-17T09:00:00Z",
     "interactionCount": 92
@@ -1063,8 +1035,6 @@
     "humanityConfidenceScore": 4,
     "vouchesSent": 7,
     "vouchesReceived": 11,
-    "praisesSent": 24,
-    "praisesReceived": 28,
     "relationshipCategory": "friends_family",
     "lastInteractionAt": "2024-03-14T12:30:00Z",
     "interactionCount": 81
@@ -1114,8 +1084,6 @@
     "humanityConfidenceScore": 3,
     "vouchesSent": 3,
     "vouchesReceived": 5,
-    "praisesSent": 9,
-    "praisesReceived": 7,
     "relationshipCategory": "business",
     "lastInteractionAt": "2024-02-05T14:45:00Z",
     "interactionCount": 26
@@ -1165,8 +1133,6 @@
     "humanityConfidenceScore": 5,
     "vouchesSent": 16,
     "vouchesReceived": 20,
-    "praisesSent": 42,
-    "praisesReceived": 45,
     "relationshipCategory": "community",
     "lastInteractionAt": "2024-03-20T08:15:00Z",
     "interactionCount": 118
@@ -1216,8 +1182,6 @@
     "humanityConfidenceScore": 4,
     "vouchesSent": 10,
     "vouchesReceived": 13,
-    "praisesSent": 19,
-    "praisesReceived": 22,
     "relationshipCategory": "business",
     "lastInteractionAt": "2024-03-16T17:00:00Z",
     "interactionCount": 87
