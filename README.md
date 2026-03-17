@@ -1,63 +1,61 @@
-# Personal Network Manager
+# PLANET
 
-A modern web application for building and managing your professional network. Import contacts from LinkedIn, organize connections, and grow your network with QR code invitations.
+**A Co-Operating System to support collaboration at scale.**
 
-## ✨ Features
+PLANET is the flagship project of [The Open Co-op](https://open.coop) — an app, a network, and a cooperative, built on the [First Person Network](https://firstperson.network) trust infrastructure stack.
 
-- **LinkedIn Integration** - Import your professional connections
-- **Contact Management** - Organize and track your network
-- **QR Code Invitations** - Share your network invitation via QR codes
-- **Professional Dashboard** - Clean, modern interface with Material-UI
-- **Responsive Design** - Works seamlessly on desktop and mobile
-- **Onboarding Flow** - Guided setup for new users
+## What is PLANET?
 
+PLANET is a private, trusted digital space where everyone is real, everything is yours, and the members own the infrastructure. It combines:
 
-## Initial Setup
-```bash
-# install node + bun
-./scripts/setup.sh
-source ~/.zshrc
+- **Personal vault** — your photos, documents, and contacts, backed up and encrypted
+- **First Person Pages** — a verified public presence, cryptographically signed by you
+- **Trusted messaging** — E2EE chat where reactions build real trust signals
+- **The Introducer** — connect people you trust in a secure, structured way
+- **Community spaces** — groups owned and governed by their members
+- **A cooperative** — every member has a voice, every penny is transparent
+
+## Status
+
+🟡 **Pre-launch** — Building toward September 2026 launch with founding communities.
+
+- [Docs site](https://docs.open.coop) — Vision, specs, research, and how to contribute
+- [Open Collective](https://opencollective.com/the-open-co-op) — Transparent finances and membership tiers
+- [Task List](https://github.com/The-Open-Co-op/planet/issues/1) — Current priorities
+
+## Repository Structure
+
+```
+planet/
+├── governance/          # Co-op constitution, principles, decision records
+├── specs/               # UX flows, user stories, technical specifications
+│   ├── ux-design/       # Layered UX architecture (L0-L3)
+│   ├── apps/            # Per-app specifications
+│   └── technical/       # Architecture, integration, protocols
+├── research/            # Background material, analysis, references
+├── adr/                 # Architecture Decision Records
+└── assets/              # Diagrams, images, brand materials
 ```
 
-## 🚀 Quick Start
+## Get Involved
 
-```bash
-# install dependencies
-bun install
+We're building PLANET cooperatively. There are many ways to contribute:
 
-# run locally
-bun dev
-```
+- **Join as a member** — [Open Collective](https://opencollective.com/the-open-co-op)
+- **Explore the vision** — [docs.open.coop](https://docs.open.coop)
+- **Contribute** — See [CONTRIBUTING.md](CONTRIBUTING.md)
+- **Fund a feature** — [Feature bounties on Open Collective](https://opencollective.com/the-open-co-op)
 
-## 📱 Live Demo
+## Principles
 
-Visit: [https://nao-pnm-ui.pages.dev/](https://nao-pnm-ui.pages.dev/)
+- **Trust as byproduct** — trust credentials emerge from normal social behaviour
+- **Invitation, not marketing** — every member arrives because someone real invited them
+- **Progressive disclosure** — day 1 is simple; depth reveals itself over time
+- **No trust scores** — trust is contextual, relational, and multidimensional
+- **Cooperative by design** — every member is a citizen, not a consumer
+- **Future generations** — we build infrastructure to be held in trust, not sold
 
+## License
 
-## 🤖 Claude Commands
-
-This project includes helpful Claude commands for development:
-
-```bash
-# start claude in yolo mode
-claude --dangerously-skip-permissions
-
-# pull main changes
-/sync-main
-
-# sync branch changes with github
-/sync-branch
-
-# create or swap to a branch for development
-/swap-branch [new or existing branch name]
-
-# ask claude or team for help if needed
-```
-
-## 🔧 Available Scripts
-
-- `bun run dev` - Start development server
-- `bun run build` - Build for production
-- `bun run preview` - Preview production build
-- `bun run lint` - Run ESLint
-- `bun run test` - Run the jest tests (DO NOT use `bun test`, this is a different test runner.)
+Content in this repository is licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+Code (when present) is licensed under [AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.en.html).
