@@ -5,7 +5,7 @@ import { resolve } from "node:path";
 // https://vite.dev/config/
 export default defineConfig({
 	plugins: [react()],
-	base: process.env.CI ? "/nao-web-ui/" : "/",
+	base: "/",
 	resolve: {
 		alias: {
 			"@": resolve(__dirname, "src"),
