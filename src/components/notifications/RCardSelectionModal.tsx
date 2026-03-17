@@ -22,6 +22,9 @@ interface RCardSelectionModalProps {
   onSelect: (rCardIds: string[]) => void;
   contactName?: string;
   multiSelect?: boolean;
+  title?: string;
+  description?: string;
+  submitLabel?: string;
 }
 
 export const RCardSelectionModal = ({
@@ -30,6 +33,9 @@ export const RCardSelectionModal = ({
   onSelect,
   contactName,
   multiSelect = true,
+  title: customTitle,
+  description: customDescription,
+  submitLabel,
 }: RCardSelectionModalProps) => {
   const { activeProfiles } = useTrustProfiles();
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
@@ -118,10 +124,10 @@ export const RCardSelectionModal = ({
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
       <DialogTitle sx={{ pb: 0.5 }}>
-        Assign to...
-        {contactName && (
+        {customTitle || 'Assign to...'}
+        {(customDescription || contactName) && (
           <Typography variant="body2" color="text.secondary">
-            Assign {firstName}'s Vouch to your profiles:
+            {customDescription || `Assign ${firstName}'s Vouch to your profiles:`}
           </Typography>
         )}
       </DialogTitle>
@@ -188,7 +194,7 @@ export const RCardSelectionModal = ({
           color="primary"
           disabled={selectedCards.length === 0}
         >
-          Assign
+          {submitLabel || 'Assign'}
         </Button>
       </DialogActions>
     </Dialog>

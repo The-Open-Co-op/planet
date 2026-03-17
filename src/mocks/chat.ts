@@ -37,6 +37,53 @@ const _conversations: Conversation[] = [
     ],
     unreadCount: 0,
   },
+  {
+    id: 'conv-amanda',
+    contactId: 'contact:7',
+    contactName: 'Amanda Foster',
+    isOnline: false,
+    lastSeen: 'yesterday',
+    messages: [
+      { id: 'sys-af', text: 'You and Amanda are now connected 🎉', senderId: 'system', timestamp: '2026-03-13T09:00:00Z', status: 'read' },
+      { id: 'af-1', text: 'Hey Jonny, great to connect on PLANET!', senderId: 'contact:7', timestamp: '2026-03-13T09:05:00Z', status: 'read' },
+      { id: 'af-2', text: 'Likewise! Looking forward to collaborating.', senderId: ME, timestamp: '2026-03-13T09:10:00Z', status: 'read' },
+    ],
+    unreadCount: 0,
+  },
+  {
+    id: 'conv-ariana',
+    contactId: 'contact:2',
+    contactName: 'Ariana Bahrami',
+    isOnline: true,
+    messages: [
+      { id: 'sys-ab', text: 'You and Ariana are now connected 🎉', senderId: 'system', timestamp: '2026-03-10T14:00:00Z', status: 'read' },
+      { id: 'ab-1', text: 'Hi Jonny! Shall we catch up on the API project?', senderId: 'contact:2', timestamp: '2026-03-12T11:00:00Z', status: 'read' },
+      { id: 'ab-2', text: "Yes! I'll send you the updated specs.", senderId: ME, timestamp: '2026-03-12T11:15:00Z', status: 'delivered' },
+    ],
+    unreadCount: 0,
+  },
+  {
+    id: 'conv-marcus',
+    contactId: 'contact:3',
+    contactName: 'Marcus Thompson',
+    isOnline: false,
+    lastSeen: '2 hours ago',
+    messages: [
+      { id: 'sys-mt', text: 'You and Marcus are now connected 🎉', senderId: 'system', timestamp: '2026-03-15T16:00:00Z', status: 'read' },
+    ],
+    unreadCount: 0,
+  },
+  {
+    id: 'conv-elena',
+    contactId: 'contact:5',
+    contactName: 'Elena Rodriguez',
+    isOnline: true,
+    messages: [
+      { id: 'sys-er', text: 'You and Elena are now connected 🎉', senderId: 'system', timestamp: '2026-03-15T10:00:00Z', status: 'read' },
+      { id: 'er-1', text: 'Hey! Love what you did with the new designs.', senderId: 'contact:5', timestamp: '2026-03-16T08:00:00Z', status: 'read' },
+    ],
+    unreadCount: 1,
+  },
 ];
 
 /** Mutable conversations store — shared singleton */

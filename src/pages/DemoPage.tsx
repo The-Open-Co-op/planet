@@ -10,13 +10,17 @@ import type { AnnotationItem } from '@/components/demo/Annotation';
 import { InviteReceivedScreen } from '@/components/onboarding/InviteReceivedScreen';
 import { AppStoreScreen } from '@/components/onboarding/AppStoreScreen';
 import { WelcomeScreen } from '@/components/onboarding/WelcomeScreen';
+import { RecoveryPhraseScreen } from '@/components/onboarding/RecoveryPhraseScreen';
 import { ChatScreen } from '@/components/onboarding/ChatScreen';
 import { ImportScreen } from '@/components/onboarding/ImportScreen';
 import { ContactsOverviewScreen } from '@/components/onboarding/ContactsOverviewScreen';
 import { ProfilesScreen } from '@/components/onboarding/ProfilesScreen';
 import { FullContactsScreen } from '@/components/onboarding/FullContactsScreen';
 import { EmojiVRCScreen } from '@/components/onboarding/EmojiVRCScreen';
+import { GroupChatScreen } from '@/components/onboarding/GroupChatScreen';
 import { VaultScreen } from '@/components/onboarding/VaultScreen';
+import { AppStoreCardScreen } from '@/components/onboarding/AppStoreDemoScreen';
+import { AlertsScreen } from '@/components/onboarding/AlertsScreen';
 import { FeedbackScreen } from '@/components/onboarding/FeedbackScreen';
 
 type AnnotationWithCategory = AnnotationItem & { category: 'ui' | 'protocol' };
@@ -83,7 +87,7 @@ const steps: DemoStep[] = [
     slug: 'welcome',
     title: 'Welcome',
     subtitle: 'One screen, zero jargon',
-    screen: ({ goToStep }) => <WelcomeScreen onConnect={() => goToStep('chat')} />,
+    screen: ({ goToStep }) => <WelcomeScreen onConnect={() => goToStep('recovery')} />,
     annotations: [
       {
         side: 'right', top: 12, category: 'protocol',
@@ -109,31 +113,52 @@ const steps: DemoStep[] = [
         description: 'To make the action personal.',
         tag: 'UX',
       },
+    ],
+  },
+  {
+    id: '04',
+    slug: 'recovery',
+    title: 'Recovery phrase',
+    subtitle: 'Secure the identity — mnemonic backup, verification, and biometric lock',
+    screen: ({ goToStep, setDynamicAnnotations }) => <RecoveryPhraseScreen onComplete={() => goToStep('chat')} setDynamicAnnotations={setDynamicAnnotations} />,
+    annotations: [
+      {
+        side: 'left', top: 30, category: 'ui',
+        title: 'Write it down',
+        description: 'The user must write the recovery phrase down by hand. Screenshots and copy/paste are disabled.',
+        tag: 'UX',
+      },
+      {
+        side: 'right', top: 45, category: 'protocol',
+        title: 'Key generation',
+        description: 'Derive master seed using BIP-32 key derivation. Create initial key hierarchy: Ed25519 signing keys + X25519 encryption keys. Initialize sovereign wallet (encrypted local storage). Pre-generate first derived key pairs for DID creation.',
+        tag: 'Backend',
+      },
       {
         side: 'right', top: 80, category: 'protocol',
-        title: 'DID keypair ready',
-        description: 'DID generated async during this natural pause (~2s). Tapping Connect creates a VRC — invisible to the user.',
+        title: 'Default to PLANET VTA',
+        description: "PLANET's VTA is selected automatically in the background and used until user selects otherwise in Vault.",
         tag: 'Backend',
       },
     ],
   },
   {
-    id: '04',
+    id: '05',
     slug: 'chat',
     title: 'The payoff',
     subtitle: 'Onboarding directly to personal chat creates stickiness',
     screen: ({ goToStep }) => <ChatScreen onImport={() => goToStep('import')} />,
     annotations: [
       {
-        side: 'right', top: 12, category: 'protocol',
+        side: 'right', top: 12, category: 'ui',
         title: 'E2E encrypted',
         description: 'Subtle lock icon — encryption is the default.',
-        tag: 'Backend',
+        tag: 'UX',
       },
       {
         side: 'left', top: 35, category: 'protocol',
-        title: 'Mutual VRC',
-        description: 'Connection credential created silently during transition. Both parties hold a Verifiable Relationship Credential.',
+        title: 'Mutual R-DIDs Exchanged',
+        description: 'Connection credentials created in the background during setup. Both parties now hold R-DIDs to establish the DIDComm channel.',
         tag: 'Backend',
       },
       {
@@ -145,7 +170,7 @@ const steps: DemoStep[] = [
     ],
   },
   {
-    id: '05',
+    id: '06',
     slug: 'import',
     title: 'Import Contacts',
     subtitle: 'User imports contacts to start building their network',
@@ -166,7 +191,7 @@ const steps: DemoStep[] = [
     ],
   },
   {
-    id: '06',
+    id: '07',
     slug: 'contacts',
     title: 'Contacts Imported',
     subtitle: 'Contacts imported and ready to organise into Trust Profiles',
@@ -187,7 +212,7 @@ const steps: DemoStep[] = [
     ],
   },
   {
-    id: '07',
+    id: '08',
     slug: 'profiles',
     title: 'My Profiles',
     subtitle: 'Trust Profiles pre-filled with data gathered during import',
@@ -221,7 +246,7 @@ const steps: DemoStep[] = [
     ],
   },
   {
-    id: '08',
+    id: '09',
     slug: 'vouching',
     title: 'Network building',
     subtitle: 'Contacts with My Profiles, ready to invite and vouch',
@@ -235,8 +260,8 @@ const steps: DemoStep[] = [
       },
       {
         side: 'right', top: 44, category: 'ui',
-        title: 'Send Vouches',
-        description: 'Alexander and Amanda are already PLANET members, so Jonny can send them Vouches.',
+        title: 'Connect, Chat & Vouch',
+        description: 'Alexander and Amanda are already PLANET members. Jonny can connect with them to chat and send Vouches.',
         tag: 'Growth',
       },
       {
@@ -248,7 +273,7 @@ const steps: DemoStep[] = [
     ],
   },
   {
-    id: '09',
+    id: '10',
     slug: 'reactions',
     title: 'Chat reactions',
     subtitle: 'Tap a message to react',
@@ -268,41 +293,104 @@ const steps: DemoStep[] = [
       },
       {
         side: 'left', top: 65, category: 'protocol',
-        title: 'Micro-VRCs',
-        description: 'Each reaction issues a lightweight Verifiable Relationship Credential to the message author — building trust signals over time.',
-        tag: 'Backend',
-      },
-    ],
-  },
-  {
-    id: '10',
-    slug: 'vault',
-    title: 'Vault',
-    subtitle: 'Encrypted personal data vault — identity, credentials, and settings',
-    screen: () => <VaultScreen />,
-    annotations: [
-      {
-        side: 'left', top: 20, category: 'ui',
-        title: 'Personal vault',
-        description: 'All user data stored in an encrypted local vault, anchored to their DID.',
-        tag: 'UX',
-      },
-      {
-        side: 'right', top: 45, category: 'ui',
-        title: 'Portable & independent',
-        description: 'Members choose their backup hosting provider and can import/export their vault to any other PNM. Not tied to PLANET or The Open Co-op — their data belongs to them.',
-        tag: 'UX',
-      },
-      {
-        side: 'left', top: 70, category: 'protocol',
-        title: 'Self-sovereign storage',
-        description: 'Data never leaves the device without explicit consent. The vault is the canonical store for identity, credentials, and preferences.',
+        title: 'Verifiable Endorsement Credentials',
+        description: 'Each reaction issues a Verifiable Endorsement Credential to the message author — building trust signals over time.',
         tag: 'Backend',
       },
     ],
   },
   {
     id: '11',
+    slug: 'groups',
+    title: 'Group Chat',
+    subtitle: 'Create group chats — lightweight Verifiable Trust Communities',
+    screen: <GroupChatScreen />,
+    annotations: [
+      {
+        side: 'left', top: 25, category: 'ui',
+        title: 'Chat groups',
+        description: 'Work like standard chat groups but are actually lightweight Verifiable Trust Communities (VTCs).',
+        tag: 'UX',
+      },
+      {
+        side: 'right', top: 55, category: 'protocol',
+        title: 'Trust anchor',
+        description: 'The creator of a chat group becomes the first trust anchor of the Group (VTC) and can appoint others by making them admin. Chat groups bypass the Community Policies and Verification requirements of standard VTCs.',
+        tag: 'Backend',
+      },
+    ],
+  },
+  {
+    id: '12',
+    slug: 'vault',
+    title: 'Vault',
+    subtitle: 'Encrypted personal data vault — identity, credentials, and settings',
+    screen: () => <VaultScreen />,
+    annotations: [
+      {
+        side: 'left', top: 25, category: 'ui',
+        title: 'Encrypted local vault',
+        description: "Data is stored in the members' encrypted local vault, anchored to their DID. In order for PLANET to continue to function if a device is offline members need a Verifiable Trust Agent (VTA). We assign members to the PLANET VTA by default to simplify onboarding.",
+        tag: 'UX',
+      },
+      {
+        side: 'right', top: 55, category: 'ui',
+        title: 'Select your Verifiable Trust Agent provider',
+        description: "Members can choose their Verifiable Trust Agent (VTA) and backup hosting provider and can switch providers at anytime. Members' identity and connections stay with them — they're in the app, not on the provider's servers.",
+        tag: 'UX',
+      },
+    ],
+  },
+  {
+    id: '13',
+    slug: 'planet-apps',
+    title: 'App Store',
+    subtitle: 'Install additional apps to extend PLANET',
+    screen: <AppStoreCardScreen />,
+    annotations: [
+      {
+        side: 'left', top: 30, category: 'ui',
+        title: 'Extensible platform',
+        description: 'PLANET grows through installable apps. Members choose what they need — no bloatware.',
+        tag: 'UX',
+      },
+      {
+        side: 'right', top: 60, category: 'protocol',
+        title: 'Sub-app architecture',
+        description: 'Each app runs in a sandboxed context with access to shared hooks (useVRCs, useTrustProfiles).',
+        tag: 'Backend',
+      },
+    ],
+  },
+  {
+    id: '14',
+    slug: 'alerts',
+    title: 'Alerts',
+    subtitle: 'Vouches, connection requests, and system notifications',
+    screen: <AlertsScreen />,
+    annotations: [
+      {
+        side: 'left', top: 25, category: 'ui',
+        title: 'Connection requests',
+        description: 'When another PLANET member wants to connect, it appears here. Accepting exchanges R-DIDs and opens a DIDComm channel.',
+        tag: 'UX',
+      },
+      {
+        side: 'right', top: 50, category: 'ui',
+        title: 'Vouches',
+        description: 'Incoming Vouches from connected members. Tap to view details, then accept and assign to Trust Profiles.',
+        tag: 'UX',
+      },
+      {
+        side: 'left', top: 75, category: 'protocol',
+        title: 'Credential inbox',
+        description: 'Alerts act as a credential inbox — each vouch or connection request is a pending Verifiable Credential waiting to be accepted into the wallet.',
+        tag: 'Backend',
+      },
+    ],
+  },
+  {
+    id: '15',
     slug: 'feedback',
     title: '',
     subtitle: '',

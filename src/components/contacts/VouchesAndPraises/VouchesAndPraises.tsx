@@ -8,6 +8,7 @@ import type {SocialContact} from '@/.ldo/contact.typings';
 import {notificationService} from "@/services/notificationService";
 import {formatDateDiff} from "@/utils/dateHelpers";
 import {useForceMobile} from "@/components/demo/DemoContext";
+import {chatStore} from "@/mocks/chat";
 
 export interface VouchesAndPraisesProps {
   contact?: Contact;
@@ -118,27 +119,29 @@ export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesPro
               </Typography>
             </Box>
 
-            {contact.planetStatus?.value === 'member' ? (
-              <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
-                {/* Vouch item */}
-                <Box sx={{
-                  display: 'flex',
-                  gap: 2,
-                  p: 2,
-                  bgcolor: alpha(theme.palette.primary.main, 0.04),
-                  borderRadius: 2
-                }}>
-                  <VerifiedUser sx={{color: 'primary.main', fontSize: 20, mt: 0.5, flexShrink: 0}}/>
-                  <Box sx={{minWidth: 0}}>
-                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1, mb: 0.5}}>
-                      <Typography variant="body2" sx={{fontWeight: 600}}>React Development</Typography>
-                      <Typography variant="caption" color="text.secondary">• 1 week ago</Typography>
-                    </Box>
-                    <Typography variant="body2" color="text.secondary">
-                      "Exceptional React skills and clean code practices."
-                    </Typography>
-                  </Box>
-                </Box>
+            {contact.planetStatus?.value === 'member' && chatStore.getConversation(contact['@id'] || '') ? (
+              <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: 100
+              }}>
+                <Typography variant="body2" color="text.secondary">
+                  No vouches sent yet
+                </Typography>
+              </Box>
+            ) : contact.planetStatus?.value === 'member' ? (
+              <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: 100
+              }}>
+                <Typography variant="body2" color="text.secondary">
+                  Connect with {resolveFrom(contact as SocialContact, 'name')?.value?.split(' ')[0] || 'them'} first to send vouches
+                </Typography>
               </Box>
             ) : (
               <Box sx={{
@@ -146,11 +149,10 @@ export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesPro
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                minHeight: 200
+                minHeight: 100
               }}>
                 <Typography variant="body2" color="text.secondary">
-                  Invite {resolveFrom(contact as SocialContact, 'name')?.value?.split(' ')[0] || 'them'} to PLANET to start vouching for
-                  them!
+                  Invite {resolveFrom(contact as SocialContact, 'name')?.value?.split(' ')[0] || 'them'} to PLANET to start vouching
                 </Typography>
               </Box>
             )}

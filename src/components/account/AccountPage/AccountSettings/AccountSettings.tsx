@@ -146,7 +146,7 @@ export const AccountSettings = forwardRef<HTMLDivElement, AccountSettingsProps>(
                 onClick={() => setBackupDialogOpen(true)}
                 sx={{ textTransform: 'none', fontSize: '0.75rem', borderColor: '#0066CC', color: '#0066CC' }}
               >
-                Backup your Vault
+                Select VTA / Backup provider
               </Button>
             </Box>
 

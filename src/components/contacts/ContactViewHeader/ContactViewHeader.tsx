@@ -30,6 +30,8 @@ import type {RCardType} from '@/types/rcard';
 import type {SocialContact} from '@/.ldo/contact.typings';
 import { DEFAULT_PROFILE_CARDS } from '@/types/notification';
 import { useOnboardingDemo } from '@/components/demo/DemoContext';
+import { chatStore } from '@/mocks/chat';
+import { RCardSelectionModal } from '@/components/notifications/RCardSelectionModal';
 
 /** Get canonical color for a card type from the single source of truth */
 const getCardColor = (cardType: string): string => {
@@ -66,6 +68,14 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
     const [vouchComment, setVouchComment] = useState('');
     const [vouchSent, setVouchSent] = useState(false);
     const [inviteOpen, setInviteOpen] = useState(false);
+    const [connectionState, setConnectionState] = useState<'none' | 'pending' | 'connected'>(() => {
+      // In onboarding demo, use the connectedContactIds list instead of chatStore
+      if (onboardingDemo.active && onboardingDemo.connectedContactIds.length > 0) {
+        return onboardingDemo.connectedContactIds.includes(contact?.['@id'] || '') ? 'connected' : 'none';
+      }
+      return chatStore.getConversation(contact?.['@id'] || '') ? 'connected' : 'none';
+    });
+    const [connectModalOpen, setConnectModalOpen] = useState(false);
     const [inviteSent, setInviteSent] = useState(false);
     const [inviteChannel, setInviteChannel] = useState('WhatsApp');
 
@@ -248,10 +258,10 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
               mt: 2
             }}>
 
-              {/* Conditional buttons based on PLANET status */}
-              {contact.planetStatus?.value === 'member' ? (
+              {/* Conditional buttons based on PLANET status + connection */}
+              {contact.planetStatus?.value === 'member' && connectionState === 'connected' ? (
                 <>
-                  {/* Show Chat and Vouch buttons for PLANET members */}
+                  {/* Connected member: Chat + Vouch */}
                   <Button
                     variant="contained"
                     startIcon={<ChatBubble/>}
@@ -277,6 +287,33 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
                     sx={{ bgcolor: '#0066CC', '&:hover': { bgcolor: '#004C99' }, textTransform: 'none' }}
                   >
                     Vouch
+                  </Button>
+                </>
+              ) : contact.planetStatus?.value === 'member' && connectionState === 'pending' ? (
+                <>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    disabled
+                    sx={{ textTransform: 'none', color: 'text.secondary' }}
+                  >
+                    Connection pending
+                  </Button>
+                </>
+              ) : contact.planetStatus?.value === 'member' && connectionState === 'none' ? (
+                <>
+                  {/* Unconnected member: Connect first — choose Trust Profile */}
+                  <Button
+                    variant="contained"
+                    startIcon={<PersonSearch/>}
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setConnectModalOpen(true);
+                    }}
+                    sx={{ bgcolor: '#0066CC', '&:hover': { bgcolor: '#004C99' }, textTransform: 'none' }}
+                  >
+                    Connect
                   </Button>
                 </>
               ) : contact.planetStatus?.value === 'invited' ? (
@@ -677,6 +714,22 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
             </DialogActions>
           )}
         </Dialog>
+
+        {/* Connect — Select Trust Profile */}
+        <RCardSelectionModal
+          open={connectModalOpen}
+          onClose={() => setConnectModalOpen(false)}
+          onSelect={(rCardIds) => {
+            setConnectionState('pending');
+            setConnectModalOpen(false);
+            console.log('Connection request sent with Trust Profile:', rCardIds);
+          }}
+          contactName={resolveFrom(contact as SocialContact, 'name')?.value}
+          multiSelect={false}
+          title="Connect"
+          description="Select a profile to connect with:"
+          submitLabel="Connect"
+        />
 
         {/* Trust Profile Selection Dialog */}
         <Dialog open={trustProfileDialogOpen} onClose={() => setTrustProfileDialogOpen(false)} maxWidth="sm" fullWidth>

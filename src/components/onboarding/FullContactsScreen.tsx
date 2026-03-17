@@ -6,6 +6,7 @@ import ContactListPage from '@/pages/ContactListPage';
 import ContactViewPage from '@/pages/ContactViewPage';
 import { ChatView } from '@/components/chat/ChatView';
 import { dataService } from '@/services/dataService';
+import { chatStore } from '@/mocks/chat';
 import type { AnnotationItem } from '@/components/demo/Annotation';
 
 type AnnotationWithCategory = AnnotationItem & { category: 'ui' | 'protocol' };
@@ -40,16 +41,16 @@ const DemoNav = () => (
   </Box>
 );
 
-/** Annotations for PLANET members */
-const memberAnnotations: AnnotationWithCategory[] = [
+/** Annotations for connected PLANET members */
+const connectedMemberAnnotations: AnnotationWithCategory[] = [
   {
-    side: 'right', top: 58, category: 'ui',
-    title: 'Send Vouch',
-    description: 'This contact is a PLANET member — Jonny can send them a Vouch.',
+    side: 'right', top: 50, category: 'ui',
+    title: 'Chat & Vouch',
+    description: 'Connected members can chat via DIDComm and send Vouches.',
     tag: 'UX',
   },
   {
-    side: 'left', top: 71, category: 'ui',
+    side: 'left', top: 65, category: 'ui',
     title: 'Trust Profiles',
     description: 'Assign contacts to one or more Trust Profiles to control what they can see.',
     tag: 'UX',
@@ -58,6 +59,28 @@ const memberAnnotations: AnnotationWithCategory[] = [
     side: 'right', top: 80, category: 'protocol',
     title: 'Verifiable credentials',
     description: 'Vouches are issued as Verifiable Relationship Credentials, cryptographically signed by the issuer.',
+    tag: 'Backend',
+  },
+];
+
+/** Annotations for unconnected PLANET members */
+const unconnectedMemberAnnotations: AnnotationWithCategory[] = [
+  {
+    side: 'right', top: 45, category: 'ui',
+    title: 'Connect first',
+    description: 'This contact is a PLANET member but not yet connected. Tap Connect and choose a Trust Profile to connect with.',
+    tag: 'UX',
+  },
+  {
+    side: 'left', top: 65, category: 'ui',
+    title: 'Connection pending',
+    description: 'After connecting, the request is pending until the other party accepts. Chat and Vouch become available once accepted.',
+    tag: 'UX',
+  },
+  {
+    side: 'right', top: 80, category: 'protocol',
+    title: 'R-DID exchange',
+    description: 'Accepting a connection request exchanges R-DIDs and establishes the DIDComm channel.',
     tag: 'Backend',
   },
 ];
@@ -88,7 +111,14 @@ export const FullContactsScreen = ({ setDynamicAnnotations }: FullContactsScreen
     if (selectedContactId) {
       dataService.getContact(selectedContactId).then(contact => {
         const isMember = contact?.planetStatus?.value === 'member';
-        setDynamicAnnotations?.(isMember ? memberAnnotations : nonMemberAnnotations);
+        const isConnected = !!chatStore.getConversation(selectedContactId);
+        if (isMember && isConnected) {
+          setDynamicAnnotations?.(connectedMemberAnnotations);
+        } else if (isMember) {
+          setDynamicAnnotations?.(unconnectedMemberAnnotations);
+        } else {
+          setDynamicAnnotations?.(nonMemberAnnotations);
+        }
       }).catch(() => {
         setDynamicAnnotations?.(nonMemberAnnotations);
       });

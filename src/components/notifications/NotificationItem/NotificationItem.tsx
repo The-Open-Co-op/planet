@@ -43,7 +43,7 @@ export const NotificationItem = ({
         cursor: isClickable ? 'pointer' : 'default',
         transition: 'all 0.2s ease-in-out',
         border: 1,
-        borderColor: 'divider',
+        borderColor: notification.type === 'vouch' ? '#0066CC' : notification.type === 'connection' ? '#059669' : 'divider',
         ...(isClickable && {
           '&:hover': {
             borderColor: 'primary.main',

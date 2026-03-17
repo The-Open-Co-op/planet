@@ -11,7 +11,7 @@ const appStoreItems = [
   {
     name: 'Calendar',
     icon: CalendarMonth,
-    description: 'Shared calendars with your trust network',
+    description: 'Share calendars with contacts in your trust network',
   },
   {
     name: 'Files',
@@ -21,7 +21,7 @@ const appStoreItems = [
   {
     name: 'Blog',
     icon: Article,
-    description: 'Publish and share with your network',
+    description: 'Publish and share posts that readers can verify as your content',
   },
   {
     name: 'Introducer',
@@ -54,10 +54,10 @@ const AppStorePage = () => {
                 <Icon sx={{ fontSize: 40, color: 'text.secondary' }} />
               </Box>
               <Box sx={{ minWidth: 0, flex: 1 }}>
-                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                <Typography variant="body2" sx={{ fontWeight: 600, lineHeight: 1.3 }}>
                   {app.name}
                 </Typography>
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1.3, display: 'block' }}>
                   {app.description}
                 </Typography>
               </Box>

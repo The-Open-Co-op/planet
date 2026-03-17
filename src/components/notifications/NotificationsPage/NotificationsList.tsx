@@ -99,9 +99,9 @@ export const NotificationsList = forwardRef<HTMLDivElement, NotificationsListPro
     const getNotificationIcon = (type: string) => {
       switch (type) {
         case 'vouch':
-          return <VerifiedUser sx={{ fontSize: 18, color: 'text.secondary' }} />;
+          return <VerifiedUser sx={{ fontSize: 18, color: '#0066CC' }} />;
         case 'connection':
-          return <Group sx={{ fontSize: 18, color: 'text.secondary' }} />;
+          return <Group sx={{ fontSize: 18, color: '#059669' }} />;
         case 'message':
           return <Message sx={{ fontSize: 20, color: 'info.main' }} />;
         case 'system':
