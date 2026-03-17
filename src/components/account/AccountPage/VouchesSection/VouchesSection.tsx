@@ -33,6 +33,10 @@ import type { RCardType } from '@/types/rcard';
 interface ReceivedVouch extends Vouch {
   status: 'accepted' | 'rejected';
   assignedToCards?: RCardType[];
+  /** Resolved display name for the issuer */
+  issuerName?: string;
+  /** Avatar URL for the issuer */
+  issuerAvatar?: string;
 }
 
 interface VouchesSectionProps {
@@ -50,31 +54,29 @@ export const VouchesSection = ({ cardName }: VouchesSectionProps) => {
   const [receivedVouches, setReceivedVouches] = useState<ReceivedVouch[]>([
     {
       id: 'v1',
-      fromUserId: 'user-456',
-      fromUserName: 'Sarah Johnson',
-      fromUserAvatar: '/api/placeholder/40/40',
-      toUserId: 'current-user',
-      skill: 'React Development',
-      description: 'Exceptional React skills and clean code practices. Always delivers high-quality components.',
-      level: 'expert',
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-      updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
+      issuer: 'user-456',
+      subject: 'did:example:currentuser',
+      trustArea: 'React Development',
+      confidenceScore: 0.95,
+      comment: 'Exceptional React skills and clean code practices. Always delivers high-quality components.',
+      issuanceDate: '2026-03-09T14:30:00Z',
       status: 'accepted',
       assignedToCards: ['Business', 'Community'],
+      issuerName: 'Sarah Johnson',
+      issuerAvatar: '/api/placeholder/40/40',
     },
     {
       id: 'v2',
-      fromUserId: 'user-789',
-      fromUserName: 'Mike Chen',
-      fromUserAvatar: '/api/placeholder/40/40',
-      toUserId: 'current-user',
-      skill: 'Leadership',
-      description: 'Great leadership skills during challenging projects.',
-      level: 'advanced',
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 14),
-      updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 14),
+      issuer: 'user-789',
+      subject: 'did:example:currentuser',
+      trustArea: 'Leadership',
+      confidenceScore: 0.88,
+      comment: 'Great leadership skills during challenging projects.',
+      issuanceDate: '2026-03-02T10:00:00Z',
       status: 'accepted',
       assignedToCards: ['Family'],
+      issuerName: 'Mike Chen',
+      issuerAvatar: '/api/placeholder/40/40',
     },
   ]);
 
@@ -96,7 +98,7 @@ export const VouchesSection = ({ cardName }: VouchesSectionProps) => {
   };
 
   const getTopicTag = (vouch: ReceivedVouch) => {
-    const skill = vouch.skill.toLowerCase();
+    const skill = vouch.trustArea.toLowerCase();
     if (skill.includes('react')) return 'React';
     if (skill.includes('leadership')) return 'Leadership';
     if (skill.includes('typescript')) return 'TypeScript';
@@ -104,7 +106,7 @@ export const VouchesSection = ({ cardName }: VouchesSectionProps) => {
     if (skill.includes('python')) return 'Python';
     if (skill.includes('design')) return 'Design';
     if (skill.includes('management')) return 'Management';
-    return vouch.skill; // fallback to full skill name
+    return vouch.trustArea; // fallback to full trust area name
   };
 
   const handleEditVouch = (vouch: ReceivedVouch) => {
@@ -170,17 +172,17 @@ export const VouchesSection = ({ cardName }: VouchesSectionProps) => {
                 border: 1,
                 borderColor: alpha(theme.palette.success.main, 0.2),
               }}>
-                <Avatar src={vouch.fromUserAvatar} sx={{ width: 40, height: 40 }}>
-                  {vouch.fromUserName.charAt(0)}
+                <Avatar src={vouch.issuerAvatar} sx={{ width: 40, height: 40 }}>
+                  {(vouch.issuerName || vouch.issuer).charAt(0)}
                 </Avatar>
                 <Box sx={{ flexGrow: 1, minWidth: 0 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5, flexWrap: 'wrap' }}>
                     <VerifiedUser sx={{ color: 'primary.main', fontSize: 20 }} />
                     <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                      {vouch.skill}
+                      {vouch.trustArea}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      • {formatRelativeTime(vouch.createdAt)}
+                      • {formatRelativeTime(new Date(vouch.issuanceDate))}
                     </Typography>
                     <Box sx={{ ml: 'auto', display: 'flex', gap: 0.5 }}>
                       <CheckCircle sx={{ color: 'success.main', fontSize: 18 }} />
@@ -192,7 +194,7 @@ export const VouchesSection = ({ cardName }: VouchesSectionProps) => {
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 2 }}>
                     <Box sx={{ flexGrow: 1 }}>
                       <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                        "{vouch.description}" - <strong>{vouch.fromUserName}</strong>
+                        "{vouch.comment}" - <strong>{vouch.issuerName || vouch.issuer}</strong>
                       </Typography>
                       <Chip
                         label={getTopicTag(vouch)}
@@ -228,7 +230,7 @@ export const VouchesSection = ({ cardName }: VouchesSectionProps) => {
             {editingVouch && (
               <>
                 <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
-                  {editingVouch.skill}
+                  {editingVouch.trustArea}
                 </Typography>
 
                 {/* Status Selection */}

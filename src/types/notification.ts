@@ -12,18 +12,25 @@ export interface ProfileCard {
 // Legacy alias for backwards compatibility
 export type RCard = ProfileCard;
 
+/**
+ * VouchCredential — based on W3C Verifiable Credential schema.
+ * Maps to the VouchCredential JSON-LD structure.
+ */
 export interface Vouch {
+  /** Unique credential ID */
   id: string;
-  fromUserId: string;
-  fromUserName: string;
-  fromUserAvatar?: string;
-  toUserId: string;
-  skill: string;
-  description: string;
-  level: 'beginner' | 'intermediate' | 'advanced' | 'expert';
-  endorsementText?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  /** DID of the issuer (who sent the vouch) — maps to a contact ID */
+  issuer: string;
+  /** DID of the subject (who received the vouch) */
+  subject: string;
+  /** What this vouch is for */
+  trustArea: string;
+  /** Confidence score 0–1 */
+  confidenceScore: number;
+  /** Endorsement comment from the voucher */
+  comment: string;
+  /** When the credential was issued (ISO 8601 timestamp) */
+  issuanceDate: string;
 }
 
 export interface NotificationAction {

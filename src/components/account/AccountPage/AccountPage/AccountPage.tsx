@@ -22,7 +22,7 @@ export const AccountPageContent = ({handleLogout: externalHandleLogout}: Account
   const [personhoodCredentials] = useState<PersonhoodCredentials>(mockPersonhoodCredentials);
 
   return (
-    <StandardPage title="Settings">
+    <StandardPage title="Vault">
       {/* Account Settings Content (My Cards functionality moved to contacts) */}
       <Box>
         <AccountSettings 

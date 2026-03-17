@@ -32,6 +32,7 @@ import type {
 } from '@/types/notification';
 import { DEFAULT_PRIVACY_SETTINGS } from '@/types/notification';
 import { useVRCs } from '@/hooks/useVRCs';
+import { useContactResolver } from '@/hooks/contacts/useContactResolver';
 
 const BORDER_COLOR = '#D4D7DC';
 
@@ -254,6 +255,68 @@ const ExpandableRow = ({
   </Box>
 );
 
+/** Single vouch row — uses useContactResolver to resolve the issuer DID to a name */
+const VouchListItem = ({
+  vouch,
+  isShared,
+  onToggle,
+  showDivider,
+}: {
+  vouch: import('@/types/notification').Vouch;
+  isShared: boolean;
+  onToggle: (id: string, shared: boolean) => void;
+  showDivider: boolean;
+}) => {
+  const navigate = useNavigate();
+  const { name: issuerName } = useContactResolver(vouch.issuer);
+
+  return (
+    <Box>
+      {showDivider && <Box sx={{ borderBottom: `1px solid ${BORDER_COLOR}` }} />}
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1,
+          py: 1,
+        }}
+      >
+        <Box
+          sx={{
+            flex: 1,
+            minWidth: 0,
+            cursor: 'pointer',
+            '&:hover': { opacity: 0.7 },
+          }}
+          onClick={() => navigate(`/contacts/${vouch.issuer}`, {
+            state: { highlightVouchId: vouch.id, from: 'trust-profile' }
+          })}
+        >
+          <Typography variant="body2" sx={{ fontWeight: 600 }}>
+            {vouch.trustArea}
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            From {issuerName}
+          </Typography>
+        </Box>
+        <Switch
+          checked={isShared}
+          onChange={(e) => onToggle(vouch.id, e.target.checked)}
+          size="small"
+        />
+        <ChevronRight
+          fontSize="small"
+          color="action"
+          sx={{ cursor: 'pointer' }}
+          onClick={() => navigate(`/contacts/${vouch.issuer}`, {
+            state: { highlightVouchId: vouch.id, from: 'trust-profile' }
+          })}
+        />
+      </Box>
+    </Box>
+  );
+};
+
 /** List of vouches with toggle + click-through to contact */
 const VouchList = ({
   vouches,
@@ -264,58 +327,17 @@ const VouchList = ({
   sharedVouchIds: string[];
   onToggle: (id: string, shared: boolean) => void;
 }) => {
-  const navigate = useNavigate();
-
   return (
     <Box>
-      {vouches.map((vouch, index) => {
-        const isShared = sharedVouchIds.includes(vouch.id);
-        return (
-          <Box key={vouch.id}>
-            {index > 0 && <Box sx={{ borderBottom: `1px solid ${BORDER_COLOR}` }} />}
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-                py: 1,
-              }}
-            >
-              <Box
-                sx={{
-                  flex: 1,
-                  minWidth: 0,
-                  cursor: 'pointer',
-                  '&:hover': { opacity: 0.7 },
-                }}
-                onClick={() => navigate(`/contacts/${vouch.fromUserId}`, {
-                  state: { highlightVouchId: vouch.id, from: 'trust-profile' }
-                })}
-              >
-                <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                  {vouch.skill}
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  From {vouch.fromUserName}
-                </Typography>
-              </Box>
-              <Switch
-                checked={isShared}
-                onChange={(e) => onToggle(vouch.id, e.target.checked)}
-                size="small"
-              />
-              <ChevronRight
-                fontSize="small"
-                color="action"
-                sx={{ cursor: 'pointer' }}
-                onClick={() => navigate(`/contacts/${vouch.fromUserId}`, {
-                  state: { highlightVouchId: vouch.id, from: 'trust-profile' }
-                })}
-              />
-            </Box>
-          </Box>
-        );
-      })}
+      {vouches.map((vouch, index) => (
+        <VouchListItem
+          key={vouch.id}
+          vouch={vouch}
+          isShared={sharedVouchIds.includes(vouch.id)}
+          onToggle={onToggle}
+          showDivider={index > 0}
+        />
+      ))}
     </Box>
   );
 };
@@ -327,6 +349,7 @@ const RCardPrivacySettings = ({ rCard, onUpdate }: RCardPrivacySettingsProps) =>
 
   // Vouches assigned to THIS specific Trust Profile
   const profileVouches = getAcceptedVouchesForProfile(rCard.id);
+  const profileVouchIds = profileVouches.map(v => v.id).join(',');
 
   // Refresh VRC data on mount
   useEffect(() => {
@@ -335,15 +358,15 @@ const RCardPrivacySettings = ({ rCard, onUpdate }: RCardPrivacySettingsProps) =>
 
   // Sync shared IDs when profile vouches change — new ones default to shared
   useEffect(() => {
+    const assignedIds = profileVouchIds ? profileVouchIds.split(',') : [];
     setSharedVouchIds(prev => {
-      const assignedIds = profileVouches.map(v => v.id);
       const newIds = assignedIds.filter(id => !prev.includes(id));
       if (newIds.length > 0 || prev.some(id => !assignedIds.includes(id))) {
         return [...prev.filter(id => assignedIds.includes(id)), ...newIds];
       }
       return prev.length === 0 ? assignedIds : prev;
     });
-  }, [profileVouches]);
+  }, [profileVouchIds]);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
   useEffect(() => {

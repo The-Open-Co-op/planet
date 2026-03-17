@@ -14,7 +14,7 @@ import { mockVouches } from '@/mocks/vrcs';
 import { notificationService } from '@/services/notificationService';
 import type { Vouch, Notification } from '@/types/notification';
 
-const CURRENT_USER_ID = 'current-user';
+const CURRENT_USER_ID = 'did:example:currentuser';
 
 export interface UseVRCsReturn {
   /** All vouches (regardless of status) */
@@ -91,18 +91,18 @@ export const useVRCs = (): UseVRCsReturn => {
 
   const getAcceptedVouchesFromContact = useCallback(
     (contactId: string) =>
-      acceptedVouches.filter(v => v.fromUserId === contactId),
+      acceptedVouches.filter(v => v.issuer === contactId),
     [acceptedVouches]
   );
 
   const getAcceptedVouchesByContact = useCallback(
     (contactId: string) =>
-      acceptedVouches.filter(v => v.fromUserId === contactId || v.toUserId === contactId),
+      acceptedVouches.filter(v => v.issuer === contactId || v.subject === contactId),
     [acceptedVouches]
   );
 
   const myAcceptedVouches = useMemo(
-    () => acceptedVouches.filter(v => v.toUserId === CURRENT_USER_ID),
+    () => acceptedVouches.filter(v => v.subject === CURRENT_USER_ID),
     [acceptedVouches]
   );
 

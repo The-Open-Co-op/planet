@@ -19,16 +19,15 @@ interface NotificationItemProps {
   getNotificationIcon: (type: string) => React.ReactNode;
 }
 
-export const NotificationItem = ({ 
-  notification, 
-  onClick, 
-  onAccept, 
+export const NotificationItem = ({
+  notification,
+  onClick,
+  onAccept,
   onReject,
-  getNotificationIcon 
+  getNotificationIcon
 }: NotificationItemProps) => {
   const theme = useTheme();
-  
-  // Resolve contact information - skip for new connections as they won't be in contacts yet
+
   const shouldResolveContact = notification.type !== 'connection' || notification.status === 'accepted';
   const { name: resolvedName, avatar: resolvedAvatar } = useContactResolver(
     shouldResolveContact ? notification.metadata?.contactId : undefined,
@@ -36,7 +35,6 @@ export const NotificationItem = ({
     notification.fromUserAvatar
   );
 
-  // Determine if this notification should be clickable
   const isClickable = !(notification.type === 'connection' && notification.status === 'pending');
 
   return (
@@ -60,19 +58,16 @@ export const NotificationItem = ({
       onClick={isClickable ? onClick : undefined}
     >
       <CardContent sx={{
-        p: { xs: '8px 16px', md: 1.5 },
-        '&:last-child': {
-          pb: 1.5
-        }
+        p: { xs: '8px 12px', md: 1.5 },
+        '&:last-child': { pb: 1.5 }
       }}>
-        {/* Line 1: Avatar + Person + (Message + Icon on desktop only) */}
-        <Box sx={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 1,
-          width: '100%',
-          mb: { xs: 0.5, md: 1 }
-        }}>
+        {/* Icon - top right */}
+        <Box sx={{ position: 'absolute', top: 8, right: 12, opacity: 0.5 }}>
+          {getNotificationIcon(notification.type)}
+        </Box>
+
+        {/* Avatar + Name */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5, pr: 4 }}>
           <Avatar
             src={resolvedAvatar}
             alt={resolvedName}
@@ -80,101 +75,88 @@ export const NotificationItem = ({
           >
             {resolvedName?.charAt(0)}
           </Avatar>
-          <Typography variant="subtitle2" sx={{ fontWeight: 600, flexShrink: 0 }}>
+          <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
             {resolvedName}
           </Typography>
-          {/* Message and Icon - only visible on desktop */}
-          <Typography variant="body2" sx={{ 
-            flex: 1, 
-            minWidth: 0, 
-            mx: 1,
-            display: { xs: 'none', md: 'block' }
-          }}>
-            {notification.message}
-          </Typography>
-          <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-            {getNotificationIcon(notification.type)}
-          </Box>
         </Box>
 
-        {/* Line 2: Message + Icon (mobile only) */}
-        <Box sx={{
-          display: { xs: 'flex', md: 'none' },
-          alignItems: 'center',
-          gap: 1,
-          width: '100%',
-          mb: 0.5
-        }}>
-          <Typography variant="body2" sx={{ flex: 1, minWidth: 0 }}>
-            {notification.message}
-          </Typography>
-          {getNotificationIcon(notification.type)}
-        </Box>
+        {/* Message */}
+        <Typography variant="body2" sx={{ mb: 0.5, pr: 4 }}>
+          {notification.message}
+        </Typography>
 
-        {/* Line 3 (mobile) / Line 2 (desktop): Date (left) + Buttons (right) */}
+        {/* Date + Buttons */}
         <Box sx={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          width: '100%'
         }}>
-          {/* Date - left aligned */}
           <Typography variant="caption" color="text.secondary">
             {formatDate(notification.createdAt, {day: "numeric", month: "short", year: undefined, hour: undefined, minute: undefined})}
           </Typography>
-          
-          {/* Buttons or Status - right aligned */}
+
           {notification.isActionable && notification.status === 'pending' ? (
             <Box sx={{ display: 'flex', gap: 0.5 }}>
-              <button
-                onClick={(e) => {
+              <Box
+                component="button"
+                onClick={(e: React.MouseEvent) => {
                   e.stopPropagation();
                   onReject?.();
                 }}
-                style={{
+                sx={{
                   minWidth: 50,
                   fontSize: '0.7rem',
-                  padding: '3px 6px',
+                  fontWeight: 500,
+                  py: 0.4,
+                  px: 1,
                   border: '1px solid',
-                  borderColor: theme.palette.grey[400],
-                  borderRadius: 4,
-                  backgroundColor: 'transparent',
-                  color: theme.palette.text.primary,
-                  cursor: 'pointer'
+                  borderColor: 'divider',
+                  borderRadius: '4px',
+                  bgcolor: 'transparent',
+                  color: 'text.secondary',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                  '&:hover': { bgcolor: 'action.hover', borderColor: 'text.disabled' },
                 }}
               >
-                Reject
-              </button>
-              <button
-                onClick={(e) => {
+                Decline
+              </Box>
+              <Box
+                component="button"
+                onClick={(e: React.MouseEvent) => {
                   e.stopPropagation();
                   onAccept?.();
                 }}
-                style={{
+                sx={{
                   minWidth: 50,
                   fontSize: '0.7rem',
-                  padding: '3px 6px',
-                  border: 'none',
-                  borderRadius: 4,
-                  backgroundColor: theme.palette.primary.main,
-                  color: theme.palette.primary.contrastText,
-                  cursor: 'pointer'
+                  fontWeight: 600,
+                  py: 0.4,
+                  px: 1,
+                  border: '1px solid',
+                  borderColor: 'text.disabled',
+                  borderRadius: '4px',
+                  bgcolor: 'action.selected',
+                  color: 'text.primary',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                  '&:hover': { bgcolor: 'action.hover' },
                 }}
               >
                 Accept
-              </button>
+              </Box>
             </Box>
           ) : (
             <Typography
               variant="caption"
               sx={{
-                fontSize: '0.75rem',
+                fontSize: '0.7rem',
                 fontWeight: 600,
                 textTransform: 'capitalize',
-                color: notification.status === 'accepted' 
-                  ? 'success.main' 
-                  : notification.status === 'rejected' 
-                  ? 'error.main' 
+                color: notification.status === 'accepted'
+                  ? 'success.main'
+                  : notification.status === 'rejected'
+                  ? 'error.main'
                   : 'text.secondary'
               }}
             >

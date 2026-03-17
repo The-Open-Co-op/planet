@@ -44,6 +44,7 @@ import type {CustomSocialLink, ProfileData} from '../types';
 import {useNavigate} from "react-router";
 import {mockProfileData} from "@/mocks/profile";
 import {FormPhoneField} from "@/components/ui/FormPhoneField/FormPhoneField";
+import { useForceMobile } from '@/components/demo/DemoContext';
 
 const availablePlatforms = [
   'Discord',
@@ -157,7 +158,8 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
   ({ cardName, initialProfileData, isEditing: externalIsEditing, onEditingChange }, ref) => {
     const navigate = useNavigate();
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const forceMobile = useForceMobile();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm')) || forceMobile;
 
     const [internalIsEditing, setInternalIsEditing] = useState(false);
     const isEditing = externalIsEditing !== undefined ? externalIsEditing : internalIsEditing;
@@ -295,16 +297,16 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
               </Box>
             )}
 
-            <Grid container spacing={3}>
+            <Grid container spacing={1.5}>
               {/* Left side - Avatar and basic info */}
-              <Grid size={{ xs: 12, md: 4 }}>
+              <Grid size={{ xs: 12, md: forceMobile ? 12 : 4 }}>
                 <Box sx={{ textAlign: 'center' }}>
                   <Box sx={{ position: 'relative', display: 'inline-block' }}>
                     <Avatar
                       sx={{
                         width: 120,
                         height: 120,
-                        mb: 2,
+                        mb: 0.5,
                         bgcolor: 'primary.main',
                         fontSize: '3rem'
                       }}
@@ -360,7 +362,7 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
                     </>
                   ) : (
                     <>
-                      <Typography variant="h5" sx={{ fontWeight: 600, mb: 1 }}>
+                      <Typography variant="h5" sx={{ fontWeight: 600, mb: 0.25 }}>
                         {profileData.name}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
@@ -372,12 +374,12 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
               </Grid>
 
               {/* Right side - Contact and social info */}
-              <Grid size={{ xs: 12, md: 8 }}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Grid size={{ xs: 12, md: forceMobile ? 12 : 8 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                   {/* Basic contact info */}
-                  <Grid container spacing={2}>
-                    <Grid size={{ xs: 12, sm: 6 }}>
-                      <Typography variant="caption" color="text.secondary">Email</Typography>
+                  <Grid container spacing={1}>
+                    <Grid size={{ xs: 12, sm: forceMobile ? 12 : 6 }}>
+                      <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1, display: 'block', mb: 0.25 }}>Email</Typography>
                       {isEditing ? (
                         <TextField
                           fullWidth
@@ -390,8 +392,8 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
                         <Typography variant="body1">{profileData.email}</Typography>
                       )}
                     </Grid>
-                    <Grid size={{ xs: 12, sm: 6 }}>
-                      <Typography variant="caption" color="text.secondary">Phone</Typography>
+                    <Grid size={{ xs: 12, sm: forceMobile ? 12 : 6 }}>
+                      <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1, display: 'block', mb: 0.25 }}>Phone</Typography>
                       {isEditing ? (
                         <TextField
                           fullWidth
@@ -404,8 +406,8 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
                         <Typography variant="body1">{profileData.phone}</Typography>
                       )}
                     </Grid>
-                    <Grid size={{ xs: 12, sm: 6 }}>
-                      <Typography variant="caption" color="text.secondary">Location</Typography>
+                    <Grid size={{ xs: 12, sm: forceMobile ? 12 : 6 }}>
+                      <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1, display: 'block', mb: 0.25 }}>Location</Typography>
                       {isEditing ? (
                         <TextField
                           fullWidth
@@ -419,8 +421,8 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
                       )}
                     </Grid>
                     {(isEditing || profileData.website) && (
-                      <Grid size={{ xs: 12, sm: 6 }}>
-                        <Typography variant="caption" color="text.secondary">Website</Typography>
+                      <Grid size={{ xs: 12, sm: forceMobile ? 12 : 6 }}>
+                        <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1, display: 'block', mb: 0.25 }}>Website</Typography>
                         {isEditing ? (
                           <TextField
                             fullWidth
@@ -446,7 +448,7 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
 
                   {/* Bio */}
                   <Box>
-                    <Typography variant="caption" color="text.secondary">Bio</Typography>
+                    <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1, display: 'block', mb: 0.25 }}>Bio</Typography>
                     {isEditing ? (
                       <TextField
                         fullWidth
@@ -465,9 +467,9 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
                   {/* Social Networks - only show in edit mode or if values exist */}
                   {(isEditing || profileData.linkedin || profileData.twitter || profileData.github || profileData.facebook || profileData.instagram || profileData.customSocialLinks.length > 0) && (
                     <Box>
-                      <Typography variant="caption" color="text.secondary">Social Networks</Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1, display: 'block', mb: 0.25 }}>Social Networks</Typography>
                       <Grid container spacing={1}>
-                        <Grid size={{ xs: 12, sm: 6 }}>
+                        <Grid size={{ xs: 12, sm: forceMobile ? 12 : 6 }}>
                           {isEditing ? (
                             <TextField
                               fullWidth
@@ -491,7 +493,7 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
                             </Box>
                           )}
                         </Grid>
-                        <Grid size={{ xs: 12, sm: 6 }}>
+                        <Grid size={{ xs: 12, sm: forceMobile ? 12 : 6 }}>
                           {isEditing ? (
                             <TextField
                               fullWidth
@@ -515,7 +517,7 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
                             </Box>
                           )}
                         </Grid>
-                        <Grid size={{ xs: 12, sm: 6 }}>
+                        <Grid size={{ xs: 12, sm: forceMobile ? 12 : 6 }}>
                           {isEditing ? (
                             <TextField
                               fullWidth
@@ -539,7 +541,7 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
                             </Box>
                           )}
                         </Grid>
-                        <Grid size={{ xs: 12, sm: 6 }}>
+                        <Grid size={{ xs: 12, sm: forceMobile ? 12 : 6 }}>
                           {isEditing ? (
                             <TextField
                               fullWidth
@@ -563,7 +565,7 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
                             </Box>
                           )}
                         </Grid>
-                        <Grid size={{ xs: 12, sm: 6 }}>
+                        <Grid size={{ xs: 12, sm: forceMobile ? 12 : 6 }}>
                           {isEditing ? (
                             <TextField
                               fullWidth
@@ -590,7 +592,7 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
 
                         {/* Custom Social Links */}
                         {(isEditing ? editData.customSocialLinks : profileData.customSocialLinks).map((link) => (
-                          <Grid size={{ xs: 12, sm: 6 }} key={link.id}>
+                          <Grid size={{ xs: 12, sm: forceMobile ? 12 : 6 }} key={link.id}>
                             {isEditing ? (
                               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 <TextField
@@ -632,7 +634,7 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
 
                         {/* Add Custom Social Button */}
                         {isEditing && (
-                          <Grid size={{ xs: 12, sm: 6 }}>
+                          <Grid size={{ xs: 12, sm: forceMobile ? 12 : 6 }}>
                             <Button
                               variant="outlined"
                               startIcon={<Add />}

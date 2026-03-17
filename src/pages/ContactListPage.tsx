@@ -36,8 +36,18 @@ import {
   FloatingActions
 } from '@/components/contacts';
 import {useMergeContacts} from "@/hooks/contacts/useMergeContacts.ts";
+import {useForceMobile} from "@/components/demo/DemoContext";
 
-const ContactListPage = () => {
+interface ContactListPageProps {
+  /** When true, hides manage/add buttons, relationship filter, My Profiles card, and greys out non-connected contacts */
+  onboardingMode?: boolean;
+  /** Contact IDs that are "connected" in onboarding mode — shown at full opacity */
+  connectedContactIds?: string[];
+}
+
+const ContactListPage = ({ onboardingMode = false, connectedContactIds = [] }: ContactListPageProps) => {
+  const forceMobile = useForceMobile();
+  const mobileDisplay = forceMobile ? 'none' : { xs: 'none', md: 'inline' };
   const currentUserGroupIds = useMemo(() => ['group1', 'group2', 'group3'], []);
   const navigate = useNavigate();
   const location = useLocation();
@@ -319,52 +329,52 @@ const ContactListPage = () => {
           Manage Contacts
         </Box>
       ) : 'Contacts'}
-      actions={!isManageMode ? (
+      actions={!isManageMode && !onboardingMode ? (
         <>
           <Button
             onClick={handleToggleManageMode}
-            sx={{ 
+            sx={{
               mr: 1,
-              minWidth: { xs: 'auto', md: 'auto' },
-              px: { xs: 1, md: 2 },
-              border: { xs: 'none', md: '1px solid' },
-              borderColor: { md: 'rgba(0, 0, 0, 0.23)' },
+              minWidth: 'auto',
+              px: forceMobile ? 1 : { xs: 1, md: 2 },
+              border: forceMobile ? 'none' : { xs: 'none', md: '1px solid' },
+              borderColor: forceMobile ? undefined : { md: 'rgba(0, 0, 0, 0.23)' },
               '&:hover': {
-                border: { xs: 'none', md: '1px solid' },
-                borderColor: { md: 'rgba(0, 0, 0, 0.87)' },
+                border: forceMobile ? 'none' : { xs: 'none', md: '1px solid' },
+                borderColor: forceMobile ? undefined : { md: 'rgba(0, 0, 0, 0.87)' },
                 backgroundColor: 'rgba(0, 0, 0, 0.04)'
               }
             }}
           >
-            <ManageIcon sx={{ fontSize: { xs: 20, md: 18 } }} />
-            <Box component="span" sx={{ display: { xs: 'none', md: 'inline' }, ml: 1 }}>
+            <ManageIcon sx={{ fontSize: forceMobile ? 20 : { xs: 20, md: 18 } }} />
+            <Box component="span" sx={{ display: mobileDisplay, ml: 1 }}>
               Manage
             </Box>
           </Button>
           <Button
             onClick={handleAddMenuOpen}
             sx={{
-              minWidth: { xs: 'auto', md: 'auto' },
-              px: { xs: 1, md: 2 },
-              backgroundColor: { xs: 'transparent', md: 'white' },
-              color: { xs: 'black', md: 'black' },
-              border: { xs: 'none', md: '1px solid black' },
+              minWidth: 'auto',
+              px: forceMobile ? 1 : { xs: 1, md: 2 },
+              backgroundColor: forceMobile ? 'transparent' : { xs: 'transparent', md: 'white' },
+              color: 'black',
+              border: forceMobile ? 'none' : { xs: 'none', md: '1px solid black' },
               '&:hover': {
-                backgroundColor: { xs: 'rgba(0, 0, 0, 0.04)', md: 'rgba(0, 0, 0, 0.04)' }
+                backgroundColor: 'rgba(0, 0, 0, 0.04)'
               }
             }}
           >
-            <Add sx={{ fontSize: { xs: 20, md: 18 } }} />
-            <Box component="span" sx={{ display: { xs: 'none', md: 'inline' }, ml: 1 }}>
+            <Add sx={{ fontSize: forceMobile ? 20 : { xs: 20, md: 18 } }} />
+            <Box component="span" sx={{ display: mobileDisplay, ml: 1 }}>
               Add
             </Box>
-            <KeyboardArrowDown sx={{ display: { xs: 'none', md: 'inline' }, ml: 0.5, fontSize: 16 }} />
+            <KeyboardArrowDown sx={{ display: mobileDisplay, ml: 0.5, fontSize: 16 }} />
           </Button>
         </>
       ) : null}
     >
       {/* Search Bar with Relationship Filter */}
-      <Box sx={{ display: 'flex', gap: 1, mb: 1, pt: 1, alignItems: 'center' }}>
+      <Box sx={{ display: 'flex', gap: 1, mb: 1, pt: onboardingMode ? 0 : 1, alignItems: 'center' }}>
         <TextField
           fullWidth
           size="small"
@@ -379,7 +389,7 @@ const ContactListPage = () => {
             ),
           }}
         />
-        <FormControl size="small" sx={{ minWidth: 140, '& .MuiInputLabel-root': { overflow: 'visible' } }}>
+        {!onboardingMode && <FormControl size="small" sx={{ minWidth: 140, '& .MuiInputLabel-root': { overflow: 'visible' } }}>
           <InputLabel>Relationships</InputLabel>
           <Select
             value={filters.relationshipFilter || 'all'}
@@ -397,7 +407,7 @@ const ContactListPage = () => {
               ))}
             <MenuItem value="uncategorized">None</MenuItem>
           </Select>
-        </FormControl>
+        </FormControl>}
       </Box>
 
       {/* Relationship Categories - Show in Manage Mode */}
@@ -412,12 +422,9 @@ const ContactListPage = () => {
             <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.secondary' }}>
               Relationships
             </Typography>
-            <IconButton size="small" sx={{ color: 'text.secondary' }}>
-              <Info fontSize="small" />
-            </IconButton>
           </Box>
           <Typography variant="caption" sx={{ mb: 2, color: 'text.secondary', display: 'block' }}>
-            Drag and drop contacts into a category to automatically set sharing permissions.
+            Drag and drop contacts to assign them one or more Trust Profiles.
           </Typography>
           <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 1 }}>
             {relationshipCategories.map((category) => (

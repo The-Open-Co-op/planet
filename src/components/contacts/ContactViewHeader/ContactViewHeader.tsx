@@ -1,4 +1,5 @@
 import {forwardRef, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import {
   Typography,
   Box,
@@ -12,9 +13,12 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  DialogActions,
   Switch,
   FormControlLabel,
   Divider,
+  TextField,
+  Slider,
 } from '@mui/material';
 import {
   LinkedIn,
@@ -22,6 +26,7 @@ import {
   VerifiedUser,
   PersonSearch, Send, Email, Add,
   Info,
+  ChatBubble,
   Business, Groups, FamilyRestroom, Public, Close,
 } from '@mui/icons-material';
 import { useMediaQuery } from '@mui/material';
@@ -29,6 +34,7 @@ import type {Contact} from '@/types/contact';
 import type {RCardType} from '@/types/rcard';
 import type {SocialContact} from '@/.ldo/contact.typings';
 import { DEFAULT_PROFILE_CARDS } from '@/types/notification';
+import { useForceMobile, useOnboardingDemo } from '@/components/demo/DemoContext';
 
 /** Get canonical color for a card type from the single source of truth */
 const getCardColor = (cardType: string): string => {
@@ -61,9 +67,20 @@ export interface ContactViewHeaderProps {
 export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderProps>(
   ({contact, isEditing = false, showTags = true, showActions = true, showStatus = true, validateParent, onHumanityToggle, onAssignRCard, onRemoveRCard}, ref) => {
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const navigate = useNavigate();
+    const forceMobile = useForceMobile();
+    const onboardingDemo = useOnboardingDemo();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md')) || forceMobile;
     const [aboutModalOpen, setAboutModalOpen] = useState(false);
     const [trustProfileDialogOpen, setTrustProfileDialogOpen] = useState(false);
+    const [sendVouchOpen, setSendVouchOpen] = useState(false);
+    const [vouchTrustArea, setVouchTrustArea] = useState('');
+    const [vouchConfidence, setVouchConfidence] = useState(0.8);
+    const [vouchComment, setVouchComment] = useState('');
+    const [vouchSent, setVouchSent] = useState(false);
+    const [inviteOpen, setInviteOpen] = useState(false);
+    const [inviteSent, setInviteSent] = useState(false);
+    const [inviteChannel, setInviteChannel] = useState('WhatsApp');
 
     if (!contact) return null;
 
@@ -247,14 +264,32 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
               {/* Conditional buttons based on PLANET status */}
               {contact.planetStatus?.value === 'member' ? (
                 <>
-                  {/* Show Send buttons for PLANET members */}
+                  {/* Show Chat and Vouch buttons for PLANET members */}
+                  <Button
+                    variant="contained"
+                    startIcon={<ChatBubble/>}
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const demo = onboardingDemo;
+                      if (demo?.active && demo?.onChatClick) {
+                        demo.onChatClick(contact['@id'] || '');
+                      } else {
+                        navigate(`/chat/${contact['@id']}`);
+                      }
+                    }}
+                    sx={{ bgcolor: '#0066CC', '&:hover': { bgcolor: '#004C99' }, textTransform: 'none' }}
+                  >
+                    Chat
+                  </Button>
                   <Button
                     variant="contained"
                     startIcon={<VerifiedUser/>}
                     size="small"
-                    color="primary"
+                    onClick={(e) => { e.stopPropagation(); setSendVouchOpen(true); }}
+                    sx={{ bgcolor: '#0066CC', '&:hover': { bgcolor: '#004C99' }, textTransform: 'none' }}
                   >
-                    Send Vouch
+                    Vouch
                   </Button>
                 </>
               ) : contact.planetStatus?.value === 'invited' ? (
@@ -271,11 +306,8 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
                   variant="contained"
                   startIcon={<Send/>}
                   size="small"
-                  color="primary"
-                  onClick={/*handleInviteToNao*/() => {
-                    // TODO: Implement invite logic
-                    console.log('Invite to PLANET clicked');
-                  }}
+                  onClick={(e) => { e.stopPropagation(); setInviteOpen(true); }}
+                  sx={{ bgcolor: '#0066CC', '&:hover': { bgcolor: '#004C99' }, textTransform: 'none' }}
                 >
                   Invite to PLANET
                 </Button>
@@ -431,6 +463,232 @@ export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderPro
               </Box>
             </Box>
           </DialogContent>
+        </Dialog>
+
+        {/* Send Vouch Dialog */}
+        <Dialog
+          open={sendVouchOpen}
+          onClose={() => { setSendVouchOpen(false); setVouchSent(false); }}
+          maxWidth="xs"
+          fullWidth
+        >
+          <DialogTitle sx={{ pr: 5 }}>
+            {!vouchSent && (
+              <>
+                Send Vouch
+                <Typography variant="body2" color="text.secondary">
+                  Vouch for {name?.value?.split(' ')[0] || 'this contact'}
+                </Typography>
+              </>
+            )}
+            <IconButton
+              onClick={() => { setSendVouchOpen(false); setVouchSent(false); }}
+              sx={{ position: 'absolute', top: 8, right: 8 }}
+              size="small"
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent>
+            {vouchSent ? (
+              <Box sx={{ textAlign: 'center', py: 3 }}>
+                <VerifiedUser sx={{ fontSize: 48, color: 'success.main', mb: 1 }} />
+                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                  Vouch sent
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {name?.value?.split(' ')[0]} will be notified
+                </Typography>
+              </Box>
+            ) : (
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, pt: 1 }}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  label="Trust area"
+                  placeholder="e.g. Web design, Accounting, Event organising"
+                  value={vouchTrustArea}
+                  onChange={(e) => setVouchTrustArea(e.target.value)}
+                  autoFocus
+                />
+
+                <TextField
+                  fullWidth
+                  size="small"
+                  label="Comment"
+                  placeholder="Why are you vouching for this person?"
+                  value={vouchComment}
+                  onChange={(e) => setVouchComment(e.target.value)}
+                  multiline
+                  rows={3}
+                />
+              </Box>
+            )}
+          </DialogContent>
+          {!vouchSent && (
+            <DialogActions>
+              <Button
+                onClick={() => setSendVouchOpen(false)}
+                color="inherit"
+                size="small"
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                size="small"
+                disabled={!vouchTrustArea.trim() || !vouchComment.trim()}
+                onClick={() => {
+                  // TODO: Issue VRC via protocol SDK
+                  console.log('Sending vouch:', {
+                    issuer: 'did:example:currentuser',
+                    subject: contact['@id'],
+                    trustArea: vouchTrustArea,
+                    confidenceScore: vouchConfidence,
+                    comment: vouchComment,
+                    issuanceDate: new Date().toISOString(),
+                  });
+                  setVouchSent(true);
+                  setVouchTrustArea('');
+                  setVouchConfidence(0.8);
+                  setVouchComment('');
+                }}
+              >
+                Send
+              </Button>
+            </DialogActions>
+          )}
+        </Dialog>
+
+        {/* iOS permission mock — separate dialog */}
+        <Dialog
+          open={inviteOpen && inviteSent && inviteChannel === 'email'}
+          onClose={() => { setInviteOpen(false); setInviteSent(false); }}
+          PaperProps={{
+            sx: {
+              borderRadius: 2,
+              maxWidth: 280,
+              bgcolor: 'rgba(242,242,247,0.95)',
+              backdropFilter: 'blur(20px)',
+            },
+          }}
+        >
+          <Box sx={{ p: 2.5, textAlign: 'center' }}>
+            <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
+              "PLANET" wants to open "Mail"
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              This will compose a new email with your invite message.
+            </Typography>
+          </Box>
+          <Divider />
+          <Box sx={{ display: 'flex' }}>
+            <Box
+              onClick={() => { setInviteOpen(false); setInviteSent(false); }}
+              sx={{
+                flex: 1,
+                py: 1.25,
+                cursor: 'pointer',
+                textAlign: 'center',
+                borderRight: '1px solid',
+                borderColor: 'divider',
+                '&:hover': { bgcolor: 'action.hover' },
+              }}
+            >
+              <Typography variant="body2" sx={{ color: '#0066CC' }}>
+                Cancel
+              </Typography>
+            </Box>
+            <Box
+              onClick={() => { setInviteOpen(false); setInviteSent(false); }}
+              sx={{
+                flex: 1,
+                py: 1.25,
+                cursor: 'pointer',
+                textAlign: 'center',
+                '&:hover': { bgcolor: 'action.hover' },
+              }}
+            >
+              <Typography variant="body2" sx={{ color: '#0066CC', fontWeight: 600 }}>
+                Open
+              </Typography>
+            </Box>
+          </Box>
+        </Dialog>
+
+        {/* Invite to PLANET Dialog */}
+        <Dialog
+          open={inviteOpen && !(inviteSent && inviteChannel === 'email')}
+          onClose={() => { setInviteOpen(false); setInviteSent(false); }}
+          maxWidth="xs"
+          fullWidth
+        >
+          <DialogTitle sx={{ pr: 5 }}>
+            {!inviteSent && (
+              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                Invite {name?.value?.split(' ')[0] || 'this contact'} to PLANET
+              </Typography>
+            )}
+            <IconButton
+              onClick={() => { setInviteOpen(false); setInviteSent(false); }}
+              sx={{ position: 'absolute', top: 8, right: 8 }}
+              size="small"
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent>
+            {inviteSent && inviteChannel === 'clipboard' ? (
+              <Box sx={{ textAlign: 'center', py: 3 }}>
+                <Send sx={{ fontSize: 48, color: '#0066CC', mb: 1 }} />
+                <Typography variant="body2" color="text.secondary">
+                  Invite text copied to clipboard
+                </Typography>
+              </Box>
+            ) : !inviteSent ? (
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, pt: 0.5 }}>
+                {/* Message */}
+                <TextField
+                  fullWidth
+                  multiline
+                  rows={5}
+                  size="small"
+                  defaultValue={`Hey ${name?.value?.split(' ')[0] || ''}, I'm using PLANET for private, decentralised networking. Join me → planetnetwork.app/j/x7k2m`}
+                />
+
+                {/* Link info */}
+                <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>
+                  Single-use invite link — expires in 7 days
+                </Typography>
+              </Box>
+            ) : null}
+          </DialogContent>
+          {!inviteSent && (
+            <DialogActions>
+              <Button
+                size="small"
+                onClick={() => {
+                  navigator.clipboard?.writeText(`Hey ${name?.value?.split(' ')[0] || ''}, I'm using PLANET for private, decentralised networking. Join me → planetnetwork.app/j/x7k2m`);
+                  setInviteSent(true);
+                  setInviteChannel('clipboard');
+                }}
+                sx={{ textTransform: 'none', color: '#0066CC' }}
+              >
+                Copy
+              </Button>
+              <Button
+                variant="contained"
+                size="small"
+                onClick={() => {
+                  setInviteSent(true);
+                  setInviteChannel('email');
+                }}
+                sx={{ bgcolor: '#0066CC', '&:hover': { bgcolor: '#004C99' }, textTransform: 'none' }}
+              >
+                Email
+              </Button>
+            </DialogActions>
+          )}
         </Dialog>
 
         {/* Trust Profile Selection Dialog */}

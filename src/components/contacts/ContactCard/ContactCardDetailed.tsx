@@ -12,6 +12,7 @@ import {iconFilter} from "@/hooks/contacts/useContacts";
 import {formatPhone} from "@/utils/phoneHelper";
 import type {RCardType} from "@/types/rcard";
 import {DEFAULT_PROFILE_CARDS} from "@/types/notification";
+import {useOnboardingDemo, useForceMobile} from "@/components/demo/DemoContext";
 
 const renderContactName = (name?: Name, isLoading?: boolean) => (
   <Typography
@@ -64,8 +65,7 @@ const renderJobTitleAndCompany = (organization?: Organization) => (
       whiteSpace: "nowrap",
     }}
   >
-    {organization?.position || ''}
-    {organization?.value && ` at ${organization.value}`}
+    {organization?.value || ''}
   </Typography>
 );
 
@@ -142,7 +142,18 @@ export const ContactCardDetailed = forwardRef<
     ref,
   ) => {
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const forceMobile = useForceMobile();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md')) || forceMobile;
+    const onboardingDemo = useOnboardingDemo();
+
+    // In onboarding demo mode, hide the "me" card
+    if (onboardingDemo.active && onboardingDemo.hideMe && contact.isMe) {
+      return null;
+    }
+
+    const isGreyedOut = onboardingDemo.active && !contact.isMe &&
+      onboardingDemo.connectedContactIds.length > 0 &&
+      !onboardingDemo.connectedContactIds.includes(contact['@id'] || '');
 
     const name = resolveFrom(contact as SocialContact, 'name');
     const email = resolveFrom(contact as SocialContact, 'email');
@@ -255,10 +266,15 @@ export const ContactCardDetailed = forwardRef<
         ref={ref}
         sx={{
           display: "flex",
-          alignItems: {xs: "center", md: "flex-start"},
-          gap: {xs: 2, md: 0},
-          minHeight: {xs: 'auto', md: 44},
+          alignItems: forceMobile ? "center" : {xs: "center", md: "flex-start"},
+          gap: forceMobile ? 2 : {xs: 2, md: 0},
+          minHeight: forceMobile ? 'auto' : {xs: 'auto', md: 44},
           width: "100%",
+          ...(isGreyedOut && {
+            opacity: 0.4,
+            filter: 'grayscale(100%)',
+            pointerEvents: 'none',
+          }),
         }}
       >
         {/* Avatar */}
@@ -276,13 +292,13 @@ export const ContactCardDetailed = forwardRef<
             mr: {xs: 0, md: 3},
           }}
         >
-          <Box sx={{display: "flex", alignItems: "center", gap: {xs: 0.5, md: 1}, mb: 0.5, justifyContent: {xs: "space-between", md: "flex-start"}}}>
+          <Box sx={{display: "flex", alignItems: "center", gap: {xs: 0.5, md: 1}, mb: 0, justifyContent: {xs: "space-between", md: "flex-start"}}}>
             {renderContactName(name)}
             {renderIsMerged((contact.mergedFrom?.size ?? 0) > 0, theme)}
             {isMobile && renderAccountFilers()}
           </Box>
 
-          {!isMobile && renderJobTitleAndCompany(organization)}
+          {renderJobTitleAndCompany(organization)}
         </Box>
 
         {/* Second Column - Email & Phone */}

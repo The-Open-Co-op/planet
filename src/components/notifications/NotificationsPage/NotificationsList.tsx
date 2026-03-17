@@ -10,6 +10,7 @@ import {
   Button,
   Chip,
   alpha,
+  IconButton,
 } from '@mui/material';
 import {
   VerifiedUser,
@@ -18,6 +19,7 @@ import {
   Settings,
   Notifications,
   Person,
+  Close,
 } from '@mui/icons-material';
 import type { Notification } from '@/types/notification';
 import { RCardSelectionModal } from '../RCardSelectionModal';
@@ -97,9 +99,9 @@ export const NotificationsList = forwardRef<HTMLDivElement, NotificationsListPro
     const getNotificationIcon = (type: string) => {
       switch (type) {
         case 'vouch':
-          return <VerifiedUser sx={{ fontSize: 20, color: 'primary.main' }} />;
+          return <VerifiedUser sx={{ fontSize: 18, color: 'text.secondary' }} />;
         case 'connection':
-          return <Group sx={{ fontSize: 20, color: 'info.main' }} />;
+          return <Group sx={{ fontSize: 18, color: 'text.secondary' }} />;
         case 'message':
           return <Message sx={{ fontSize: 20, color: 'info.main' }} />;
         case 'system':
@@ -178,84 +180,106 @@ export const NotificationsList = forwardRef<HTMLDivElement, NotificationsListPro
             maxWidth="xs"
             fullWidth
           >
-            {vouch && (
-              <>
-                <DialogTitle sx={{ pb: 0.5 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <VerifiedUser fontSize="small" color="primary" />
-                    {vouch.skill}
-                  </Box>
-                  <Chip
-                    label={status}
-                    size="small"
-                    sx={{
-                      mt: 0.5,
-                      textTransform: 'capitalize',
-                      bgcolor: status === 'accepted' ? alpha('#22c55e', 0.1) : status === 'rejected' ? alpha('#ef4444', 0.1) : alpha('#f59e0b', 0.1),
-                      color: status === 'accepted' ? '#22c55e' : status === 'rejected' ? '#ef4444' : '#f59e0b',
-                      fontWeight: 600,
-                      fontSize: '0.7rem',
-                    }}
-                  />
-                </DialogTitle>
-                <DialogContent>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    <Box>
-                      <Typography variant="caption" color="text.secondary">From</Typography>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
-                        <Person fontSize="small" color="action" />
-                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                          {vouch.fromUserName}
-                        </Typography>
-                      </Box>
+            {vouch && (() => {
+              const notif = notifications.find(
+                n => n.type === 'vouch' && n.metadata?.vouchId === vouch.id
+              );
+              const isPending = status === 'pending';
+              return (
+                <>
+                  <DialogTitle sx={{ pb: 0.5, pr: 5 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <VerifiedUser fontSize="small" color="primary" />
+                      {vouch.trustArea}
                     </Box>
-
-                    <Box>
-                      <Typography variant="caption" color="text.secondary">Level</Typography>
-                      <Typography variant="body2" sx={{ textTransform: 'capitalize' }}>
-                        {vouch.level}
-                      </Typography>
-                    </Box>
-
-                    <Box>
-                      <Typography variant="caption" color="text.secondary">Description</Typography>
-                      <Typography variant="body2">
-                        {vouch.description}
-                      </Typography>
-                    </Box>
-
-                    {vouch.endorsementText && (
+                    <Chip
+                      label={status}
+                      size="small"
+                      sx={{
+                        mt: 0.5,
+                        textTransform: 'capitalize',
+                        bgcolor: status === 'accepted' ? alpha('#22c55e', 0.1) : status === 'rejected' ? alpha('#ef4444', 0.1) : alpha('#f59e0b', 0.1),
+                        color: status === 'accepted' ? '#22c55e' : status === 'rejected' ? '#ef4444' : '#f59e0b',
+                        fontWeight: 600,
+                        fontSize: '0.7rem',
+                      }}
+                    />
+                    <IconButton
+                      onClick={() => setSelectedVouchId(null)}
+                      sx={{ position: 'absolute', top: 8, right: 8 }}
+                      size="small"
+                    >
+                      <Close fontSize="small" />
+                    </IconButton>
+                  </DialogTitle>
+                  <DialogContent>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                       <Box>
-                        <Typography variant="caption" color="text.secondary">Endorsement</Typography>
-                        <Typography variant="body2" sx={{ fontStyle: 'italic' }}>
-                          "{vouch.endorsementText}"
+                        <Typography variant="caption" color="text.secondary">From</Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
+                          <Person fontSize="small" color="action" />
+                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                            {notif?.fromUserName || vouch.issuer}
+                          </Typography>
+                        </Box>
+                      </Box>
+
+                      {vouch.comment && (
+                        <Box>
+                          <Typography variant="caption" color="text.secondary">Comment</Typography>
+                          <Typography variant="body2" sx={{ fontStyle: 'italic' }}>
+                            "{vouch.comment}"
+                          </Typography>
+                        </Box>
+                      )}
+
+                      <Box>
+                        <Typography variant="caption" color="text.secondary">Date</Typography>
+                        <Typography variant="body2">
+                          {new Date(vouch.issuanceDate).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}
                         </Typography>
                       </Box>
-                    )}
-
-                    <Box>
-                      <Typography variant="caption" color="text.secondary">Date</Typography>
-                      <Typography variant="body2">
-                        {vouch.createdAt.toLocaleDateString()}
-                      </Typography>
                     </Box>
-                  </Box>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={() => setSelectedVouchId(null)}>Close</Button>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={() => {
-                      setSelectedVouchId(null);
-                      navigate(`/contacts/${vouch.fromUserId}`, { state: { from: 'notifications' } });
-                    }}
-                  >
-                    View Contact
-                  </Button>
-                </DialogActions>
-              </>
-            )}
+                  </DialogContent>
+                  <DialogActions>
+                    {isPending && notif ? (
+                      <>
+                        <Button
+                          size="small"
+                          onClick={() => {
+                            setSelectedVouchId(null);
+                            onRejectVouch(notif.id);
+                          }}
+                          sx={{ color: 'text.secondary' }}
+                        >
+                          Reject
+                        </Button>
+                        <Button
+                          size="small"
+                          variant="contained"
+                          onClick={() => {
+                            setSelectedVouchId(null);
+                            handleOpenRCardModal(notif.id, notif.fromUserName, 'vouch');
+                          }}
+                        >
+                          Accept
+                        </Button>
+                      </>
+                    ) : (
+                      <Button
+                        size="small"
+                        onClick={() => {
+                          setSelectedVouchId(null);
+                          navigate(`/contacts/${vouch.issuer}`, { state: { from: 'notifications' } });
+                        }}
+                      >
+                        View Contact
+                      </Button>
+                    )}
+                  </DialogActions>
+                </>
+              );
+            })()}
           </Dialog>
         );
       })()}

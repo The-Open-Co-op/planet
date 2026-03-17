@@ -32,9 +32,18 @@ import {VouchesAndPraises} from "@/components/contacts/VouchesAndPraises";
 import {dataService} from "@/services/dataService";
 import {Block, CheckCircle} from '@mui/icons-material';
 import {SocialContact} from '@/.ldo/contact.typings';
+import {useForceMobile} from '@/components/demo/DemoContext';
 
-const ContactViewPage = () => {
-  const {id} = useParams<{ id: string }>();
+interface ContactViewPageProps {
+  /** Override contact ID (used in demo mode instead of URL params) */
+  contactId?: string;
+  /** Override back navigation (used in demo mode) */
+  onBack?: () => void;
+}
+
+const ContactViewPage = ({ contactId: propContactId, onBack: propOnBack }: ContactViewPageProps = {}) => {
+  const {id: paramId} = useParams<{ id: string }>();
+  const id = propContactId || paramId;
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
@@ -43,7 +52,8 @@ const ContactViewPage = () => {
   const [tabValue, setTabValue] = useState(0);
   
   // Check if desktop size
-  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+  const forceMobile = useForceMobile();
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md')) && !forceMobile;
 
   const {
     contact,
@@ -94,6 +104,10 @@ const ContactViewPage = () => {
   };
 
   const handleBack = () => {
+    if (propOnBack) {
+      propOnBack();
+      return;
+    }
     if (location.state?.from === 'notifications') {
       navigate('/notifications');
     } else {

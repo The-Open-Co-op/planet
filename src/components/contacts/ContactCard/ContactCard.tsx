@@ -9,6 +9,7 @@ import {SocialContact} from "@/.ldo/contact.typings";
 import {NextGraphAuth} from "@/types/nextgraph";
 import type {UseContactDragDropReturn} from '@/hooks/contacts/useContactDragDrop';
 import {iconFilter} from "@/hooks/contacts/useContacts";
+import {useOnboardingDemo} from "@/components/demo/DemoContext";
 
 
 export interface ContactCardProps {
@@ -41,6 +42,7 @@ export const ContactCard = forwardRef<HTMLDivElement, ContactCardProps>(
     const theme = useTheme();
 
     const [contact, setContact] = useState<Contact>({} as Contact);
+    const onboardingDemo = useOnboardingDemo();
 
     useResource(sessionId && nuri, {subscribe: true});
     const socialContact: SocialContact | undefined = useSubject(SocialContactShapeType, sessionId && nuri.substring(0, 53));
@@ -72,13 +74,27 @@ export const ContactCard = forwardRef<HTMLDivElement, ContactCardProps>(
     };
 
 
+    // In onboarding demo, hide "me" card entirely
+    if (onboardingDemo.active && onboardingDemo.hideMe && contact.isMe) {
+      return null;
+    }
+
+    const handleClick = () => {
+      if (onboardingDemo.active) {
+        // Use override if provided, otherwise block
+        onboardingDemo.onContactClick?.(contact['@id'] || '');
+        return;
+      }
+      onContactClick(contact['@id'] || '');
+    };
+
     return (
       <Card
         ref={ref}
         draggable={dragDrop && isSelectionMode && !isManualMergeMode}
         onDragStart={(e) => dragDrop?.handleDragStart(e, nuri)}
         onDragEnd={dragDrop?.handleDragEnd}
-        onClick={() => onContactClick(contact['@id'] || '')}
+        onClick={handleClick}
         sx={{
           cursor: (isSelectionMode || isManualMergeMode) ? 'default' : 'pointer',
           transition: 'all 0.2s ease-in-out',

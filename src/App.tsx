@@ -17,6 +17,7 @@ import ContactListPage from '@/pages/ContactListPage';
 import ContactViewPage from '@/pages/ContactViewPage';
 import { InvitationPage } from '@/components/invitations/InvitationPage';
 import AppsPage from '@/pages/AppsPage';
+import AppStorePage from '@/pages/AppStorePage';
 import { AccountPage } from '@/components/account/AccountPage';
 import { NotificationsPage } from '@/components/notifications/NotificationsPage';
 import { PhoneVerificationPage } from '@/components/account/PhoneVerificationPage';
@@ -25,6 +26,8 @@ import { Box, Typography } from '@mui/material';
 import { Button } from '@/components/ui';
 import { isNextGraphEnabled } from '@/utils/featureFlags';
 import CreateContactPage from "@/pages/CreateContactPage.tsx";
+import DemoPage from "@/pages/DemoPage";
+import ChatPage from "@/pages/ChatPage";
 
 const theme = createPlanetTheme();
 
@@ -100,6 +103,8 @@ const AppRoutes = () => (
   <OnboardingProvider>
     <Router>
       <Routes>
+        <Route path="/demo" element={<DemoPage />} />
+        <Route path="/demo/:step" element={<DemoPage />} />
         <Route path="/onboarding" element={<SocialContractPage />} />
         <Route path="/onboarding/social-contract" element={<SocialContractAgreementPage />} />
         <Route path="/onboarding/claim-identity" element={<ClaimIdentityPage />} />
@@ -109,12 +114,15 @@ const AppRoutes = () => (
           <DashboardLayout>
             <Routes>
               <Route path="/onboarding/welcome" element={<WelcomeToVaultPage />} />
-              <Route path="/" element={<Navigate to="/apps" replace />} />
+              <Route path="/" element={<Navigate to="/home" replace />} />
               <Route path="/import" element={<ImportPage />} />
               <Route path="/contacts" element={<ContactListPage />} />
               <Route path="/contacts/create" element={<CreateContactPage />} />
               <Route path="/contacts/:id" element={<ContactViewPage />} />
-              <Route path="/apps" element={<AppsPage />} />
+              <Route path="/home" element={<AppsPage />} />
+              <Route path="/apps" element={<AppStorePage />} />
+              <Route path="/chat" element={<ChatPage />} />
+              <Route path="/chat/:contactId" element={<ChatPage />} />
               <Route path="/notifications" element={<NotificationsPage />} />
               <Route path="/settings" element={<AccountPage />} />
               <Route path="/verify-phone/:phone" element={<PhoneVerificationPage />} />

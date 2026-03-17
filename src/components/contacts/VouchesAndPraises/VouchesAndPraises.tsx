@@ -7,6 +7,7 @@ import type {Notification} from "@/types/notification";
 import type {SocialContact} from '@/.ldo/contact.typings';
 import {notificationService} from "@/services/notificationService";
 import {formatDateDiff} from "@/utils/dateHelpers";
+import {useForceMobile} from "@/components/demo/DemoContext";
 
 export interface VouchesAndPraisesProps {
   contact?: Contact;
@@ -17,6 +18,7 @@ export interface VouchesAndPraisesProps {
 
 export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesProps>(({contact, refreshTrigger, highlightVouchId}, ref) => {
   const theme = useTheme();
+  const forceMobile = useForceMobile();
   const [acceptedNotifications, setAcceptedNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const highlightedElementRef = useRef<HTMLDivElement>(null);
@@ -107,9 +109,9 @@ export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesPro
 
   return <Box sx={{mb: 3}} ref={ref}>
 
-    <Box sx={{display: 'flex', flexDirection: { xs: 'column', md: 'row' }, minHeight: 300}}>
+    <Box sx={{display: 'flex', flexDirection: forceMobile ? 'column' : { xs: 'column', md: 'row' }, minHeight: 300}}>
       {/* What I've Sent */}
-      <Box sx={{flex: 1, borderRight: {md: 1}, borderColor: {md: 'divider'}, p: { xs: 0, md: 3 }}}>
+      <Box sx={{flex: 1, borderRight: forceMobile ? 0 : {md: 1}, borderColor: forceMobile ? undefined : {md: 'divider'}, p: forceMobile ? 0 : { xs: 0, md: 3 }}}>
             <Box sx={{display: 'flex', alignItems: 'center', mb: 3}}>
               <Typography variant="h6" sx={{fontWeight: 600}}>
                 Sent to {resolveFrom(contact as SocialContact, 'name')?.value?.split(' ')[0] || 'Contact'}
@@ -156,7 +158,7 @@ export const VouchesAndPraises = forwardRef<HTMLDivElement, VouchesAndPraisesPro
       </Box>
 
       {/* What I've Received */}
-      <Box sx={{flex: 1, p: { xs: 0, md: 3 }, pt: { xs: 3, md: 3 }}}>
+      <Box sx={{flex: 1, p: forceMobile ? 0 : { xs: 0, md: 3 }, pt: forceMobile ? 3 : { xs: 3, md: 3 }}}>
             <Box sx={{display: 'flex', alignItems: 'center', mb: 3}}>
               <Typography variant="h6" sx={{fontWeight: 600}}>
                 Received from {resolveFrom(contact as SocialContact, 'name')?.value?.split(' ')[0] || 'Contact'}

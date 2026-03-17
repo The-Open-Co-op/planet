@@ -5,10 +5,10 @@ import {
   Paper 
 } from '@mui/material';
 import {
-  Home,
+  Public,
   People,
+  ChatBubble,
   Notifications,
-  Settings,
 } from '@mui/icons-material';
 
 const BottomNavigation = () => {
@@ -16,21 +16,21 @@ const BottomNavigation = () => {
   const navigate = useNavigate();
 
   const navigationItems = [
-    { label: 'Home', icon: <Home />, path: '/apps' },
+    { label: 'Home', icon: <Public />, path: '/home' },
     { label: 'Contacts', icon: <People />, path: '/contacts' },
+    { label: 'Chat', icon: <ChatBubble />, path: '/chat' },
     { label: 'Alerts', icon: <Notifications />, path: '/notifications' },
-    { label: 'Settings', icon: <Settings />, path: '/settings' },
   ];
 
   const getCurrentValue = () => {
     const currentPath = location.pathname;
 
-    if (currentPath === '/') return '/apps';
+    if (currentPath === '/') return '/home';
 
     const activeItem = navigationItems.find(item =>
       item.path === currentPath || currentPath.startsWith(item.path)
     );
-    return activeItem ? activeItem.path : '/apps';
+    return activeItem ? activeItem.path : '/home';
   };
 
   const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
@@ -38,23 +38,27 @@ const BottomNavigation = () => {
   };
 
   return (
-    <Paper 
-      sx={{ 
-        position: 'fixed', 
-        bottom: 0, 
-        left: 0, 
-        right: 0, 
+    <Paper
+      square
+      sx={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
         zIndex: 1000,
         borderTop: 1,
         borderColor: 'divider',
-      }} 
-      elevation={3}
+        bgcolor: 'background.default',
+        borderRadius: 0,
+      }}
+      elevation={0}
     >
       <MuiBottomNavigation
         value={getCurrentValue()}
         onChange={handleChange}
         showLabels
         sx={{
+          bgcolor: 'transparent',
           '& .MuiBottomNavigationAction-root': {
             color: 'text.secondary',
             '& .MuiBottomNavigationAction-label': {
