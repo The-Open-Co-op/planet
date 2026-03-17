@@ -11,13 +11,11 @@ import {
 } from '@mui/material';
 import {
   LocationOn,
-  Refresh,
   AccountCircle,
   VerifiedUser,
   Article,
   Photo,
   CalendarMonth,
-  Groups,
   ChevronRight,
   ExpandMore,
   Public,
@@ -25,10 +23,8 @@ import {
 import type {
   RCardWithPrivacy,
   LocationSharingLevel,
-  ArticleSharingLevel,
   PhotoSharingLevel,
   CalendarSharingLevel,
-  GroupSharingLevel,
 } from '@/types/notification';
 import { DEFAULT_PRIVACY_SETTINGS } from '@/types/notification';
 import { useVRCs } from '@/hooks/useVRCs';
@@ -46,45 +42,12 @@ interface DataSharingOption<T> {
   label: string;
 }
 
-const locationOptions: DataSharingOption<LocationSharingLevel>[] = [
-  { value: 'none', label: 'None' },
-  { value: 'city', label: 'City' },
-  { value: 'region', label: 'Region' },
-  { value: 'exact', label: 'Exact' },
-];
-
 type LocationDuration = 'none' | '1h' | '1d' | '1w' | 'always';
 const locationDurationOptions: DataSharingOption<LocationDuration>[] = [
   { value: '1h', label: '1 Hour' },
   { value: '1d', label: '1 Day' },
   { value: '1w', label: '1 Week' },
   { value: 'always', label: 'Always' },
-];
-
-const articleOptions: DataSharingOption<ArticleSharingLevel>[] = [
-  { value: 'none', label: 'None' },
-  { value: 'selected', label: 'Selected' },
-  { value: 'all', label: 'All' },
-];
-
-const photoOptions: DataSharingOption<PhotoSharingLevel>[] = [
-  { value: 'none', label: 'None' },
-  { value: 'tagged', label: 'Tagged' },
-  { value: 'events', label: 'Events' },
-  { value: 'all', label: 'All' },
-];
-
-const calendarOptions: DataSharingOption<CalendarSharingLevel>[] = [
-  { value: 'none', label: 'None' },
-  { value: 'busy_free', label: 'Busy/Free' },
-  { value: 'availability', label: 'Availability' },
-  { value: 'full', label: 'Full' },
-];
-
-const groupOptions: DataSharingOption<GroupSharingLevel>[] = [
-  { value: 'none', label: 'None' },
-  { value: 'selected', label: 'Selected' },
-  { value: 'all', label: 'All' },
 ];
 
 /** Full-width divider matching the container borders */
@@ -417,10 +380,6 @@ const RCardPrivacySettings = ({ rCard, onUpdate }: RCardPrivacySettingsProps) =>
 
   const toggleSection = (section: string) => {
     setExpandedSection(prev => prev === section ? null : section);
-  };
-
-  const getLabelForValue = <T extends string>(options: DataSharingOption<T>[], value: T) => {
-    return options.find(o => o.value === value)?.label || value;
   };
 
   const DataSharingToggleGroup = <T extends string>({

@@ -2,7 +2,7 @@ import React, {forwardRef} from "react";
 import {Box, Typography, Chip, Skeleton} from "@mui/material";
 import {alpha, useTheme} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import {VerifiedUser, Business, Groups, FamilyRestroom, Public} from "@mui/icons-material";
+import {Business, Groups, FamilyRestroom, Public} from "@mui/icons-material";
 import {Avatar, IconButton} from "@/components/ui";
 import type {Contact} from "@/types/contact";
 import {resolveFrom} from "@/utils/contactUtils";

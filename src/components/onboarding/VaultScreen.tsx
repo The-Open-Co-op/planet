@@ -9,12 +9,8 @@ import { NotificationsPage } from '@/components/notifications/NotificationsPage'
 
 type VaultView = 'vault' | 'home' | 'contacts' | 'chat' | 'alerts';
 
-interface VaultScreenProps {
-  onNavigate?: (slug: string) => void;
-}
-
 /** Step 10 — Vault with navigable demo nav */
-export const VaultScreen = ({ onNavigate }: VaultScreenProps) => {
+export const VaultScreen = () => {
   const [view, setView] = useState<VaultView>('vault');
 
   const navItems = [

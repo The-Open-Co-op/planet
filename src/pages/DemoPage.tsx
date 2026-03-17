@@ -23,7 +23,7 @@ type AnnotationWithCategory = AnnotationItem & { category: 'ui' | 'protocol' };
 
 interface StepHelpers {
   goToStep: (slug: string) => void;
-  setDynamicAnnotations: (annotations: AnnotationWithCategory[]) => void;
+  setDynamicAnnotations: (annotations: AnnotationWithCategory[] | null) => void;
 }
 
 interface DemoStep {
@@ -279,7 +279,7 @@ const steps: DemoStep[] = [
     slug: 'vault',
     title: 'Vault',
     subtitle: 'Encrypted personal data vault — identity, credentials, and settings',
-    screen: ({ goToStep }) => <VaultScreen onNavigate={goToStep} />,
+    screen: () => <VaultScreen />,
     annotations: [
       {
         side: 'left', top: 20, category: 'ui',

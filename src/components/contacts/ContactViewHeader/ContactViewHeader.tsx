@@ -4,7 +4,6 @@ import {
   Typography,
   Box,
   Chip,
-  useTheme,
   alpha,
   Card,
   CardContent,
@@ -14,11 +13,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Switch,
-  FormControlLabel,
   Divider,
   TextField,
-  Slider,
 } from '@mui/material';
 import {
   LinkedIn,
@@ -29,12 +25,11 @@ import {
   ChatBubble,
   Business, Groups, FamilyRestroom, Public, Close,
 } from '@mui/icons-material';
-import { useMediaQuery } from '@mui/material';
 import type {Contact} from '@/types/contact';
 import type {RCardType} from '@/types/rcard';
 import type {SocialContact} from '@/.ldo/contact.typings';
 import { DEFAULT_PROFILE_CARDS } from '@/types/notification';
-import { useForceMobile, useOnboardingDemo } from '@/components/demo/DemoContext';
+import { useOnboardingDemo } from '@/components/demo/DemoContext';
 
 /** Get canonical color for a card type from the single source of truth */
 const getCardColor = (cardType: string): string => {
@@ -42,11 +37,6 @@ const getCardColor = (cardType: string): string => {
   return card?.color || '#6b7280';
 };
 
-/** Get canonical icon name for a card type */
-const getCardIconName = (cardType: string): string => {
-  const card = DEFAULT_PROFILE_CARDS.find(c => c.name === cardType);
-  return card?.icon || 'PersonOutline';
-};
 import {resolveFrom} from '@/utils/contactUtils';
 import {getContactPhotoStyles} from "@/utils/photoStyles";
 import {PropertyWithSources} from '../PropertyWithSources';
@@ -65,12 +55,9 @@ export interface ContactViewHeaderProps {
 }
 
 export const ContactViewHeader = forwardRef<HTMLDivElement, ContactViewHeaderProps>(
-  ({contact, isEditing = false, showTags = true, showActions = true, showStatus = true, validateParent, onHumanityToggle, onAssignRCard, onRemoveRCard}, ref) => {
-    const theme = useTheme();
+  ({contact, isEditing = false, showTags = true, showActions = true, showStatus = true, validateParent, onHumanityToggle: _onHumanityToggle, onAssignRCard, onRemoveRCard}, ref) => {
     const navigate = useNavigate();
-    const forceMobile = useForceMobile();
     const onboardingDemo = useOnboardingDemo();
-    const isMobile = useMediaQuery(theme.breakpoints.down('md')) || forceMobile;
     const [aboutModalOpen, setAboutModalOpen] = useState(false);
     const [trustProfileDialogOpen, setTrustProfileDialogOpen] = useState(false);
     const [sendVouchOpen, setSendVouchOpen] = useState(false);

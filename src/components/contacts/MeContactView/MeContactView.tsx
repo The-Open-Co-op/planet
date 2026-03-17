@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 import {
   Add, Business, PersonOutline, Groups, FamilyRestroom, Favorite,
-  Home, LocationOn, Public, Circle,
+  Home, LocationOn, Public,
 } from '@mui/icons-material';
 import RCardPrivacySettings from '@/components/account/RCardPrivacySettings';
 import { ProfileInformation } from '@/components/account/AccountPage/ProfileInformation';

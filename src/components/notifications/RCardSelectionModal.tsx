@@ -5,7 +5,6 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  FormControlLabel,
   Checkbox,
   Radio,
   RadioGroup,

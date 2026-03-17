@@ -70,9 +70,6 @@ const availablePlatforms = [
 // Create different profile data per card to demonstrate functionality
 const getCardSpecificProfile = (cardName: string, initialProfileData?: ProfileData): ProfileData => {
   const baseProfile = initialProfileData ?? mockProfileData;
-  const baseName = baseProfile.name || 'John Doe';
-  const baseLocation = baseProfile.location || 'New York, NY';
-
   switch (cardName) {
     case 'Family':
       return {

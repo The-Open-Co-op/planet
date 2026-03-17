@@ -4,7 +4,6 @@ import { ArrowBack, Lock, Send } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { chatStore } from '@/mocks/chat';
 import type { ChatMessage } from '@/mocks/chat';
-import { useForceMobile } from '@/components/demo/DemoContext';
 import { dataService } from '@/services/dataService';
 import { resolveFrom } from '@/utils/contactUtils';
 import type { SocialContact } from '@/.ldo/contact.typings';
@@ -26,7 +25,6 @@ interface ChatViewProps {
 
 export const ChatView = ({ contactId, onBack }: ChatViewProps) => {
   const navigate = useNavigate();
-  const isDemo = useForceMobile();
   const [conversation, setConversation] = useState(() => chatStore.getConversation(contactId) || null);
   const [messages, setMessages] = useState<ChatMessage[]>(conversation?.messages || []);
   const [input, setInput] = useState('');

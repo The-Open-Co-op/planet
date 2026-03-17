@@ -23,7 +23,6 @@ import {
   PersonAdd,
   FileUpload,
   Send as InviteIcon,
-  Info,
   KeyboardArrowDown,
   ArrowBack
 } from '@mui/icons-material';
@@ -45,7 +44,7 @@ interface ContactListPageProps {
   connectedContactIds?: string[];
 }
 
-const ContactListPage = ({ onboardingMode = false, connectedContactIds = [] }: ContactListPageProps) => {
+const ContactListPage = ({ onboardingMode = false, connectedContactIds: _connectedContactIds = [] }: ContactListPageProps) => {
   const forceMobile = useForceMobile();
   const mobileDisplay = forceMobile ? 'none' : { xs: 'none', md: 'inline' };
   const currentUserGroupIds = useMemo(() => ['group1', 'group2', 'group3'], []);

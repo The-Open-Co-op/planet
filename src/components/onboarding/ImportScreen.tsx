@@ -1,6 +1,5 @@
 import { Box, Typography, Card } from '@mui/material';
 import { PhoneAndroid, LinkedIn, MailOutline } from '@mui/icons-material';
-import React from 'react';
 
 const sources = [
   { name: 'Mobile contacts', icon: <PhoneAndroid sx={{ fontSize: 28 }} />, desc: "Import from your phone's contacts", enabled: true },

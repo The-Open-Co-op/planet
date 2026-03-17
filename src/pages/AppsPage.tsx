@@ -1,4 +1,4 @@
-import { Box, Typography, alpha, useTheme, SvgIcon } from '@mui/material';
+import { Box, Typography, alpha, SvgIcon } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import {
   People,
@@ -30,7 +30,6 @@ const apps: AppItem[] = [
 
 const AppIcon = ({ app }: { app: AppItem }) => {
   const navigate = useNavigate();
-  const theme = useTheme();
 
   const handleClick = () => {
     if (app.path) {
