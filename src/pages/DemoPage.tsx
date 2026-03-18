@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, IconButton, FormControlLabel, Checkbox } from '@mui/material';
-import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import { Box, Typography, IconButton, FormControlLabel, Checkbox, useMediaQuery } from '@mui/material';
+import { ChevronLeft, ChevronRight, DesktopWindows } from '@mui/icons-material';
 import { PhoneFrame } from '@/components/demo/PhoneFrame';
 import { Annotation } from '@/components/demo/Annotation';
 import type { AnnotationItem } from '@/components/demo/Annotation';
@@ -400,10 +400,35 @@ const steps: DemoStep[] = [
 ];
 
 const DemoPage = () => {
+  const isMobile = useMediaQuery('(max-width:900px)');
   const { step: stepSlug } = useParams<{ step?: string }>();
   const navigate = useNavigate();
   const [showUI, setShowUI] = useState(true);
   const [showProtocol, setShowProtocol] = useState(true);
+
+  if (isMobile) {
+    return (
+      <Box sx={{
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        bgcolor: '#FAFBFC',
+        px: 4,
+        textAlign: 'center',
+        gap: 3,
+      }}>
+        <DesktopWindows sx={{ fontSize: 64, color: 'text.secondary' }} />
+        <Typography variant="h5" sx={{ fontWeight: 700 }}>
+          Best viewed on desktop
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          This interactive demo requires a larger screen. Please open it on a desktop or laptop browser.
+        </Typography>
+      </Box>
+    );
+  }
 
   // Derive initial index from URL, then manage via state
   const initialIndex = stepSlug
