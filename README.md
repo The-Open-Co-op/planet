@@ -25,7 +25,7 @@ We're building PLANET cooperatively:
 
 - [View a demo](https://planet-sepia.vercel.app/#/demo)
 - [Join The PLANET project via The Open Co-op](https://collab.open.coop/)
-- [Task List](https://github.com/The-Open-Co-op/planet/issues/1) — Current priorities
+- [Task List](https://github.com/orgs/The-Open-Co-op/projects/1) — Current priorities
 
 
 ## License
