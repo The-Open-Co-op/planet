@@ -447,6 +447,17 @@ const DemoPage = () => {
     }
   }, [stepSlug]);
 
+  // Notify parent window (collab.open.coop) of step change for feedback context
+  useEffect(() => {
+    if (window.parent !== window) {
+      window.parent.postMessage({
+        type: 'demo-step-change',
+        slug: steps[currentIndex].slug,
+        title: steps[currentIndex].title,
+      }, '*');
+    }
+  }, [currentIndex]);
+
   const step = steps[currentIndex];
 
   const goTo = (index: number) => {
