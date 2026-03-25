@@ -21,8 +21,8 @@ const DemoCard = ({ title, subtitle, description, icon, path, parentSlug, stepCo
 
   const handleClick = () => {
     if (isInIframe()) {
-      // Navigate the parent frame to the collab-site demo URL (with DemoClient + feedback)
-      window.top?.location.assign(`/demo/${parentSlug}`);
+      // Ask the parent frame to navigate (cross-origin safe)
+      window.parent.postMessage({ type: 'demo-navigate', slug: parentSlug }, '*');
     } else {
       navigate(path);
     }
