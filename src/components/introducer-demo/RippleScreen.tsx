@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Box, Typography, Avatar, Card, CardContent, alpha, useTheme } from '@mui/material';
-import { Waves, Handshake, VerifiedUser, Group } from '@mui/icons-material';
+import { Waves, VerifiedUser, Group } from '@mui/icons-material';
 import { notificationService } from '@/services/notificationService';
 import type { Notification } from '@/types/notification';
 import { StandardPage } from '@/components/layout/StandardPage';
@@ -69,7 +69,6 @@ const RealNotificationCard = ({ notification }: { notification: Notification }) 
 };
 
 export const RippleScreen = () => {
-  const theme = useTheme();
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   useEffect(() => {

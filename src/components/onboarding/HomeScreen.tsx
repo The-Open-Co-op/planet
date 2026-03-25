@@ -13,7 +13,7 @@ import { AccountPage } from '@/components/account/AccountPage';
 type HomeView = 'home' | 'contacts' | 'import' | 'chat' | 'alerts' | 'apps' | 'vault';
 
 interface HomeScreenProps {
-  setDynamicAnnotations?: (annotations: unknown[] | null) => void;
+  setDynamicAnnotations?: (annotations: null | never[]) => void;
   goToStep?: (slug: string) => void;
 }
 

@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Box, Typography, Card, Chip, IconButton, TextField, Avatar } from '@mui/material';
 import { Handshake, Add, Star, CheckCircle, Waves, ExitToApp, ArrowBack, Lock, Send } from '@mui/icons-material';
-import { introductionHistory, personas } from './mockData';
+import { introductionHistory } from './mockData';
 import type { IntroductionSummary } from './mockData';
 import { DemoNav } from './DemoNav';
 
-const statusConfig: Record<string, { label: string; iconColor: string; icon?: React.ReactNode }> = {
+const statusConfig: Record<string, { label: string; iconColor: string; icon?: React.ReactElement }> = {
   valuable: { label: 'Valuable', iconColor: '#D97706', icon: <Star sx={{ fontSize: 12 }} /> },
   accepted: { label: 'Accepted', iconColor: '#059669', icon: <CheckCircle sx={{ fontSize: 12 }} /> },
   pending: { label: 'Pending', iconColor: '#D97706' },

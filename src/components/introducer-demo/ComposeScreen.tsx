@@ -4,6 +4,7 @@ import { ArrowBack, Search, Send } from '@mui/icons-material';
 import { introMessage } from './mockData';
 import { dataService } from '@/services/dataService';
 import type { Contact } from '@/types/contact';
+import type { SocialContact } from '@/.ldo/contact.typings';
 import { resolveFrom } from '@/utils/contactUtils';
 import { DemoNav } from './DemoNav';
 
@@ -22,14 +23,14 @@ export const ComposeScreen = () => {
     dataService.getContacts().then((data) => {
       // Filter out "me" contact and sort alphabetically
       const others = data
-        .filter(c => !c.isMe && c['@id'] !== 'me' && resolveFrom(c, 'name')?.value)
+        .filter(c => !c.isMe && (c['@id'] || '') !== 'me' && resolveFrom(c as unknown as SocialContact, 'name')?.value)
         .sort((a, b) => {
           const preSelected = new Set(['contact:1', 'contact:2']);
-          const aSelected = preSelected.has(a['@id']) ? 0 : 1;
-          const bSelected = preSelected.has(b['@id']) ? 0 : 1;
+          const aSelected = preSelected.has(a['@id'] || '') ? 0 : 1;
+          const bSelected = preSelected.has(b['@id'] || '') ? 0 : 1;
           if (aSelected !== bSelected) return aSelected - bSelected;
-          const nameA = resolveFrom(a, 'name')?.value || '';
-          const nameB = resolveFrom(b, 'name')?.value || '';
+          const nameA = resolveFrom(a as unknown as SocialContact, 'name')?.value || '';
+          const nameB = resolveFrom(b as unknown as SocialContact, 'name')?.value || '';
           return nameA.localeCompare(nameB);
         });
       setContacts(others);
@@ -38,9 +39,9 @@ export const ComposeScreen = () => {
     });
   }, []);
 
-  const selectedContacts = contacts.filter(c => selected.has(c['@id']));
+  const selectedContacts = contacts.filter(c => selected.has(c['@id'] || ''));
 
-  const getName = (c: Contact) => resolveFrom(c, 'name')?.value || 'Unknown';
+  const getName = (c: Contact) => resolveFrom(c as unknown as SocialContact, 'name')?.value || 'Unknown';
   const getInitials = (c: Contact) => {
     const name = getName(c);
     return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
@@ -94,11 +95,12 @@ export const ComposeScreen = () => {
         {contacts.map((contact) => {
           const name = getName(contact);
           const initials = getInitials(contact);
-          const isSelected = selected.has(contact['@id']);
+          const contactId = contact['@id'] || '';
+          const isSelected = selected.has(contactId);
           return (
             <Box
-              key={contact['@id']}
-              onClick={() => toggleContact(contact['@id'])}
+              key={contactId}
+              onClick={() => toggleContact(contactId)}
               sx={{
                 display: 'flex',
                 alignItems: 'center',
