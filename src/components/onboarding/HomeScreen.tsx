@@ -73,7 +73,7 @@ export const HomeScreen = ({ setDynamicAnnotations, goToStep }: HomeScreenProps 
 
   return (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <Box sx={{ flex: 1, overflow: 'auto', mb: view === 'home' ? 0 : -2 }}>
+      <Box sx={{ flex: 1, overflow: 'auto', mb: (view === 'home' || chatContactId) ? 0 : -2 }}>
         {renderView()}
       </Box>
       <Box sx={{
