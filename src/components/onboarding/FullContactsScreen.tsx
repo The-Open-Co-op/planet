@@ -108,6 +108,11 @@ export const FullContactsScreen = ({ setDynamicAnnotations }: FullContactsScreen
 
   // Update annotations when contact is selected/deselected
   useEffect(() => {
+    if (selectedContactId === 'contact:me') {
+      // My Profiles view — clear annotations
+      setDynamicAnnotations?.([]);
+      return;
+    }
     if (selectedContactId) {
       dataService.getContact(selectedContactId).then(contact => {
         const isMember = contact?.planetStatus?.value === 'member';

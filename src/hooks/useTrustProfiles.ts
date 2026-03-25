@@ -19,6 +19,11 @@ const CARD_PRIVACY_DEFAULTS: Record<string, typeof DEFAULT_PRIVACY_SETTINGS> = {
     dataSharing: { location: 'none', articles: 'none', photos: 'none', calendar: 'none', groups: 'none' },
     reSharing: { enabled: false, maxHops: 1 },
   },
+  Public: {
+    keyRecoveryBuddy: false,
+    dataSharing: { location: 'city', articles: 'none', photos: 'none', calendar: 'none', groups: 'none' },
+    reSharing: { enabled: false, maxHops: 1 },
+  },
   Family: {
     keyRecoveryBuddy: true,
     dataSharing: { location: 'exact', articles: 'all', photos: 'all', calendar: 'full', groups: 'all' },

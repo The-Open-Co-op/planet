@@ -28,12 +28,16 @@ const apps: AppItem[] = [
   { label: 'Apps', icon: Apps, path: '/apps' },
 ];
 
-const AppIcon = ({ app }: { app: AppItem }) => {
+const AppIcon = ({ app, onAppClick }: { app: AppItem; onAppClick?: (path: string) => void }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
     if (app.path) {
-      navigate(app.path);
+      if (onAppClick) {
+        onAppClick(app.path);
+      } else {
+        navigate(app.path);
+      }
     }
   };
 
@@ -93,7 +97,7 @@ const AppIcon = ({ app }: { app: AppItem }) => {
   );
 };
 
-const AppsPage = () => {
+const AppsPage = ({ onAppClick }: { onAppClick?: (path: string) => void } = {}) => {
   return (
     <Box sx={{
       height: '100%',
@@ -102,7 +106,7 @@ const AppsPage = () => {
       p: 2,
       backgroundImage: 'url(/images/planet-billboard-bg.jpg)',
       backgroundSize: 'cover',
-      backgroundPosition: 'center',
+      backgroundPosition: 'calc(50% - 4px) center',
     }}>
       <Box
         sx={{
@@ -115,7 +119,7 @@ const AppsPage = () => {
         }}
       >
         {apps.map((app) => (
-          <AppIcon key={app.label} app={app} />
+          <AppIcon key={app.label} app={app} onAppClick={onAppClick} />
         ))}
       </Box>
     </Box>

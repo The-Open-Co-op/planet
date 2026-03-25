@@ -1,10 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, IconButton, FormControlLabel, Checkbox, useMediaQuery } from '@mui/material';
-import { ChevronLeft, ChevronRight, DesktopWindows } from '@mui/icons-material';
-import { PhoneFrame } from '@/components/demo/PhoneFrame';
-import { Annotation } from '@/components/demo/Annotation';
-import type { AnnotationItem } from '@/components/demo/Annotation';
+import { DemoPageShell } from '@/components/demo/DemoPageShell';
+import type { DemoStep } from '@/components/demo/DemoPageShell';
 
 // Onboarding screens
 import { InviteReceivedScreen } from '@/components/onboarding/InviteReceivedScreen';
@@ -16,28 +11,7 @@ import { ImportScreen } from '@/components/onboarding/ImportScreen';
 import { ContactsOverviewScreen } from '@/components/onboarding/ContactsOverviewScreen';
 import { ProfilesScreen } from '@/components/onboarding/ProfilesScreen';
 import { FullContactsScreen } from '@/components/onboarding/FullContactsScreen';
-import { EmojiVRCScreen } from '@/components/onboarding/EmojiVRCScreen';
-import { GroupChatScreen } from '@/components/onboarding/GroupChatScreen';
-import { VaultScreen } from '@/components/onboarding/VaultScreen';
-import { AppStoreCardScreen } from '@/components/onboarding/AppStoreDemoScreen';
-import { AlertsScreen } from '@/components/onboarding/AlertsScreen';
 import { FeedbackScreen } from '@/components/onboarding/FeedbackScreen';
-
-type AnnotationWithCategory = AnnotationItem & { category: 'ui' | 'protocol' };
-
-interface StepHelpers {
-  goToStep: (slug: string) => void;
-  setDynamicAnnotations: (annotations: AnnotationWithCategory[] | null) => void;
-}
-
-interface DemoStep {
-  id: string;
-  slug: string;
-  title: string;
-  subtitle: string;
-  screen: React.ReactNode | ((helpers: StepHelpers) => React.ReactNode);
-  annotations: AnnotationWithCategory[];
-}
 
 const steps: DemoStep[] = [
   {
@@ -249,7 +223,7 @@ const steps: DemoStep[] = [
     id: '09',
     slug: 'vouching',
     title: 'Network building',
-    subtitle: 'Contacts with My Profiles, ready to invite and vouch',
+    subtitle: 'Contacts view, ready to invite and vouch',
     screen: ({ setDynamicAnnotations }) => <FullContactsScreen setDynamicAnnotations={setDynamicAnnotations} />,
     annotations: [
       {
@@ -261,7 +235,7 @@ const steps: DemoStep[] = [
       {
         side: 'right', top: 44, category: 'ui',
         title: 'Connect, Chat & Vouch',
-        description: 'Alexander and Amanda are already PLANET members. Jonny can connect with them to chat and send Vouches.',
+        description: 'Alexander is a PLANET member — Jonny can send him a connection request. Amanda is already connected, so Jonny can chat with her and send Vouches. Tap the contacts to try it out.',
         tag: 'Growth',
       },
       {
@@ -274,378 +248,23 @@ const steps: DemoStep[] = [
   },
   {
     id: '10',
-    slug: 'reactions',
-    title: 'Chat reactions',
-    subtitle: 'Tap a message to react',
-    screen: <EmojiVRCScreen />,
-    annotations: [
-      {
-        side: 'left', top: 20, category: 'ui',
-        title: 'Chat reactions',
-        description: 'Tap any received message to open the reaction picker. Six emojis, each with a specific meaning. Reactions create trust signals - use them wisely.',
-        tag: 'UX',
-      },
-      {
-        side: 'right', top: 40, category: 'ui',
-        title: 'Emoji meanings',
-        description: '🧠 Wise/Clever\n❤️ Kind/Caring\n😂 Funny\n✅ Well done\n⚠️ Warning\n❌ Not good',
-        tag: 'UX',
-      },
-      {
-        side: 'left', top: 65, category: 'protocol',
-        title: 'Verifiable Endorsement Credentials',
-        description: 'Each reaction issues a Verifiable Endorsement Credential to the message author — building trust signals over time.',
-        tag: 'Backend',
-      },
-    ],
-  },
-  {
-    id: '11',
-    slug: 'groups',
-    title: 'Group Chat',
-    subtitle: 'Create group chats — lightweight Verifiable Trust Communities',
-    screen: <GroupChatScreen />,
-    annotations: [
-      {
-        side: 'left', top: 25, category: 'ui',
-        title: 'Chat groups',
-        description: 'Work like standard chat groups but are actually lightweight Verifiable Trust Communities (VTCs).',
-        tag: 'UX',
-      },
-      {
-        side: 'right', top: 55, category: 'protocol',
-        title: 'Trust anchor',
-        description: 'The creator of a chat group becomes the first trust anchor of the Group (VTC) and can appoint others by making them admin. Chat groups bypass the Community Policies and Verification requirements of standard VTCs.',
-        tag: 'Backend',
-      },
-    ],
-  },
-  {
-    id: '12',
-    slug: 'vault',
-    title: 'Vault',
-    subtitle: 'Encrypted personal data vault — identity, credentials, and settings',
-    screen: () => <VaultScreen />,
-    annotations: [
-      {
-        side: 'left', top: 25, category: 'ui',
-        title: 'Encrypted local vault',
-        description: "Data is stored in the members' encrypted local vault, anchored to their DID. In order for PLANET to continue to function if a device is offline members need a Verifiable Trust Agent (VTA). We assign members to the PLANET VTA by default to simplify onboarding.",
-        tag: 'UX',
-      },
-      {
-        side: 'right', top: 55, category: 'ui',
-        title: 'Select your Verifiable Trust Agent provider',
-        description: "Members can choose their Verifiable Trust Agent (VTA) and backup hosting provider and can switch providers at anytime. Members' identity and connections stay with them — they're in the app, not on the provider's servers.",
-        tag: 'UX',
-      },
-    ],
-  },
-  {
-    id: '13',
-    slug: 'planet-apps',
-    title: 'App Store',
-    subtitle: 'Install additional apps to extend PLANET',
-    screen: <AppStoreCardScreen />,
-    annotations: [
-      {
-        side: 'left', top: 30, category: 'ui',
-        title: 'Extensible platform',
-        description: 'PLANET grows through installable apps. Members choose what they need — no bloatware.',
-        tag: 'UX',
-      },
-      {
-        side: 'right', top: 60, category: 'protocol',
-        title: 'Sub-app architecture',
-        description: 'Each app runs in a sandboxed context with access to shared hooks (useVRCs, useTrustProfiles).',
-        tag: 'Backend',
-      },
-    ],
-  },
-  {
-    id: '14',
-    slug: 'alerts',
-    title: 'Alerts',
-    subtitle: 'Vouches, connection requests, and system notifications',
-    screen: <AlertsScreen />,
-    annotations: [
-      {
-        side: 'left', top: 25, category: 'ui',
-        title: 'Connection requests',
-        description: 'When another PLANET member wants to connect, it appears here. Accepting exchanges R-DIDs and opens a DIDComm channel.',
-        tag: 'UX',
-      },
-      {
-        side: 'right', top: 50, category: 'ui',
-        title: 'Vouches',
-        description: 'Incoming Vouches from connected members. Tap to view details, then accept and assign to Trust Profiles.',
-        tag: 'UX',
-      },
-      {
-        side: 'left', top: 75, category: 'protocol',
-        title: 'Credential inbox',
-        description: 'Alerts act as a credential inbox — each vouch or connection request is a pending Verifiable Credential waiting to be accepted into the wallet.',
-        tag: 'Backend',
-      },
-    ],
-  },
-  {
-    id: '15',
     slug: 'feedback',
     title: '',
     subtitle: '',
     screen: <FeedbackScreen />,
     annotations: [],
+    fullPage: true,
   },
 ];
 
 const DemoPage = () => {
-  const isMobile = useMediaQuery('(max-width:900px)');
-  const { step: stepSlug } = useParams<{ step?: string }>();
-  const navigate = useNavigate();
-  const [showUI, setShowUI] = useState(true);
-  const [showProtocol, setShowProtocol] = useState(true);
-
-  if (isMobile) {
-    return (
-      <Box sx={{
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        bgcolor: '#FAFBFC',
-        px: 4,
-        textAlign: 'center',
-        gap: 3,
-      }}>
-        <DesktopWindows sx={{ fontSize: 64, color: 'text.secondary' }} />
-        <Typography variant="h5" sx={{ fontWeight: 700 }}>
-          Best viewed on desktop
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          This interactive demo requires a larger screen. Please open it on a desktop or laptop browser.
-        </Typography>
-      </Box>
-    );
-  }
-
-  // Derive initial index from URL, then manage via state
-  const initialIndex = stepSlug
-    ? Math.max(0, steps.findIndex(s => s.slug === stepSlug))
-    : 0;
-  const [currentIndex, setCurrentIndex] = useState(initialIndex);
-  const [dynamicAnnotations, setDynamicAnnotations] = useState<AnnotationWithCategory[] | null>(null);
-
-  // Sync state when URL changes externally (e.g. direct navigation)
-  useEffect(() => {
-    if (stepSlug) {
-      const idx = steps.findIndex(s => s.slug === stepSlug);
-      if (idx >= 0 && idx !== currentIndex) {
-        setCurrentIndex(idx);
-      }
-    }
-  }, [stepSlug]);
-
-  // Notify parent window (collab.open.coop) of step change for feedback context
-  useEffect(() => {
-    if (window.parent !== window) {
-      window.parent.postMessage({
-        type: 'demo-step-change',
-        slug: steps[currentIndex].slug,
-        title: steps[currentIndex].title,
-      }, '*');
-    }
-  }, [currentIndex]);
-
-  const step = steps[currentIndex];
-
-  const goTo = (index: number) => {
-    setCurrentIndex(index);
-    setDynamicAnnotations(null);
-    navigate(`/demo/${steps[index].slug}`, { replace: true });
-  };
-  const goBack = () => { if (currentIndex > 0) goTo(currentIndex - 1); };
-  const goForward = () => { if (currentIndex < steps.length - 1) goTo(currentIndex + 1); };
-
-  const activeAnnotations = dynamicAnnotations || step.annotations;
-  const visibleAnnotations = activeAnnotations.filter(a =>
-    (a.category === 'ui' && showUI) || (a.category === 'protocol' && showProtocol)
-  );
-
-  // Feedback screen is full page, not in phone frame
-  if (step.slug === 'feedback') {
-    return (
-      <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <Box sx={{ flex: 1 }}>
-          {typeof step.screen === 'function' ? step.screen({ goToStep: () => {}, setDynamicAnnotations }) : step.screen}
-        </Box>
-        <Box sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 2,
-          py: 1.5,
-          bgcolor: 'background.default',
-          flexShrink: 0,
-        }}>
-          <IconButton
-            onClick={goBack}
-            size="small"
-            sx={{ border: '1px solid', borderColor: 'divider' }}
-          >
-            <ChevronLeft />
-          </IconButton>
-          <Box sx={{ display: 'flex', gap: 0.75 }}>
-            {steps.map((s, i) => (
-              <Box
-                key={s.id}
-                onClick={() => goTo(i)}
-                sx={{
-                  width: i === currentIndex ? 20 : 8,
-                  height: 8,
-                  borderRadius: 4,
-                  bgcolor: i === currentIndex ? 'primary.main' : 'grey.300',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                }}
-              />
-            ))}
-          </Box>
-          <IconButton
-            onClick={goForward}
-            disabled
-            size="small"
-            sx={{ border: '1px solid', borderColor: 'divider' }}
-          >
-            <ChevronRight />
-          </IconButton>
-        </Box>
-      </Box>
-    );
-  }
-
   return (
-    <Box sx={{
-      height: '100vh',
-      bgcolor: '#FAFBFC',
-      display: 'flex',
-      flexDirection: 'column',
-      overflow: 'hidden',
-    }}>
-      {/* Top bar */}
-      <Box sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        px: 3,
-        py: 1.5,
-        borderBottom: '1px solid',
-        borderColor: 'divider',
-        flexShrink: 0,
-      }}>
-        <Box>
-          <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.5 }}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>
-              PLANET Demo
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              Onboarding and main PNM app features
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
-            <Typography variant="caption" sx={{ color: 'primary.main', fontWeight: 700 }}>
-              {step.id}
-            </Typography>
-            <Typography variant="body2" sx={{ fontWeight: 600 }}>
-              {step.title}
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              — {step.subtitle}
-            </Typography>
-          </Box>
-        </Box>
-
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <FormControlLabel
-            control={<Checkbox size="small" checked={showUI} onChange={(e) => setShowUI(e.target.checked)} sx={{ color: '#0066CC', '&.Mui-checked': { color: '#0066CC' } }} />}
-            label={<Typography variant="caption" sx={{ color: '#0066CC', fontWeight: 600 }}>UI Annotations</Typography>}
-            sx={{ m: 0 }}
-          />
-          <FormControlLabel
-            control={<Checkbox size="small" checked={showProtocol} onChange={(e) => setShowProtocol(e.target.checked)} sx={{ color: '#660000', '&.Mui-checked': { color: '#660000' } }} />}
-            label={<Typography variant="caption" sx={{ color: '#660000', fontWeight: 600 }}>Backend Annotations</Typography>}
-            sx={{ m: 0 }}
-          />
-        </Box>
-      </Box>
-
-      {/* Phone + Annotations */}
-      <Box sx={{
-        flex: 1,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: 0,
-      }}>
-        <Box sx={{ position: 'relative' }}>
-          <PhoneFrame key={step.slug}>
-            {typeof step.screen === 'function' ? step.screen({ goToStep: (slug) => goTo(steps.findIndex(s => s.slug === slug)), setDynamicAnnotations }) : step.screen}
-          </PhoneFrame>
-
-          {visibleAnnotations.map((annotation, i) => (
-            <Annotation key={`${step.id}-${i}`} annotation={annotation} category={annotation.category} />
-          ))}
-        </Box>
-      </Box>
-
-      {/* Bottom nav */}
-      <Box sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 2,
-        py: 1.5,
-        borderTop: '1px solid',
-        borderColor: 'divider',
-        flexShrink: 0,
-      }}>
-        <IconButton
-          onClick={goBack}
-          disabled={currentIndex === 0}
-          size="small"
-          sx={{ border: '1px solid', borderColor: 'divider' }}
-        >
-          <ChevronLeft />
-        </IconButton>
-
-        <Box sx={{ display: 'flex', gap: 0.75 }}>
-          {steps.map((s, i) => (
-            <Box
-              key={s.id}
-              onClick={() => goTo(i)}
-              sx={{
-                width: i === currentIndex ? 20 : 8,
-                height: 8,
-                borderRadius: 4,
-                bgcolor: i === currentIndex ? 'primary.main' : 'grey.300',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-              }}
-            />
-          ))}
-        </Box>
-
-        <IconButton
-          onClick={goForward}
-          disabled={currentIndex === steps.length - 1}
-          size="small"
-          sx={{ border: '1px solid', borderColor: 'divider' }}
-        >
-          <ChevronRight />
-        </IconButton>
-      </Box>
-    </Box>
+    <DemoPageShell
+      title="Onboarding"
+      subtitle="From invite to first connections"
+      basePath="/demo/onboarding"
+      steps={steps}
+    />
   );
 };
 

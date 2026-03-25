@@ -161,6 +161,13 @@ export const DEFAULT_PROFILE_CARDS: Omit<ProfileCard, 'id' | 'createdAt' | 'upda
     isDefault: true,
   },
   {
+    name: 'Public',
+    description: 'Your public-facing profile visible to everyone',
+    color: '#0066CC',
+    icon: 'Public',
+    isDefault: true,
+  },
+  {
     name: 'Family',
     description: 'Family members and relatives',
     color: '#f59e0b',

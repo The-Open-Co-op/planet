@@ -12,7 +12,7 @@ import type { SocialContact } from '@/.ldo/contact.typings';
 
 type Screen = 'list' | 'newChat' | 'selectGroupMembers' | 'nameGroup';
 
-export const ConversationList = () => {
+export const ConversationList = ({ onConversationClick }: { onConversationClick?: (contactId: string) => void } = {}) => {
   const navigate = useNavigate();
   const [screen, setScreen] = useState<Screen>('list');
   const [members, setMembers] = useState<Contact[]>([]);
@@ -348,7 +348,7 @@ export const ConversationList = () => {
             return (
               <Box
                 key={conv.id}
-                onClick={() => navigate(`/chat/${conv.contactId}`)}
+                onClick={() => onConversationClick ? onConversationClick(conv.contactId) : navigate(`/chat/${conv.contactId}`)}
                 sx={{
                   display: 'flex', alignItems: 'center', gap: 1.5,
                   px: 2, py: 1.25, cursor: 'pointer',

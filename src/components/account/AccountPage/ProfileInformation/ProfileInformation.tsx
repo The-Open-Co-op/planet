@@ -71,6 +71,23 @@ const availablePlatforms = [
 const getCardSpecificProfile = (cardName: string, initialProfileData?: ProfileData): ProfileData => {
   const baseProfile = initialProfileData ?? mockProfileData;
   switch (cardName) {
+    case 'Public':
+      return {
+        ...baseProfile,
+        name: 'John Doe',
+        jobTitle: 'Principal Engineer',
+        email: '',
+        phone: '',
+        location: 'San Francisco, CA',
+        bio: 'Engineer and community builder.',
+        avatar: '/images/john-doe-colleauges.jpeg',
+        website: '',
+        linkedin: '',
+        github: '',
+        twitter: '',
+        facebook: '',
+        instagram: '',
+      };
     case 'Family':
       return {
         ...baseProfile,

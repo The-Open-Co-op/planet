@@ -27,6 +27,9 @@ import { Button } from '@/components/ui';
 import { isNextGraphEnabled } from '@/utils/featureFlags';
 import CreateContactPage from "@/pages/CreateContactPage.tsx";
 import DemoPage from "@/pages/DemoPage";
+import IntroducerDemoPage from "@/pages/IntroducerDemoPage";
+import PnmDemoPage from "@/pages/PnmDemoPage";
+import DemosHomePage from "@/pages/DemosHomePage";
 import ChatPage from "@/pages/ChatPage";
 
 const theme = createPlanetTheme();
@@ -103,7 +106,14 @@ const AppRoutes = () => (
   <OnboardingProvider>
     <Router>
       <Routes>
-        <Route path="/demo" element={<DemoPage />} />
+        <Route path="/demo" element={<DemosHomePage />} />
+        <Route path="/demo/onboarding" element={<DemoPage />} />
+        <Route path="/demo/onboarding/:step" element={<DemoPage />} />
+        <Route path="/demo/introducer" element={<IntroducerDemoPage />} />
+        <Route path="/demo/introducer/:step" element={<IntroducerDemoPage />} />
+        <Route path="/demo/pnm" element={<PnmDemoPage />} />
+        <Route path="/demo/pnm/:step" element={<PnmDemoPage />} />
+        {/* Backward compat: old /demo/:step URLs map to onboarding */}
         <Route path="/demo/:step" element={<DemoPage />} />
         <Route path="/onboarding" element={<SocialContractPage />} />
         <Route path="/onboarding/social-contract" element={<SocialContractAgreementPage />} />
