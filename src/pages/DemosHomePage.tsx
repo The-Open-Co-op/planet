@@ -91,6 +91,9 @@ const DemosHomePage = () => {
       <Typography variant="h4" sx={{ fontWeight: 800, mb: 1 }}>
         PLANET Demos
       </Typography>
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 5, maxWidth: 500, textAlign: 'center' }}>
+        Interactive walkthroughs of PLANET features.
+      </Typography>
 
       <Box sx={{ display: 'flex', gap: 3, maxWidth: 1100, width: '100%' }}>
         <DemoCard
