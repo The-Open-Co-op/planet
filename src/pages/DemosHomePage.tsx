@@ -8,11 +8,25 @@ interface DemoCardProps {
   description: string;
   icon: React.ReactNode;
   path: string;
+  parentSlug: string;
   stepCount: number;
 }
 
-const DemoCard = ({ title, subtitle, description, icon, path, stepCount }: DemoCardProps) => {
+const isInIframe = () => {
+  try { return window.self !== window.top; } catch { return true; }
+};
+
+const DemoCard = ({ title, subtitle, description, icon, path, parentSlug, stepCount }: DemoCardProps) => {
   const navigate = useNavigate();
+
+  const handleClick = () => {
+    if (isInIframe()) {
+      // Navigate the parent frame to the collab-site demo URL (with DemoClient + feedback)
+      window.top?.location.assign(`/demo/${parentSlug}`);
+    } else {
+      navigate(path);
+    }
+  };
 
   return (
     <Card
@@ -25,7 +39,7 @@ const DemoCard = ({ title, subtitle, description, icon, path, stepCount }: DemoC
         transition: 'all 0.2s',
         '&:hover': { transform: 'translateY(-2px)', boxShadow: 4 },
       }}
-      onClick={() => navigate(path)}
+      onClick={handleClick}
     >
       <Box sx={{ mb: 2 }}>
         {icon}
@@ -102,6 +116,7 @@ const DemosHomePage = () => {
           description="See how a new member joins PLANET — from receiving an invite link through to setting up their identity, importing contacts, and building trust profiles."
           icon={<PhoneIphone sx={{ fontSize: 40, color: 'primary.main' }} />}
           path="/demo/onboarding/invite"
+          parentSlug="planet-onboarding"
           stepCount={10}
         />
         <DemoCard
@@ -110,6 +125,7 @@ const DemosHomePage = () => {
           description="Explore the main Personal Network Manager — chat reactions, group chats, the encrypted vault, app store, and alerts."
           icon={<Apps sx={{ fontSize: 40, color: 'primary.main' }} />}
           path="/demo/pnm/home"
+          parentSlug="planet-pnm"
           stepCount={7}
         />
         <DemoCard
@@ -118,6 +134,7 @@ const DemosHomePage = () => {
           description="The Introducer is an app that runs within PLANET. Follow an introduction from compose to completion — consent, group chat, bow out gracefully, mark as valuable, and see ripple effects."
           icon={<Handshake sx={{ fontSize: 40, color: 'primary.main' }} />}
           path="/demo/introducer/dashboard"
+          parentSlug="planet-introducer"
           stepCount={7}
         />
       </Box>
