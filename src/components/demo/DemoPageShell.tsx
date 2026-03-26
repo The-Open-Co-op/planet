@@ -198,7 +198,15 @@ export const DemoPageShell = ({ title, subtitle, basePath, steps }: DemoPageShel
       }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
           <IconButton
-            onClick={() => navigate('/demo')}
+            onClick={() => {
+              try {
+                if (window.self !== window.top) {
+                  window.parent.postMessage({ type: 'demo-navigate', slug: '' }, '*');
+                  return;
+                }
+              } catch (_) {}
+              navigate('/demo');
+            }}
             size="small"
             sx={{ border: '1px solid', borderColor: 'divider' }}
           >
