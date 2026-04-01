@@ -1,7 +1,6 @@
 import { Box, Typography, alpha, SvgIcon } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import {
-  People,
   Lock,
   Apps,
 } from '@mui/icons-material';
@@ -22,7 +21,6 @@ interface AppItem {
 }
 
 const apps: AppItem[] = [
-  { label: 'Contacts', icon: People, path: '/contacts' },
   { label: 'Import', icon: ContactImportIcon, path: '/import' },
   { label: 'Vault', icon: Lock, path: '/settings' },
   { label: 'Apps', icon: Apps, path: '/apps' },
