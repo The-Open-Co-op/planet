@@ -31,7 +31,7 @@ interface DemoPageShellProps {
   steps: DemoStep[];
 }
 
-export const DemoPageShell = ({ title, subtitle, basePath, steps }: DemoPageShellProps) => {
+export const DemoPageShell = ({ title: _title, subtitle: _subtitle, basePath, steps }: DemoPageShellProps) => {
   const isMobile = useMediaQuery('(max-width:900px)');
   const { step: stepSlug } = useParams<{ step?: string }>();
   const navigate = useNavigate();
