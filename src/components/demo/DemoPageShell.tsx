@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, IconButton, FormControlLabel, Checkbox, useMediaQuery } from '@mui/material';
+import { Box, Typography, IconButton, useMediaQuery } from '@mui/material';
 import { ChevronLeft, ChevronRight, DesktopWindows, ArrowBack } from '@mui/icons-material';
 import { PhoneFrame } from '@/components/demo/PhoneFrame';
 import { Annotation } from '@/components/demo/Annotation';
@@ -35,8 +35,6 @@ export const DemoPageShell = ({ title, subtitle, basePath, steps }: DemoPageShel
   const isMobile = useMediaQuery('(max-width:900px)');
   const { step: stepSlug } = useParams<{ step?: string }>();
   const navigate = useNavigate();
-  const [showUI, setShowUI] = useState(true);
-  const [showProtocol, setShowProtocol] = useState(true);
 
   if (isMobile) {
     return (
@@ -111,10 +109,7 @@ export const DemoPageShell = ({ title, subtitle, basePath, steps }: DemoPageShel
     if (idx >= 0) goTo(idx);
   };
 
-  const activeAnnotations = dynamicAnnotations || step.annotations;
-  const visibleAnnotations = activeAnnotations.filter(a =>
-    (a.category === 'ui' && showUI) || (a.category === 'protocol' && showProtocol)
-  );
+  const visibleAnnotations = dynamicAnnotations || step.annotations;
 
   const bottomNav = (
     <Box sx={{
@@ -123,8 +118,6 @@ export const DemoPageShell = ({ title, subtitle, basePath, steps }: DemoPageShel
       justifyContent: 'center',
       gap: 2,
       py: 1.5,
-      borderTop: step.fullPage ? undefined : '1px solid',
-      borderColor: 'divider',
       flexShrink: 0,
       bgcolor: step.fullPage ? 'background.default' : undefined,
     }}>
@@ -191,7 +184,7 @@ export const DemoPageShell = ({ title, subtitle, basePath, steps }: DemoPageShel
         alignItems: 'center',
         justifyContent: 'space-between',
         px: 3,
-        py: 1.5,
+        py: '16px',
         borderBottom: '1px solid',
         borderColor: 'divider',
         flexShrink: 0,
@@ -213,39 +206,18 @@ export const DemoPageShell = ({ title, subtitle, basePath, steps }: DemoPageShel
             <ArrowBack sx={{ fontSize: 18 }} />
           </IconButton>
           <Box>
-            <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.5 }}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>
-                {title}
+            <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
+              <Typography variant="caption" sx={{ color: 'primary.main', fontWeight: 700 }}>
+                {step.id}
+              </Typography>
+              <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                {step.title}
               </Typography>
               <Typography variant="caption" color="text.secondary">
-                {subtitle}
+                — {step.subtitle}
               </Typography>
             </Box>
-          <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
-            <Typography variant="caption" sx={{ color: 'primary.main', fontWeight: 700 }}>
-              {step.id}
-            </Typography>
-            <Typography variant="body2" sx={{ fontWeight: 600 }}>
-              {step.title}
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              — {step.subtitle}
-            </Typography>
           </Box>
-          </Box>
-        </Box>
-
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <FormControlLabel
-            control={<Checkbox size="small" checked={showUI} onChange={(e) => setShowUI(e.target.checked)} sx={{ color: '#0066CC', '&.Mui-checked': { color: '#0066CC' } }} />}
-            label={<Typography variant="caption" sx={{ color: '#0066CC', fontWeight: 600 }}>UI Annotations</Typography>}
-            sx={{ m: 0 }}
-          />
-          <FormControlLabel
-            control={<Checkbox size="small" checked={showProtocol} onChange={(e) => setShowProtocol(e.target.checked)} sx={{ color: '#660000', '&.Mui-checked': { color: '#660000' } }} />}
-            label={<Typography variant="caption" sx={{ color: '#660000', fontWeight: 600 }}>Backend Annotations</Typography>}
-            sx={{ m: 0 }}
-          />
         </Box>
       </Box>
 
