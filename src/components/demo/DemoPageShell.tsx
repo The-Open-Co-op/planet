@@ -184,7 +184,7 @@ export const DemoPageShell = ({ title: _title, subtitle: _subtitle, basePath, st
         alignItems: 'center',
         justifyContent: 'space-between',
         px: 3,
-        py: '16px',
+        py: '10px',
         borderBottom: '1px solid',
         borderColor: 'divider',
         flexShrink: 0,
