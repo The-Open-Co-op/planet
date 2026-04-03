@@ -35,8 +35,8 @@ export const Annotation = ({ annotation, category = 'ui' }: AnnotationProps) => 
         position: 'absolute',
         top: `${annotation.top}%`,
         [isLeft ? 'right' : 'left']: '100%',
-        [isLeft ? 'mr' : 'ml']: 12,
-        width: 340,
+        [isLeft ? 'mr' : 'ml']: 8,
+        width: 200,
         textAlign: isLeft ? 'right' : 'left',
         transform: 'translateY(-50%)',
       }}
@@ -44,7 +44,7 @@ export const Annotation = ({ annotation, category = 'ui' }: AnnotationProps) => 
       {/* Connector line */}
       {annotation.pointDown ? (
         // Dot at text, horizontal line towards phone, then vertical down 15px off phone edge
-        <Box sx={{ position: 'absolute', top: '50%', [isLeft ? 'right' : 'left']: -80 }}>
+        <Box sx={{ position: 'absolute', top: '50%', [isLeft ? 'right' : 'left']: -52 }}>
           {/* Dot at text end */}
           <Box sx={{
             position: 'absolute',
@@ -57,7 +57,7 @@ export const Annotation = ({ annotation, category = 'ui' }: AnnotationProps) => 
             opacity: 0.3,
           }} />
           {/* Horizontal line */}
-          <Box sx={{ width: 65, height: '1px', bgcolor: color, opacity: 0.3 }} />
+          <Box sx={{ width: 40, height: '1px', bgcolor: color, opacity: 0.3 }} />
           {/* Vertical segment + arrow */}
           <Box sx={{
             position: 'absolute',
@@ -84,8 +84,8 @@ export const Annotation = ({ annotation, category = 'ui' }: AnnotationProps) => 
           sx={{
             position: 'absolute',
             top: '50%',
-            [isLeft ? 'right' : 'left']: -96,
-            width: 80,
+            [isLeft ? 'right' : 'left']: -52,
+            width: 40,
             height: '1px',
             bgcolor: color,
             opacity: 0.3,
