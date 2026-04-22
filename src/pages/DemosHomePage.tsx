@@ -111,9 +111,9 @@ const DemosHomePage = () => {
 
       <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 3, maxWidth: 1100, width: '100%' }}>
         <DemoCard
-          title="Onboarding"
-          subtitle="Invite to first connections"
-          description="See how a new member joins PLANET — from receiving an invite link through to setting up their identity, importing contacts, and building trust profiles."
+          title="App Store Onboarding — OLD"
+          subtitle="Legacy native-app flow"
+          description="The original onboarding journey that assumed PLANET would ship via the iOS/Android app stores. Superseded by the PWA Onboarding demo — kept here for reference."
           icon={<PhoneIphone sx={{ fontSize: 40, color: 'primary.main' }} />}
           path="/demo/onboarding/invite"
           parentSlug="planet-onboarding"
