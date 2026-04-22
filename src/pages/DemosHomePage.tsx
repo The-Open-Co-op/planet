@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Card, Button, useMediaQuery } from '@mui/material';
-import { DesktopWindows, PhoneIphone, Handshake, Apps } from '@mui/icons-material';
+import { DesktopWindows, PhoneIphone, Handshake, Apps, InstallMobile } from '@mui/icons-material';
 
 interface DemoCardProps {
   title: string;
@@ -109,7 +109,7 @@ const DemosHomePage = () => {
         Interactive walkthroughs of PLANET features.
       </Typography>
 
-      <Box sx={{ display: 'flex', gap: 3, maxWidth: 1100, width: '100%' }}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 3, maxWidth: 1100, width: '100%' }}>
         <DemoCard
           title="Onboarding"
           subtitle="Invite to first connections"
@@ -118,6 +118,15 @@ const DemosHomePage = () => {
           path="/demo/onboarding/invite"
           parentSlug="planet-onboarding"
           stepCount={10}
+        />
+        <DemoCard
+          title="PWA Onboarding"
+          subtitle="Invite-only, install-as-PWA"
+          description="Onboarding journey for PWA — invite lands on the web, user adds PLANET to their Home Screen, and arrives straight in a chat with their inviter. Keys generated silently; recovery phrase secures the account."
+          icon={<InstallMobile sx={{ fontSize: 40, color: 'primary.main' }} />}
+          path="/demo/pwa-onboarding/invite"
+          parentSlug="planet-pwa-onboarding"
+          stepCount={8}
         />
         <DemoCard
           title="Main PNM"

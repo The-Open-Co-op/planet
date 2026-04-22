@@ -27,6 +27,7 @@ import { Button } from '@/components/ui';
 import { isNextGraphEnabled } from '@/utils/featureFlags';
 import CreateContactPage from "@/pages/CreateContactPage.tsx";
 import DemoPage from "@/pages/DemoPage";
+import PwaOnboardingDemoPage from "@/pages/PwaOnboardingDemoPage";
 import IntroducerDemoPage from "@/pages/IntroducerDemoPage";
 import PnmDemoPage from "@/pages/PnmDemoPage";
 import DemosHomePage from "@/pages/DemosHomePage";
@@ -113,6 +114,8 @@ const AppRoutes = () => (
         <Route path="/demo/introducer/:step" element={<IntroducerDemoPage />} />
         <Route path="/demo/pnm" element={<PnmDemoPage />} />
         <Route path="/demo/pnm/:step" element={<PnmDemoPage />} />
+        <Route path="/demo/pwa-onboarding" element={<PwaOnboardingDemoPage />} />
+        <Route path="/demo/pwa-onboarding/:step" element={<PwaOnboardingDemoPage />} />
         {/* Backward compat: old /demo/:step URLs map to onboarding */}
         <Route path="/demo/:step" element={<DemoPage />} />
         <Route path="/onboarding" element={<SocialContractPage />} />

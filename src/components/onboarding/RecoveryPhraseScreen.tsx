@@ -122,7 +122,7 @@ export const RecoveryPhraseScreen = ({ onComplete, setDynamicAnnotations }: Reco
           </Box>
 
           <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5, lineHeight: 1.5 }}>
-            Write these words down in order. This is your master key — if lost, your identity and all credentials are unrecoverable.
+            Write these words down in order. This is your master key which you can use to install PLANET on another device — if lost, your identity and all credentials are unrecoverable.
           </Typography>
 
           {renderAllWords()}

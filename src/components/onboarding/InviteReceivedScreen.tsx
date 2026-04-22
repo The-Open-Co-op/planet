@@ -39,7 +39,7 @@ export const InviteReceivedScreen = () => {
           boxShadow: '0 1px 1px rgba(0,0,0,0.08)',
         }}>
           <Typography sx={{ fontSize: '0.8rem', color: '#111', mb: 0.75, lineHeight: 1.4 }}>
-            Hey Jonny, I'm using PLANET for private, decentralised networking. Join me →
+            Hey Jonny, I've joined PLANET — a user-owned decentralised trust network with secure messaging and other trust-based apps that doesn't exploit your data. It's invite-only, so this link is just for you because I trust you. Join me →
           </Typography>
 
           {/* OG link preview */}
