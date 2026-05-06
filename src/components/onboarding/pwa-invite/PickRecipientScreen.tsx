@@ -17,7 +17,7 @@ type AnnotationWithCategory = AnnotationItem & { category: 'ui' | 'protocol' };
 const sharedBackend: AnnotationWithCategory = {
   side: 'right', top: 30, category: 'protocol',
   title: 'Token + OG image generated',
-  description: 'On Continue, the client asks the server for a single-use invite token bound to the chosen first name. Server returns a short URL (planetnetwork.app/j/xxx) and a custom OG image personalised with Jonny\'s avatar and the recipient\'s name. Token expires after 7 days.',
+  description: 'On Continue, the client asks the server for a single-use invite token bound to the chosen first name. Server returns a short URL (planetnetwork.app/j/xxx) and a custom OG image personalised with Jonny\'s avatar — so the invitee instantly recognises someone they trust. Token expires after 7 days.',
   tag: 'Backend',
 };
 
@@ -26,13 +26,7 @@ const iosPickerAnnotations: AnnotationWithCategory[] = [
   {
     side: 'left', top: 30, category: 'ui',
     title: 'iPhone — type the first name',
-    description: 'Safari does not expose a Contact Picker API by default, so we keep it simple — just a first name to personalise the welcome message. The actual contact info is implicit in whichever channel the user shares through next.',
-    tag: 'UX',
-  },
-  {
-    side: 'left', top: 75, category: 'ui',
-    title: 'Privacy by default',
-    description: 'PLANET never reads the user\'s phonebook. Nothing leaves the device until they tap Share.',
+    description: 'iOS does not expose a Contact Picker API by default, so we capture a first name to personalise the welcome message.',
     tag: 'UX',
   },
 ];
@@ -42,13 +36,7 @@ const androidPickerAnnotations: AnnotationWithCategory[] = [
   {
     side: 'left', top: 30, category: 'ui',
     title: 'Android — Contact Picker API',
-    description: 'navigator.contacts.select() opens the OS contact picker. The user picks one contact; PLANET only receives the field(s) it asked for (here: name).',
-    tag: 'UX',
-  },
-  {
-    side: 'left', top: 75, category: 'ui',
-    title: 'Privacy by default',
-    description: 'PLANET never reads the full phonebook — only the single contact the user picks. Nothing else leaves the device.',
+    description: 'The browser opens the device\'s native contact picker. The user picks one contact; PLANET only receives the field(s) it asked for (here: name).',
     tag: 'UX',
   },
 ];
@@ -63,17 +51,39 @@ interface PickRecipientScreenProps {
 type Platform = 'ios' | 'android';
 
 const ANDROID_CONTACTS = [
-  { id: 'c1', name: 'Alexander Petrov', initials: 'AP' },
-  { id: 'c2', name: 'Amanda Foster', initials: 'AF' },
-  { id: 'c3', name: 'Brad Wilson', initials: 'BW' },
-  { id: 'c4', name: 'John Smith', initials: 'J', highlight: true },
-  { id: 'c5', name: 'Kevin Yang', initials: 'KY' },
-  { id: 'c6', name: 'Maya Chen', initials: 'MC' },
+  { id: 'c1', name: 'Aisha Rahman', initials: 'AR' },
+  { id: 'c2', name: 'Andre Beaumont', initials: 'AB' },
+  { id: 'c3', name: 'Beatriz Salgado', initials: 'BS' },
+  { id: 'c4', name: 'Caoimhe O\'Donnell', initials: 'CO' },
+  { id: 'c5', name: 'Daniel Ofori', initials: 'DO' },
+  { id: 'c6', name: 'Eleni Vasilakis', initials: 'EV' },
+  { id: 'c7', name: 'Felix Brandt', initials: 'FB' },
+  { id: 'c8', name: 'Greg Hollis', initials: 'GH' },
+  { id: 'c9', name: 'Hannah Lindqvist', initials: 'HL' },
+  { id: 'c10', name: 'Helena Kowalski', initials: 'HK' },
+  { id: 'c11', name: 'Ibrahim Diallo', initials: 'ID' },
+  { id: 'c12', name: 'Jasmine Acharya', initials: 'JA' },
+  { id: 'c13', name: 'Kenji Watanabe', initials: 'KW' },
+  { id: 'c14', name: 'Lara Castellanos', initials: 'LC' },
+  { id: 'c15', name: 'Mei Chen', initials: 'MC' },
+  { id: 'c16', name: 'Mike Smith', initials: 'M', highlight: true },
+  { id: 'c17', name: 'Nadia Haddad', initials: 'NH' },
+  { id: 'c18', name: 'Oluwaseun Ade', initials: 'OA' },
+  { id: 'c19', name: 'Priya Ramaswamy', initials: 'PR' },
+  { id: 'c20', name: 'Rafael Moreno', initials: 'RM' },
+  { id: 'c21', name: 'Rosa Schreiner', initials: 'RS' },
+  { id: 'c22', name: 'Samira Khoury', initials: 'SK' },
+  { id: 'c23', name: 'Tariq Bashir', initials: 'TB' },
+  { id: 'c24', name: 'Tomoko Hayashi', initials: 'TH' },
+  { id: 'c25', name: 'Viktor Novak', initials: 'VN' },
+  { id: 'c26', name: 'Wren Cavendish', initials: 'WC' },
+  { id: 'c27', name: 'Yusuf Demir', initials: 'YD' },
+  { id: 'c28', name: 'Zara Whitfield', initials: 'ZW' },
 ];
 
 export const PickRecipientScreen = ({ onContinue, setDynamicAnnotations }: PickRecipientScreenProps) => {
   const [platform, setPlatform] = useState<Platform>('ios');
-  const [name, setName] = useState('John');
+  const [name, setName] = useState('Mike');
   const [picked, setPicked] = useState<string | null>(null);
 
   useEffect(() => {
@@ -133,9 +143,11 @@ export const PickRecipientScreen = ({ onContinue, setDynamicAnnotations }: PickR
         </ToggleButtonGroup>
       </Box>
 
-      <Box sx={{ flex: 1, overflow: 'auto', px: 2 }}>
+      <Box sx={{ flex: 1, overflow: 'auto' }}>
         {platform === 'ios' ? (
-          <IosForm name={name} onChange={setName} />
+          <Box sx={{ px: 2 }}>
+            <IosForm name={name} onChange={setName} />
+          </Box>
         ) : (
           <AndroidPicker pickedId={picked} onPick={setPicked} />
         )}
@@ -181,28 +193,14 @@ const IosForm = ({ name, onChange }: { name: string; onChange: (v: string) => vo
       onChange={(e) => onChange(e.target.value)}
       autoFocus
     />
-    <Typography sx={{ fontSize: '0.7rem', color: 'text.disabled', mt: 1.25, lineHeight: 1.5 }}>
-      You'll send the link via WhatsApp, iMessage, email — whatever you normally use to talk to them.
-    </Typography>
   </Box>
 );
 
 const AndroidPicker = ({ pickedId, onPick }: { pickedId: string | null; onPick: (id: string) => void }) => (
   <Box>
-    <Typography sx={{ fontWeight: 700, fontSize: '0.95rem', mb: 0.25 }}>
-      Pick a contact
-    </Typography>
-    <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', mb: 1.5, lineHeight: 1.5 }}>
-      Choose who you'd like to invite — only the name is shared with PLANET.
-    </Typography>
-
     {/* Faux Android contact picker */}
     <Box sx={{
       bgcolor: 'white',
-      borderRadius: 2,
-      border: '1px solid',
-      borderColor: 'divider',
-      overflow: 'hidden',
     }}>
       <Box sx={{
         display: 'flex',
@@ -216,7 +214,7 @@ const AndroidPicker = ({ pickedId, onPick }: { pickedId: string | null; onPick: 
       }}>
         <Search sx={{ fontSize: 16, color: 'text.disabled' }} />
         <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>
-          Search contacts
+          Search phone contacts
         </Typography>
       </Box>
       {ANDROID_CONTACTS.map((c) => {

@@ -54,7 +54,7 @@ const steps: DemoStep[] = [
       {
         side: 'left', top: 22, category: 'ui',
         title: 'Personalised OG preview',
-        description: 'The link unfurls in WhatsApp, iMessage, etc. with a custom preview — Jonny\'s avatar, John\'s name, PLANET branding.',
+        description: 'The link unfurls in WhatsApp, iMessage, etc. with a custom preview featuring Jonny\'s avatar and PLANET branding.',
         tag: 'UX',
       },
       {
@@ -66,7 +66,7 @@ const steps: DemoStep[] = [
       {
         side: 'left', top: 78, category: 'ui',
         title: 'Native share sheet',
-        description: 'Web Share API opens the device\'s own share sheet. The user picks WhatsApp, iMessage, Signal, Mail — whatever they normally use to talk to John.',
+        description: 'Web Share API opens the device\'s own share sheet. The user picks WhatsApp, iMessage, Signal, Mail — whatever they normally use to message Mike.',
         tag: 'UX',
       },
       {
@@ -81,19 +81,19 @@ const steps: DemoStep[] = [
     id: '04',
     slug: 'delivery',
     title: 'Delivered',
-    subtitle: 'John receives the message in his preferred channel',
+    subtitle: 'Mike receives the message in his preferred channel',
     screen: <InviteDeliveryScreen />,
     annotations: [
       {
         side: 'left', top: 30, category: 'ui',
         title: 'Familiar channel, trusted sender',
-        description: 'The link arrives via the same channel John already uses to talk to Jonny — friction-free and credible.',
+        description: 'The link arrives via the same channel Mike already uses to talk to Jonny — friction-free and credible.',
         tag: 'UX',
       },
       {
         side: 'right', top: 55, category: 'protocol',
         title: 'OG preview rendered server-side',
-        description: 'WhatsApp\'s servers fetch the OG image and metadata when the link is sent. John\'s phone shows the preview without contacting PLANET.',
+        description: 'WhatsApp\'s servers fetch the OG image and metadata when the link is sent.',
         tag: 'Backend',
       },
     ],
@@ -102,19 +102,19 @@ const steps: DemoStep[] = [
     id: '05',
     slug: 'pending',
     title: 'Awaiting connection',
-    subtitle: 'John appears in Jonny\'s contacts, dimmed until he joins',
+    subtitle: 'Mike appears in Jonny\'s contacts, dimmed until he joins',
     screen: <InviteContactsScreen state="sent" />,
     annotations: [
       {
         side: 'left', top: 45, category: 'ui',
         title: 'Pending contact',
-        description: 'John shows up in the contacts list right away — dimmed and marked "awaiting connection" so Jonny knows the invite is in flight.',
+        description: 'Mike appears dimmed and marked "awaiting connection". Once he joins and accepts, the connection goes live.',
         tag: 'UX',
       },
       {
         side: 'right', top: 50, category: 'protocol',
         title: 'Local pending entry',
-        description: 'Jonny\'s vault stores a placeholder contact bound to the invite token. No R-DID exchange yet — that happens after John joins and accepts.',
+        description: 'Jonny\'s vault stores a placeholder contact bound to the invite token. No R-DID exchange yet — that happens after Mike joins and accepts.',
         tag: 'Backend',
       },
     ],
@@ -123,19 +123,19 @@ const steps: DemoStep[] = [
     id: '06',
     slug: 'accepted',
     title: 'Connected',
-    subtitle: 'John has joined and confirmed the connection',
+    subtitle: 'Mike has joined and confirmed the connection',
     screen: <InviteContactsScreen state="accepted" />,
     annotations: [
       {
         side: 'left', top: 45, category: 'ui',
         title: 'Connection live',
-        description: 'John\'s row turns full-colour and a green tick replaces the pending icon. Jonny can now chat and vouch.',
+        description: 'Mike\'s row turns full-colour. Jonny and Mike can now chat end-to-end encrypted and vouch for each other.',
         tag: 'UX',
       },
       {
         side: 'right', top: 50, category: 'protocol',
         title: 'R-DIDs exchanged',
-        description: 'When John completed onboarding and accepted the connection, his client and Jonny\'s exchanged R-DIDs over DIDComm. The placeholder contact is now anchored to John\'s real DID; the invite token is consumed.',
+        description: 'When Mike completed onboarding and accepted the connection, his client and Jonny\'s exchanged R-DIDs over DIDComm. The placeholder contact is now anchored to Mike\'s real DID; the invite token is consumed.',
         tag: 'Backend',
       },
     ],

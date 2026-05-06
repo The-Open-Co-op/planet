@@ -26,11 +26,10 @@ import {
   Group,
   UploadFile,
   Schedule,
-  CheckCircle,
 } from '@mui/icons-material';
 
 interface InviteContactsScreenProps {
-  /** 'sent' = John pending, 'accepted' = John connected */
+  /** 'sent' = Mike pending, 'accepted' = Mike connected */
   state: 'sent' | 'accepted';
 }
 
@@ -115,9 +114,9 @@ export const InviteContactsScreen = ({ state }: InviteContactsScreenProps) => {
         {state === 'sent' ? (
           <ContactCard
             avatar={
-              <Avatar sx={{ width: 44, height: 44, bgcolor: 'grey.300', color: 'text.secondary', fontSize: '0.9rem' }}>J</Avatar>
+              <Avatar sx={{ width: 44, height: 44, bgcolor: 'grey.300', color: 'text.secondary', fontSize: '0.9rem' }}>M</Avatar>
             }
-            name="John"
+            name="Mike"
             subtitle="Invited — awaiting connection"
             statusIcon={<Schedule sx={{ fontSize: 16, color: 'text.disabled' }} />}
             dimmed
@@ -125,23 +124,16 @@ export const InviteContactsScreen = ({ state }: InviteContactsScreenProps) => {
         ) : (
           <ContactCard
             avatar={
-              <Avatar sx={{ width: 44, height: 44, bgcolor: 'primary.main', color: 'white', fontSize: '0.9rem' }}>J</Avatar>
+              <Avatar sx={{ width: 44, height: 44, bgcolor: 'primary.main', color: 'white', fontSize: '0.9rem' }}>M</Avatar>
             }
-            name="John"
-            subtitle="Connected — joined PLANET via your invite"
-            statusIcon={<CheckCircle sx={{ fontSize: 16, color: 'success.main' }} />}
+            name="Mike"
+            subtitle="Connected — from your invite"
           />
         )}
       </Box>
 
-      {/* Empty-state prompt fills remaining space */}
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', px: 3, py: 2 }}>
-        <Typography sx={{ fontSize: '0.78rem', color: 'text.secondary', lineHeight: 1.5, maxWidth: 260 }}>
-          {state === 'sent'
-            ? 'When John joins PLANET and accepts the connection, your R-DIDs will be exchanged and the link will turn blue.'
-            : 'You and John can now chat end-to-end encrypted, and you can vouch for each other.'}
-        </Typography>
-      </Box>
+      {/* Spacer fills remaining space */}
+      <Box sx={{ flex: 1 }} />
 
       {/* Invite CTA */}
       <Box sx={{ p: 1.5, bgcolor: 'background.default', flexShrink: 0 }}>

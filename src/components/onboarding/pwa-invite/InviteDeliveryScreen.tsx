@@ -1,7 +1,7 @@
 import { Box, Typography, Avatar } from '@mui/material';
 import { Videocam, Phone, ChevronLeft, Add, CameraAlt, Mic, SmsOutlined } from '@mui/icons-material';
 
-/** Step 04 — Invite Delivery: what John sees in WhatsApp from Jonny. */
+/** Step 04 — Invite Delivery: what Mike sees in WhatsApp from Jonny. */
 export const InviteDeliveryScreen = () => {
   return (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', bgcolor: '#efeae2' }}>
@@ -39,7 +39,7 @@ export const InviteDeliveryScreen = () => {
           boxShadow: '0 1px 1px rgba(0,0,0,0.08)',
         }}>
           <Typography sx={{ fontSize: '0.8rem', color: '#111', mb: 0.75, lineHeight: 1.4 }}>
-            Hey John, I've joined PLANET — a user-owned decentralised trust network with secure messaging and other trust-based apps that doesn't exploit your data. It's invite-only, so this link is just for you because I trust you. Join me →
+            Hey Mike, I've joined PLANET — a user-owned decentralised trust network with secure messaging and other trust-based apps that doesn't exploit your data. It's invite-only, so this link is just for you because I trust you. Join me →
           </Typography>
 
           {/* OG link preview */}

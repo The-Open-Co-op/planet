@@ -39,7 +39,7 @@ export const ShareSheetScreen = ({ onSelect }: ShareSheetScreenProps) => {
           <ArrowBack sx={{ fontSize: 18 }} />
         </IconButton>
         <Typography sx={{ fontWeight: 700, fontSize: '0.95rem' }}>
-          Invite John
+          Invite Mike
         </Typography>
       </Box>
 
