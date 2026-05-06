@@ -28,6 +28,7 @@ import { isNextGraphEnabled } from '@/utils/featureFlags';
 import CreateContactPage from "@/pages/CreateContactPage.tsx";
 import DemoPage from "@/pages/DemoPage";
 import PwaOnboardingDemoPage from "@/pages/PwaOnboardingDemoPage";
+import InviteFlowDemoPage from "@/pages/InviteFlowDemoPage";
 import IntroducerDemoPage from "@/pages/IntroducerDemoPage";
 import PnmDemoPage from "@/pages/PnmDemoPage";
 import DemosHomePage from "@/pages/DemosHomePage";
@@ -116,6 +117,8 @@ const AppRoutes = () => (
         <Route path="/demo/pnm/:step" element={<PnmDemoPage />} />
         <Route path="/demo/pwa-onboarding" element={<PwaOnboardingDemoPage />} />
         <Route path="/demo/pwa-onboarding/:step" element={<PwaOnboardingDemoPage />} />
+        <Route path="/demo/invite-flow" element={<InviteFlowDemoPage />} />
+        <Route path="/demo/invite-flow/:step" element={<InviteFlowDemoPage />} />
         {/* Backward compat: old /demo/:step URLs map to onboarding */}
         <Route path="/demo/:step" element={<DemoPage />} />
         <Route path="/onboarding" element={<SocialContractPage />} />

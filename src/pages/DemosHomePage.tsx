@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Card, Button, useMediaQuery } from '@mui/material';
-import { DesktopWindows, PhoneIphone, Handshake, Apps, InstallMobile } from '@mui/icons-material';
+import { DesktopWindows, PhoneIphone, Handshake, Apps, InstallMobile, PersonAdd } from '@mui/icons-material';
 
 interface DemoCardProps {
   title: string;
@@ -127,6 +127,15 @@ const DemosHomePage = () => {
           path="/demo/pwa-onboarding/invite"
           parentSlug="planet-pwa-onboarding"
           stepCount={8}
+        />
+        <DemoCard
+          title="Invite Flow"
+          subtitle="One careful invite at a time"
+          description="How an existing PLANET user invites someone new — pick a recipient, hand off to the OS share sheet, and watch the contact go from pending to connected once the invitee joins."
+          icon={<PersonAdd sx={{ fontSize: 40, color: 'primary.main' }} />}
+          path="/demo/invite-flow/contacts"
+          parentSlug="planet-invite-flow"
+          stepCount={7}
         />
         <DemoCard
           title="Main PNM"
