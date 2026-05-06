@@ -111,15 +111,6 @@ const DemosHomePage = () => {
 
       <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 3, maxWidth: 1100, width: '100%' }}>
         <DemoCard
-          title="App Store Onboarding — OLD"
-          subtitle="Legacy native-app flow"
-          description="The original onboarding journey that assumed PLANET would ship via the iOS/Android app stores. Superseded by the PWA Onboarding demo — kept here for reference."
-          icon={<PhoneIphone sx={{ fontSize: 40, color: 'primary.main' }} />}
-          path="/demo/onboarding/invite"
-          parentSlug="planet-onboarding"
-          stepCount={10}
-        />
-        <DemoCard
           title="PWA Onboarding"
           subtitle="Invite-only, install-as-PWA"
           description="Onboarding journey for PWA — invite lands on the web, user adds PLANET to their Home Screen, and arrives straight in a chat with their inviter. Keys generated silently; recovery phrase secures the account."
@@ -154,6 +145,15 @@ const DemosHomePage = () => {
           path="/demo/introducer/dashboard"
           parentSlug="planet-introducer"
           stepCount={7}
+        />
+        <DemoCard
+          title="App Store Onboarding — OLD"
+          subtitle="Legacy native-app flow"
+          description="The original onboarding journey that assumed PLANET would ship via the iOS/Android app stores. Superseded by the PWA Onboarding demo — kept here for reference."
+          icon={<PhoneIphone sx={{ fontSize: 40, color: 'primary.main' }} />}
+          path="/demo/onboarding/invite"
+          parentSlug="planet-onboarding"
+          stepCount={10}
         />
       </Box>
     </Box>
