@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Card, Button, useMediaQuery } from '@mui/material';
-import { DesktopWindows, PhoneIphone, Handshake, Apps, InstallMobile, PersonAdd } from '@mui/icons-material';
+import { DesktopWindows, PhoneIphone, Handshake, Apps, InstallMobile, PersonAdd, Article } from '@mui/icons-material';
 
 interface DemoCardProps {
   title: string;
@@ -127,6 +127,15 @@ const DemosHomePage = () => {
           path="/demo/invite-flow/contacts"
           parentSlug="planet-invite-flow"
           stepCount={7}
+        />
+        <DemoCard
+          title="Blog (FPP)"
+          subtitle="Write it, sign it, read it, talk back"
+          description="First Person Pages — Jonny installs the blog app, writes a post, signs it with his DID, and publishes. Then a visitor reads it, a PLANET member follows and comments, and Jonny replies."
+          icon={<Article sx={{ fontSize: 40, color: 'primary.main' }} />}
+          path="/demo/blog/install"
+          parentSlug="planet-blog"
+          stepCount={9}
         />
         <DemoCard
           title="Main PNM"
