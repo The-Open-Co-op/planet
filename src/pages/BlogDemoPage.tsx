@@ -32,7 +32,7 @@ const steps: DemoStep[] = [
         tag: 'Backend',
       },
       {
-        side: 'right', top: 72, category: 'protocol',
+        side: 'right', top: 55, category: 'protocol',
         title: 'Agent name = URL',
         description: 'planetnetwork.app/@jonny/blog is derived from his agent name. RSS is published at /@jonny/blog/rss automatically.',
         tag: 'Backend',
@@ -53,7 +53,7 @@ const steps: DemoStep[] = [
         tag: 'UX',
       },
       {
-        side: 'right', top: 32.25, category: 'protocol',
+        side: 'right', top: 45, category: 'protocol',
         title: 'Select profile',
         description: "Jonny picks which of his PLANET Trust Profiles to publish under. The blog reads name, avatar and tagline from that profile — and respects the same sharing settings.",
         tag: 'Backend',
@@ -74,7 +74,7 @@ const steps: DemoStep[] = [
     screen: ({ goToStep }) => <ComposeScreen onContinue={() => goToStep('sign-publish')} />,
     annotations: [
       {
-        side: 'left', top: 32, category: 'ui',
+        side: 'left', top: 36.5, category: 'ui',
         title: 'Featured image',
         description: 'Used as the visual header on the post page and as a thumbnail in the listing. Same image powers the OG card when shared.',
         tag: 'UX',
@@ -135,7 +135,7 @@ const steps: DemoStep[] = [
     ),
     annotations: [
       {
-        side: 'left', top: 32, category: 'ui',
+        side: 'left', top: 45.5, category: 'ui',
         title: 'Per-post controls',
         description: 'Post can be editted and deleted. Settings live up in the top-right.',
         tag: 'UX',
@@ -186,7 +186,7 @@ const steps: DemoStep[] = [
         tag: 'Backend',
       },
       {
-        side: 'left', top: 56, category: 'ui',
+        side: 'left', top: 54.5, category: 'ui',
         title: 'Default visibility',
         description: 'Sets the visibility selector preset for new posts. Per-post visibility (Public / Members / Draft) still wins on each compose.',
         tag: 'UX',
