@@ -200,7 +200,7 @@ export const AddFollowScreen = ({ onBack, feedId = 'friends' }: AddFollowScreenP
           <ArrowBack sx={{ fontSize: 18 }} />
         </IconButton>
         <Box sx={{ flex: 1, minWidth: 0 }}>
-          <Typography sx={{ fontWeight: 700, fontSize: '0.95rem' }}>Find to follow</Typography>
+          <Typography sx={{ fontWeight: 700, fontSize: '0.95rem' }}>Find sources to follow</Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
             <Typography sx={{ fontSize: '0.65rem', color: 'text.secondary' }}>
               Adding to

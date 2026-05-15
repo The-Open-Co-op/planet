@@ -90,7 +90,7 @@ export const mayaFeeds: FeedConfig[] = [
         avatar: '/images/Tree.jpg',
         type: 'blog',
         agentName: 'planetnetwork.app/@tree/blog',
-        hashtags: [],
+        hashtags: ['energy'],
       },
     ],
   },

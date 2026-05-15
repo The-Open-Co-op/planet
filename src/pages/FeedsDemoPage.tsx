@@ -53,7 +53,7 @@ const steps: DemoStep[] = [
       {
         side: 'right', top: 50, category: 'ui',
         title: 'Constructed, not curated',
-        description: 'Feeds are something you assemble — not something handed down by a platform. One app, many feeds — run a home feed, a co-op feed, a news feed and a local feed in parallel.',
+        description: 'Feeds are something you assemble — not something handed down by a platform. One app, many feeds — run a friends feed, a work feed, a co-op feed and a local feed in parallel.',
         tag: 'UX',
       },
     ],
@@ -79,19 +79,19 @@ const steps: DemoStep[] = [
       {
         side: 'left', top: 57, category: 'ui',
         title: 'Per-follow hashtag scoping',
-        description: 'Each follow can be scoped to specific hashtags. "Follow The Guardian for #energy" is different from "follow everything The Guardian publishes".',
+        description: 'Each follow can be scoped to specific hashtags — e.g. Maya only follows Tree for posts tagged #energy.',
         tag: 'UX',
       },
       {
         side: 'right', top: 34.5, category: 'protocol',
         title: 'Follow records in the vault',
-        description: 'Stored as [Maya DID → source (DID or RSS URL) + optional hashtags] — same shape Blog uses for its follow records. One follow record, many possible feeds.',
+        description: 'Stored as [Maya DID → source (DID or RSS URL) + optional hashtags] — same shape Blog uses for its follow records.',
         tag: 'Backend',
       },
       {
-        side: 'right', top: 87, category: 'protocol',
+        side: 'right', top: 82.5, category: 'protocol',
         title: 'Content mix is an independent axis',
-        description: 'Sliders define the mix of content types the feed displays - applied at compose time, not at follow time.',
+        description: 'Sliders define the mix of content types the feed displays - applied at compose time, not at follow time. Reccomendations come from shares, Opportunities come from Offers / Wants (demo TBD).',
         tag: 'Backend',
       },
     ],
@@ -106,7 +106,7 @@ const steps: DemoStep[] = [
     ),
     annotations: [
       {
-        side: 'left', top: 28, category: 'ui',
+        side: 'left', top: 16.75, category: 'ui',
         title: 'Search for sources to follow',
         description: "Contacts filters Maya's PNM vault instantly. Web hits external indexes — type a query (try permaculture or co-ops) and tap Go.",
         tag: 'UX',
@@ -133,7 +133,7 @@ const steps: DemoStep[] = [
     screen: ({ goToStep }) => <FeedViewScreen onEdit={() => goToStep('settings')} />,
     annotations: [
       {
-        side: 'left', top: 15, category: 'ui',
+        side: 'left', top: 12, category: 'ui',
         title: 'Switch feeds from the dropdown',
         description: 'Same screen, four contexts. Flipping to Co-op, News or Local re-composes the post list using that feed\'s settings.',
         tag: 'UX',
@@ -172,7 +172,7 @@ const steps: DemoStep[] = [
         tag: 'UX',
       },
       {
-        side: 'left', top: 78, category: 'ui',
+        side: 'left', top: 91, category: 'ui',
         title: 'Share as recommendation',
         description: 'Share opens a popup where Maya picks which trust profiles to recommend the post to. Multi-select — she can pick Friends and Community at once.',
         tag: 'UX',
