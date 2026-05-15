@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Card, Button, useMediaQuery } from '@mui/material';
-import { DesktopWindows, PhoneIphone, Handshake, Apps, InstallMobile, PersonAdd, Article } from '@mui/icons-material';
+import { DesktopWindows, PhoneIphone, Handshake, Apps, InstallMobile, PersonAdd, Article, DynamicFeed } from '@mui/icons-material';
 
 interface DemoCardProps {
   title: string;
@@ -136,6 +136,15 @@ const DemosHomePage = () => {
           path="/demo/blog/install"
           parentSlug="planet-blog"
           stepCount={9}
+        />
+        <DemoCard
+          title="Feeds"
+          subtitle="Build your own algorithm"
+          description="Maya installs the Feeds app, configures her Home feed — content mix, trust profiles, who she follows (with per-follow hashtags). Jonny's regenerative post lands in her feed because she followed him for #regenerative in the Blog demo."
+          icon={<DynamicFeed sx={{ fontSize: 40, color: 'primary.main' }} />}
+          path="/demo/feeds/install"
+          parentSlug="planet-feeds"
+          stepCount={7}
         />
         <DemoCard
           title="Main PNM"

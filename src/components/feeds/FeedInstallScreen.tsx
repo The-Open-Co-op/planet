@@ -14,11 +14,11 @@ import {
 } from '@mui/icons-material';
 import { StandardPage } from '@/components/layout/StandardPage';
 
-interface InstallScreenProps {
+interface FeedInstallScreenProps {
   onContinue?: () => void;
 }
 
-type BlogState = 'idle' | 'installing' | 'installed';
+type FeedsState = 'idle' | 'installing' | 'installed';
 
 const appStoreItems = [
   { name: 'Calendar', icon: CalendarMonth, description: 'Share calendars with contacts in your trust network' },
@@ -28,12 +28,12 @@ const appStoreItems = [
   { name: 'Feeds', icon: DynamicFeed, description: 'Build your own feeds from blogs, contacts and RSS' },
 ];
 
-export const InstallScreen = ({ onContinue }: InstallScreenProps) => {
-  const [blogState, setBlogState] = useState<BlogState>('idle');
+export const FeedInstallScreen = ({ onContinue }: FeedInstallScreenProps) => {
+  const [state, setState] = useState<FeedsState>('idle');
 
   const handleInstall = () => {
-    setBlogState('installing');
-    setTimeout(() => setBlogState('installed'), 1100);
+    setState('installing');
+    setTimeout(() => setState('installed'), 1100);
   };
 
   return (
@@ -47,7 +47,7 @@ export const InstallScreen = ({ onContinue }: InstallScreenProps) => {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
             {appStoreItems.map((app) => {
               const Icon = app.icon;
-              const isBlog = app.name === 'Blog';
+              const isFeeds = app.name === 'Feeds';
               return (
                 <Card
                   key={app.name}
@@ -56,11 +56,11 @@ export const InstallScreen = ({ onContinue }: InstallScreenProps) => {
                     alignItems: 'center',
                     gap: 1.5,
                     p: 1.5,
-                    border: isBlog ? '1px solid #0066CC' : undefined,
+                    border: isFeeds ? '1px solid #0066CC' : undefined,
                   }}
                 >
                   <Box sx={{ display: 'flex', flexShrink: 0 }}>
-                    <Icon sx={{ fontSize: 40, color: isBlog ? 'primary.main' : 'text.secondary' }} />
+                    <Icon sx={{ fontSize: 40, color: isFeeds ? 'primary.main' : 'text.secondary' }} />
                   </Box>
                   <Box sx={{ minWidth: 0, flex: 1 }}>
                     <Typography variant="body2" sx={{ fontWeight: 600, lineHeight: 1.3 }}>
@@ -70,17 +70,22 @@ export const InstallScreen = ({ onContinue }: InstallScreenProps) => {
                       {app.description}
                     </Typography>
                   </Box>
-                  {isBlog ? (
-                    blogState === 'idle' ? (
+                  {isFeeds ? (
+                    state === 'idle' ? (
                       <Button
                         variant="outlined"
                         size="small"
-                        sx={{ flexShrink: 0, borderColor: '#0066CC', color: '#0066CC', '&:hover': { borderColor: '#0066CC', bgcolor: 'rgba(0,102,204,0.08)' } }}
                         onClick={handleInstall}
+                        sx={{
+                          flexShrink: 0,
+                          borderColor: '#0066CC',
+                          color: '#0066CC',
+                          '&:hover': { borderColor: '#0066CC', bgcolor: 'rgba(0,102,204,0.08)' },
+                        }}
                       >
                         Install
                       </Button>
-                    ) : blogState === 'installing' ? (
+                    ) : state === 'installing' ? (
                       <Button
                         variant="outlined"
                         size="small"
@@ -95,10 +100,10 @@ export const InstallScreen = ({ onContinue }: InstallScreenProps) => {
                         variant="contained"
                         size="small"
                         startIcon={<CheckCircle sx={{ fontSize: 14 }} />}
-                        sx={{ flexShrink: 0, bgcolor: '#0066CC', '&:hover': { bgcolor: '#0052a3' } }}
                         onClick={onContinue}
+                        sx={{ flexShrink: 0, bgcolor: '#0066CC', '&:hover': { bgcolor: '#0052a3' } }}
                       >
-                        Set up
+                        Open
                       </Button>
                     )
                   ) : (

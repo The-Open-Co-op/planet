@@ -4,6 +4,7 @@ import {
   Folder,
   Article,
   Handshake,
+  DynamicFeed,
 } from '@mui/icons-material';
 import { StandardPage } from '@/components/layout/StandardPage';
 
@@ -27,6 +28,11 @@ const appStoreItems = [
     name: 'Introducer',
     icon: Handshake,
     description: 'Introduce contacts to each other and earn trust',
+  },
+  {
+    name: 'Feeds',
+    icon: DynamicFeed,
+    description: 'Build your own feeds from blogs, contacts and RSS',
   },
 ];
 

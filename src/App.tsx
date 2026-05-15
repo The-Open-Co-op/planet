@@ -33,6 +33,7 @@ import IntroducerDemoPage from "@/pages/IntroducerDemoPage";
 import PnmDemoPage from "@/pages/PnmDemoPage";
 import DemosHomePage from "@/pages/DemosHomePage";
 import BlogDemoPage from "@/pages/BlogDemoPage";
+import FeedsDemoPage from "@/pages/FeedsDemoPage";
 import ChatPage from "@/pages/ChatPage";
 
 const theme = createPlanetTheme();
@@ -122,6 +123,8 @@ const AppRoutes = () => (
         <Route path="/demo/invite-flow/:step" element={<InviteFlowDemoPage />} />
         <Route path="/demo/blog" element={<BlogDemoPage />} />
         <Route path="/demo/blog/:step" element={<BlogDemoPage />} />
+        <Route path="/demo/feeds" element={<FeedsDemoPage />} />
+        <Route path="/demo/feeds/:step" element={<FeedsDemoPage />} />
         {/* Backward compat: old /demo/:step URLs map to onboarding */}
         <Route path="/demo/:step" element={<DemoPage />} />
         <Route path="/onboarding" element={<SocialContractPage />} />
