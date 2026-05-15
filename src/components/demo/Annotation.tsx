@@ -1,4 +1,5 @@
 import { Box, Typography } from '@mui/material';
+import type { ReactNode } from 'react';
 
 export interface AnnotationItem {
   /** Which side of the phone: left or right */
@@ -7,8 +8,8 @@ export interface AnnotationItem {
   top: number;
   /** Title of the annotation */
   title: string;
-  /** Description text */
-  description: string;
+  /** Description text (string or JSX for inline links) */
+  description: string | ReactNode;
   /** Optional tag for tech/background detail */
   tag?: string;
   /** If true, shows a downward arrow indicating content is below the fold */

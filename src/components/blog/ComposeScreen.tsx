@@ -4,13 +4,14 @@ import {
   Typography,
   TextField,
   Button,
-  Select,
-  MenuItem,
   Chip,
   Switch,
   FormControlLabel,
+  Radio,
+  RadioGroup,
+  Divider,
 } from '@mui/material';
-import { Public, Lock, EditNote, Image as ImageIcon } from '@mui/icons-material';
+import { Image as ImageIcon } from '@mui/icons-material';
 import { WysiwygMock } from './WysiwygMock';
 import { draftPost } from '@/mocks/blogDemo';
 
@@ -18,13 +19,14 @@ interface ComposeScreenProps {
   onContinue?: () => void;
 }
 
-type Visibility = 'public' | 'members' | 'draft';
+type Visibility = 'public' | 'members';
 
 export const ComposeScreen = ({ onContinue }: ComposeScreenProps) => {
   const [visibility, setVisibility] = useState<Visibility>('members');
   const [title, setTitle] = useState(draftPost.title);
   const [subtitle, setSubtitle] = useState(draftPost.subtitle ?? '');
   const [commentsAllowed, setCommentsAllowed] = useState(true);
+  const [discoverable, setDiscoverable] = useState(true);
 
   return (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', bgcolor: 'background.default' }}>
@@ -43,7 +45,7 @@ export const ComposeScreen = ({ onContinue }: ComposeScreenProps) => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           slotProps={{
-            input: { sx: { fontWeight: 700, fontSize: '0.9rem' }, notched: true },
+            input: { sx: { fontSize: '0.9rem' }, notched: true },
             inputLabel: {
               shrink: true,
               sx: {
@@ -142,35 +144,30 @@ export const ComposeScreen = ({ onContinue }: ComposeScreenProps) => {
           </Box>
         </Box>
 
-        <Box sx={{ mt: 1.5 }}>
-          <Typography sx={{ fontSize: '0.65rem', fontWeight: 600, color: 'text.secondary', mb: 0.5 }}>
-            Visibility
-          </Typography>
-          <Select
-            fullWidth
-            size="small"
+        <Typography sx={{ fontSize: '0.65rem', fontWeight: 600, color: 'text.secondary', mb: 0.5, mt: 1.5 }}>
+          Visibility
+        </Typography>
+        <Box sx={{ p: 1, borderRadius: 1.5, border: '1px solid', borderColor: 'divider' }}>
+          <RadioGroup
             value={visibility}
             onChange={(e) => setVisibility(e.target.value as Visibility)}
           >
-            <MenuItem value="public">
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Public sx={{ fontSize: 16 }} /> Public
-              </Box>
-            </MenuItem>
-            <MenuItem value="members">
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Lock sx={{ fontSize: 16 }} /> PLANET Members only
-              </Box>
-            </MenuItem>
-            <MenuItem value="draft">
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <EditNote sx={{ fontSize: 16 }} /> Draft
-              </Box>
-            </MenuItem>
-          </Select>
-        </Box>
-
-        <Box sx={{ mt: 1.5, p: 1, borderRadius: 1.5, border: '1px solid', borderColor: 'divider' }}>
+            <FormControlLabel
+              value="public"
+              control={<Radio size="small" sx={{ p: 0.5, '&.Mui-checked': { color: '#0066CC' } }} />}
+              label={<Typography sx={{ fontSize: '0.72rem' }}>Public</Typography>}
+              labelPlacement="start"
+              sx={{ display: 'flex', justifyContent: 'space-between', ml: 0, mr: 0, width: '100%' }}
+            />
+            <FormControlLabel
+              value="members"
+              control={<Radio size="small" sx={{ p: 0.5, '&.Mui-checked': { color: '#0066CC' } }} />}
+              label={<Typography sx={{ fontSize: '0.72rem' }}>PLANET members only</Typography>}
+              labelPlacement="start"
+              sx={{ display: 'flex', justifyContent: 'space-between', ml: 0, mr: 0, width: '100%' }}
+            />
+          </RadioGroup>
+          <Divider sx={{ my: 0.5 }} />
           <FormControlLabel
             control={
               <Switch
@@ -184,6 +181,22 @@ export const ComposeScreen = ({ onContinue }: ComposeScreenProps) => {
               />
             }
             label={<Typography sx={{ fontSize: '0.72rem' }}>Allow comments on this post</Typography>}
+            labelPlacement="start"
+            sx={{ display: 'flex', justifyContent: 'space-between', ml: 0, mr: 0, width: '100%' }}
+          />
+          <FormControlLabel
+            control={
+              <Switch
+                size="small"
+                checked={discoverable}
+                onChange={(e) => setDiscoverable(e.target.checked)}
+                sx={{
+                  '& .MuiSwitch-switchBase.Mui-checked': { color: '#0066CC' },
+                  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { bgcolor: '#0066CC' },
+                }}
+              />
+            }
+            label={<Typography sx={{ fontSize: '0.72rem' }}>Make discoverable via Murmurations</Typography>}
             labelPlacement="start"
             sx={{ display: 'flex', justifyContent: 'space-between', ml: 0, mr: 0, width: '100%' }}
           />

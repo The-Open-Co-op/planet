@@ -82,7 +82,7 @@ const steps: DemoStep[] = [
       {
         side: 'left', top: 78, category: 'ui',
         title: 'Visibility per post',
-        description: 'Public, Members-Only, or Draft. Jonny is publishing this one as Members-Only.',
+        description: 'Public or Members-Only. Jonny is publishing this one as Members-Only.',
         tag: 'UX',
       },
       {
@@ -93,8 +93,21 @@ const steps: DemoStep[] = [
       },
       {
         side: 'right', top: 80, category: 'protocol',
-        title: 'Hashtags power follows',
-        description: "Each tag becomes a followable topic. Stored on the post; the Feed app will use [follower DID → author DID + hashtag] follows to build personalised feeds.",
+        title: 'Index posts via Murmurations',
+        description: (
+          <>
+            Posts can be indexed via{' '}
+            <a
+              href="https://murmurations.network/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: '#660000', fontWeight: 600 }}
+            >
+              Murmurations
+            </a>{' '}
+            to make them discoverable in searches.
+          </>
+        ),
         tag: 'Backend',
       },
     ],
