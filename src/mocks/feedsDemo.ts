@@ -25,6 +25,8 @@ export interface FeedConfig {
   trustProfiles: string[];
   contentMix: Record<ContentCategory, number>;
   follows: FollowEntry[];
+  /** Number of unread posts in this feed */
+  unreadCount?: number;
 }
 
 export interface FeedPost {
@@ -58,6 +60,7 @@ export const mayaFeeds: FeedConfig[] = [
     name: 'Friends',
     color: FEED_COLORS.friends,
     trustProfiles: ['Friends', 'Family'],
+    unreadCount: 2,
     contentMix: { News: 20, Events: 30, Recommendations: 30, Opportunities: 20 },
     follows: [
       {
@@ -99,6 +102,7 @@ export const mayaFeeds: FeedConfig[] = [
     name: 'Work',
     color: FEED_COLORS.work,
     trustProfiles: ['Business'],
+    unreadCount: 3,
     contentMix: { News: 35, Events: 25, Recommendations: 15, Opportunities: 25 },
     follows: [
       {
@@ -136,6 +140,7 @@ export const mayaFeeds: FeedConfig[] = [
     name: 'Co-op',
     color: FEED_COLORS.coop,
     trustProfiles: ['Community'],
+    unreadCount: 0,
     contentMix: { News: 20, Events: 30, Recommendations: 20, Opportunities: 30 },
     follows: [
       {
@@ -168,6 +173,7 @@ export const mayaFeeds: FeedConfig[] = [
     name: 'Local',
     color: FEED_COLORS.local,
     trustProfiles: ['Friends', 'Community'],
+    unreadCount: 1,
     contentMix: { News: 25, Events: 45, Recommendations: 15, Opportunities: 15 },
     follows: [
       {

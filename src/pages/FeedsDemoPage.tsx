@@ -133,9 +133,9 @@ const steps: DemoStep[] = [
     screen: ({ goToStep }) => <FeedViewScreen onEdit={() => goToStep('settings')} />,
     annotations: [
       {
-        side: 'left', top: 12, category: 'ui',
-        title: 'Switch feeds from the dropdown',
-        description: 'Same screen, four contexts. Flipping to Co-op, News or Local re-composes the post list using that feed\'s settings.',
+        side: 'left', top: 9.5, category: 'ui',
+        title: 'Switch feeds at a glance',
+        description: 'Unread badges show which feeds have new content. Tap a chip to switch — same screen, four contexts.',
         tag: 'UX',
       },
       {
