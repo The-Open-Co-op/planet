@@ -42,7 +42,7 @@ const XIcon = (props: React.ComponentProps<typeof SvgIcon>) => (
 );
 import type {CustomSocialLink, ProfileData} from '../types';
 import {useNavigate} from "react-router";
-import {mockProfileData} from "@/mocks/profile";
+import { getCardSpecificProfile } from './cardProfiles';
 import {FormPhoneField} from "@/components/ui/FormPhoneField/FormPhoneField";
 import { useForceMobile } from '@/components/demo/DemoContext';
 
@@ -67,109 +67,17 @@ const availablePlatforms = [
   'Other',
 ];
 
-// Create different profile data per card to demonstrate functionality
-const getCardSpecificProfile = (cardName: string, initialProfileData?: ProfileData): ProfileData => {
-  const baseProfile = initialProfileData ?? mockProfileData;
-  switch (cardName) {
-    case 'Public':
-      return {
-        ...baseProfile,
-        name: 'John Doe',
-        jobTitle: 'Principal Engineer',
-        email: '',
-        phone: '',
-        location: 'San Francisco, CA',
-        bio: 'Engineer and community builder.',
-        avatar: '/images/john-doe-colleauges.jpeg',
-        website: '',
-        linkedin: '',
-        github: '',
-        twitter: '',
-        facebook: '',
-        instagram: '',
-      };
-    case 'Family':
-      return {
-        ...baseProfile,
-        name: 'Johnny',
-        jobTitle: 'Dad, husband, terrible cook',
-        email: 'johnny@doe-family.com',
-        phone: '+1 (555) 456-7890',
-        location: 'San Francisco, CA',
-        bio: 'Family first, always. Love our Sunday roasts (even when I burn them), camping trips with the kids, and movie nights on the couch. Call me anytime.',
-        avatar: '/images/john-doe-chef.jpg',
-        website: '',
-        linkedin: '',
-        github: '',
-        twitter: '',
-        facebook: '',
-        instagram: 'doe_family_moments',
-      };
-    case 'Friends':
-      return {
-        ...baseProfile,
-        name: 'JD',
-        jobTitle: 'Part-time DJ, full-time liability',
-        email: 'jd@protonmail.com',
-        phone: '+1 (555) 987-6543',
-        location: 'SF Bay Area',
-        bio: 'Will trade debugging for beer. Weekend DJ who clears dancefloors. Hiking, surfing, terrible karaoke. Send memes.',
-        avatar: '/images/john-doe-frinds.jpeg',
-        website: '',
-        linkedin: '',
-        github: '',
-        twitter: 'jd_spins',
-        facebook: '',
-        instagram: 'jd_adventures',
-      };
-    case 'Business':
-      return {
-        ...baseProfile,
-        name: 'John Doe',
-        jobTitle: 'Principal Engineer, TechCorp',
-        email: 'john.doe@techcorp.com',
-        phone: '+1 (555) 123-4567',
-        location: 'San Francisco, CA',
-        bio: 'Principal Engineer leading platform architecture at TechCorp. 12 years building distributed systems, API platforms, and engineering teams. Open to advisory roles and speaking engagements.',
-        avatar: '/images/john-doe-colleauges.jpeg',
-        website: 'https://johndoe.dev',
-        linkedin: 'johndoe',
-        github: 'johndoe',
-        twitter: '',
-        facebook: '',
-        instagram: '',
-      };
-    case 'Community':
-      return {
-        ...baseProfile,
-        name: 'John Doe',
-        jobTitle: 'Open Source Contributor & Local Mentor',
-        email: 'john@sfcoders.org',
-        phone: '+1 (555) 321-0987',
-        location: 'San Francisco, CA',
-        bio: 'Running free coding workshops for underrepresented communities in SF. Core contributor to several open source projects. Believe tech should be accessible to everyone.',
-        avatar: '/images/john-doe-colleauges.jpeg',
-        website: 'https://sfcoders.org/john',
-        linkedin: 'johndoe-community',
-        github: 'johndoe-oss',
-        twitter: 'john_sfcoders',
-        facebook: '',
-        instagram: '',
-      };
-    default:
-      return baseProfile;
-  }
-};
-
 interface ProfileInformationProps {
   cardName: string;
   initialProfileData?: ProfileData;
   isEditing?: boolean;
   onEditingChange?: (editing: boolean) => void;
+  /** Read-only preview — hides the Edit affordance entirely. */
+  readOnly?: boolean;
 }
 
 export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationProps>(
-  ({ cardName, initialProfileData, isEditing: externalIsEditing, onEditingChange }, ref) => {
+  ({ cardName, initialProfileData, isEditing: externalIsEditing, onEditingChange, readOnly = false }, ref) => {
     const navigate = useNavigate();
     const theme = useTheme();
     const forceMobile = useForceMobile();
@@ -260,7 +168,7 @@ export const ProfileInformation = forwardRef<HTMLDivElement, ProfileInformationP
       <Box ref={ref}>
         <Box sx={{ p: { xs: 2, md: 3 }, position: 'relative' }}>
             {/* Edit button (floating) or Save/Cancel buttons (normal flow) */}
-            {!isEditing ? (
+            {readOnly ? null : !isEditing ? (
               <Box sx={{
                 position: 'absolute',
                 top: 16,

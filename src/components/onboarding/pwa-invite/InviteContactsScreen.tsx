@@ -26,7 +26,23 @@ import {
   Group,
   UploadFile,
   Schedule,
+  FamilyRestroom,
+  Favorite,
+  Business,
+  Groups,
+  PersonOutline,
 } from '@mui/icons-material';
+import { useInviteDraft } from '@/hooks/useInviteDraft';
+import { useTrustProfiles } from '@/hooks/useTrustProfiles';
+
+const ICON_MAP: Record<string, React.ElementType> = {
+  Public,
+  FamilyRestroom,
+  Favorite,
+  Business,
+  Groups,
+  PersonOutline,
+};
 
 interface InviteContactsScreenProps {
   /** 'sent' = Mike pending, 'accepted' = Mike connected */
@@ -38,6 +54,33 @@ export const InviteContactsScreen = ({ state }: InviteContactsScreenProps) => {
   const [relationship, setRelationship] = useState('all');
   const [addAnchor, setAddAnchor] = useState<HTMLElement | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+
+  // Which Trust Profile Jonny invited Mike from (chosen on the "Invite as" step).
+  const { selectedProfileName } = useInviteDraft();
+  const { activeProfiles } = useTrustProfiles();
+  const inviteProfile = activeProfiles.find((p) => p.name === selectedProfileName);
+  const InviteIcon = ICON_MAP[inviteProfile?.icon || 'Public'] ?? Public;
+  const inviteColor = inviteProfile?.color || '#6b7280';
+
+  const inviteChip = (
+    <Box sx={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 0.375,
+      px: 0.625,
+      py: 0.125,
+      borderRadius: 1,
+      border: '1px solid',
+      borderColor: inviteColor,
+      bgcolor: `${inviteColor}14`,
+      flexShrink: 0,
+    }}>
+      <InviteIcon sx={{ fontSize: 12, color: inviteColor }} />
+      <Typography sx={{ fontSize: '0.6rem', fontWeight: 600, color: inviteColor, whiteSpace: 'nowrap' }}>
+        Invited as {inviteProfile?.name ?? selectedProfileName}
+      </Typography>
+    </Box>
+  );
 
   const openAdd = (e: React.MouseEvent<HTMLElement>) => setAddAnchor(e.currentTarget);
   const closeAdd = () => setAddAnchor(null);
@@ -119,6 +162,7 @@ export const InviteContactsScreen = ({ state }: InviteContactsScreenProps) => {
             name="Mike"
             subtitle="Invited — awaiting connection"
             statusIcon={<Schedule sx={{ fontSize: 16, color: 'text.disabled' }} />}
+            nameChip={inviteChip}
             dimmed
           />
         ) : (
@@ -128,6 +172,7 @@ export const InviteContactsScreen = ({ state }: InviteContactsScreenProps) => {
             }
             name="Mike"
             subtitle="Connected — from your invite"
+            nameChip={inviteChip}
           />
         )}
       </Box>
@@ -187,10 +232,11 @@ interface ContactCardProps {
   name: string;
   subtitle: string;
   statusIcon?: React.ReactNode;
+  nameChip?: React.ReactNode;
   dimmed?: boolean;
 }
 
-const ContactCard = ({ avatar, name, subtitle, statusIcon, dimmed }: ContactCardProps) => (
+const ContactCard = ({ avatar, name, subtitle, statusIcon, nameChip, dimmed }: ContactCardProps) => (
   <Box sx={{
     display: 'flex',
     alignItems: 'center',
@@ -208,7 +254,10 @@ const ContactCard = ({ avatar, name, subtitle, statusIcon, dimmed }: ContactCard
   }}>
     {avatar}
     <Box sx={{ flex: 1, minWidth: 0 }}>
-      <Typography sx={{ fontWeight: 700, fontSize: '0.88rem' }}>{name}</Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+        <Typography sx={{ fontWeight: 700, fontSize: '0.88rem' }}>{name}</Typography>
+        {nameChip}
+      </Box>
       <Typography sx={{ fontSize: '0.72rem', color: 'text.secondary' }}>{subtitle}</Typography>
     </Box>
     {statusIcon}

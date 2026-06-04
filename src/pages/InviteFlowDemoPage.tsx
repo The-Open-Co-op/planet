@@ -8,7 +8,9 @@ import {
   PickRecipientScreen,
   iosPickerDefaultAnnotations,
 } from '@/components/onboarding/pwa-invite/PickRecipientScreen';
+import { InviteAsScreen } from '@/components/onboarding/pwa-invite/InviteAsScreen';
 import { ShareSheetScreen } from '@/components/onboarding/pwa-invite/ShareSheetScreen';
+import { ComposeMessageScreen } from '@/components/onboarding/pwa-invite/ComposeMessageScreen';
 import { InviteDeliveryScreen } from '@/components/onboarding/pwa-invite/InviteDeliveryScreen';
 import { InviteContactsScreen } from '@/components/onboarding/pwa-invite/InviteContactsScreen';
 
@@ -40,21 +42,42 @@ const steps: DemoStep[] = [
     title: 'Pick the recipient',
     subtitle: 'Android: Contact Picker · iPhone: type a first name',
     screen: ({ goToStep, setDynamicAnnotations }) => (
-      <PickRecipientScreen onContinue={() => goToStep('share')} setDynamicAnnotations={setDynamicAnnotations} />
+      <PickRecipientScreen onContinue={() => goToStep('invite-as')} setDynamicAnnotations={setDynamicAnnotations} />
     ),
     annotations: iosPickerDefaultAnnotations,
   },
   {
     id: '03',
+    slug: 'invite-as',
+    title: 'Invite as',
+    subtitle: 'Pick which of your profiles the new member connects to',
+    screen: ({ goToStep }) => <InviteAsScreen onContinue={() => goToStep('share')} />,
+    annotations: [
+      {
+        side: 'left', top: 30, category: 'ui',
+        title: 'Invite as one of your profiles',
+        description: 'Jonny picks from the Trust Profiles he has already set up — Public, Family, Friends, Business… Profiles are defined, and can be edited, via Contacts.',
+        tag: 'UX',
+      },
+      {
+        side: 'right', top: 35, category: 'protocol',
+        title: 'Profile bound to the invite',
+        description: 'The chosen Trust Profile is attached to the invite token. When Mike accepts, the R-DID connection is anchored to this profile — and its sharing settings govern what flows to him from day one.',
+        tag: 'Backend',
+      },
+    ],
+  },
+  {
+    id: '04',
     slug: 'share',
     title: 'Share via OS share sheet',
     subtitle: 'PLANET hands off to the invitee\'s preferred channel',
-    screen: ({ goToStep }) => <ShareSheetScreen onSelect={() => goToStep('delivery')} />,
+    screen: ({ goToStep }) => <ShareSheetScreen onSelect={() => goToStep('compose')} />,
     annotations: [
       {
         side: 'left', top: 22, category: 'ui',
         title: 'Personalised OG preview',
-        description: 'The link unfurls in WhatsApp, iMessage, etc. with a custom preview featuring Jonny\'s avatar and PLANET branding.',
+        description: 'The link unfurls in WhatsApp, iMessage, etc. with a custom preview featuring Jonny\'s avatar from the Profile he selected on the previous step and PLANET branding.',
         tag: 'UX',
       },
       {
@@ -78,7 +101,28 @@ const steps: DemoStep[] = [
     ],
   },
   {
-    id: '04',
+    id: '05',
+    slug: 'compose',
+    title: 'Compose & edit',
+    subtitle: 'The chosen app opens with the invite prefilled — Jonny can edit before sending',
+    screen: ({ goToStep }) => <ComposeMessageScreen onSend={() => goToStep('delivery')} />,
+    annotations: [
+      {
+        side: 'left', top: 30, category: 'ui',
+        title: 'Edit before you send',
+        description: 'The messaging app opens with a default invite message and the personalised link preview prefilled. Jonny can reword it however he likes — make it personal to Mike — then hit send.',
+        tag: 'UX',
+      },
+      {
+        side: 'right', top: 40, category: 'protocol',
+        title: 'Nothing sent until Jonny sends',
+        description: 'PLANET only generated the link and a suggested message. The actual message lives in Jonny\'s own messaging app — he edits and sends it himself, over his channel. PLANET never sees the conversation.',
+        tag: 'Backend',
+      },
+    ],
+  },
+  {
+    id: '06',
     slug: 'delivery',
     title: 'Delivered',
     subtitle: 'Mike receives the message in his preferred channel',
@@ -99,7 +143,7 @@ const steps: DemoStep[] = [
     ],
   },
   {
-    id: '05',
+    id: '07',
     slug: 'pending',
     title: 'Awaiting connection',
     subtitle: 'Mike appears in Jonny\'s contacts, dimmed until he joins',
@@ -120,7 +164,7 @@ const steps: DemoStep[] = [
     ],
   },
   {
-    id: '06',
+    id: '08',
     slug: 'accepted',
     title: 'Connected',
     subtitle: 'Mike has joined and confirmed the connection',
@@ -141,7 +185,7 @@ const steps: DemoStep[] = [
     ],
   },
   {
-    id: '07',
+    id: '09',
     slug: 'feedback',
     title: '',
     subtitle: '',

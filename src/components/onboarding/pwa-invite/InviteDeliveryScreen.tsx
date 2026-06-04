@@ -1,8 +1,14 @@
 import { Box, Typography, Avatar } from '@mui/material';
 import { Videocam, Phone, ChevronLeft, Add, CameraAlt, Mic, SmsOutlined } from '@mui/icons-material';
+import { useInviteDraft } from '@/hooks/useInviteDraft';
+import { getCardSpecificProfile } from '@/components/account/AccountPage/ProfileInformation';
 
-/** Step 04 — Invite Delivery: what Mike sees in WhatsApp from Jonny. */
+/** Step 06 — Invite Delivery: what Mike sees in WhatsApp from Jonny. */
 export const InviteDeliveryScreen = () => {
+  // Reflect Jonny's edited message and the Trust Profile he picked.
+  const { selectedProfileName, message } = useInviteDraft();
+  const inviteProfile = getCardSpecificProfile(selectedProfileName);
+
   return (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', bgcolor: '#efeae2' }}>
       {/* WhatsApp header */}
@@ -38,8 +44,8 @@ export const InviteDeliveryScreen = () => {
           maxWidth: '88%',
           boxShadow: '0 1px 1px rgba(0,0,0,0.08)',
         }}>
-          <Typography sx={{ fontSize: '0.8rem', color: '#111', mb: 0.75, lineHeight: 1.4 }}>
-            Hey Mike, I've joined PLANET — a user-owned decentralised trust network with secure messaging and other trust-based apps that doesn't exploit your data. It's invite-only, so this link is just for you because I trust you. Join me →
+          <Typography sx={{ fontSize: '0.8rem', color: '#111', mb: 0.75, lineHeight: 1.4, whiteSpace: 'pre-wrap' }}>
+            {message}
           </Typography>
 
           {/* OG link preview */}
@@ -61,7 +67,7 @@ export const InviteDeliveryScreen = () => {
                 }}
               />
               <Avatar
-                src="/images/john-doe-colleauges.jpeg"
+                src={inviteProfile.avatar}
                 sx={{
                   position: 'absolute',
                   bottom: -18,
@@ -77,7 +83,7 @@ export const InviteDeliveryScreen = () => {
             </Box>
             <Box sx={{ p: 0.75, pt: 2, bgcolor: '#f0f0f0' }}>
               <Typography sx={{ fontWeight: 600, fontSize: '0.7rem', color: '#111', lineHeight: 1.3 }}>
-                Jonny invited you to connect on PLANET
+                {inviteProfile.name} invited you to connect on PLANET
               </Typography>
               <Typography sx={{ fontSize: '0.6rem', color: '#8696a0' }}>
                 planetnetwork.app

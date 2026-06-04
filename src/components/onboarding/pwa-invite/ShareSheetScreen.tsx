@@ -1,5 +1,7 @@
 import { Box, Typography, Avatar, IconButton } from '@mui/material';
 import { ArrowBack, Mail, Sms, ContentCopy, MoreHoriz, Chat } from '@mui/icons-material';
+import { useInviteDraft } from '@/hooks/useInviteDraft';
+import { getCardSpecificProfile } from '@/components/account/AccountPage/ProfileInformation';
 
 interface ShareSheetScreenProps {
   onSelect?: () => void;
@@ -22,8 +24,12 @@ const CHANNELS: Channel[] = [
   { id: 'more', label: 'More', icon: <MoreHoriz />, bg: '#e0e0e0', color: '#222' },
 ];
 
-/** Step 03 — Share sheet: generated link + faux native share sheet. */
+/** Step 04 — Share sheet: generated link + faux native share sheet. */
 export const ShareSheetScreen = ({ onSelect }: ShareSheetScreenProps) => {
+  // Reflect the Trust Profile Jonny picked on the "Invite as" step.
+  const { selectedProfileName } = useInviteDraft();
+  const inviteProfile = getCardSpecificProfile(selectedProfileName);
+
   return (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', bgcolor: 'background.default', position: 'relative' }}>
       {/* App header */}
@@ -64,7 +70,7 @@ export const ShareSheetScreen = ({ onSelect }: ShareSheetScreenProps) => {
               sx={{ width: '100%', height: 110, objectFit: 'cover', display: 'block' }}
             />
             <Avatar
-              src="/images/john-doe-colleauges.jpeg"
+              src={inviteProfile.avatar}
               sx={{
                 position: 'absolute',
                 bottom: -22,
@@ -78,7 +84,7 @@ export const ShareSheetScreen = ({ onSelect }: ShareSheetScreenProps) => {
           </Box>
           <Box sx={{ p: 1.25, pt: 3.25 }}>
             <Typography sx={{ fontWeight: 700, fontSize: '0.78rem', color: '#111', lineHeight: 1.3 }}>
-              Jonny invited you to connect on PLANET
+              {inviteProfile.name} invited you to connect on PLANET
             </Typography>
             <Typography sx={{ fontSize: '0.65rem', color: 'text.secondary', mt: 0.25 }}>
               planetnetwork.app/j/x7k2m
