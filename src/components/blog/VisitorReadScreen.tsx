@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Typography, Button, IconButton, TextField, Avatar } from '@mui/material';
 import { ArrowBack, Add, Mail } from '@mui/icons-material';
 import { BlogHeader } from './BlogHeader';
@@ -10,16 +10,27 @@ import { jonny, jonnyEmail, blogBanner, existingPosts, draftPost } from '@/mocks
 
 interface VisitorReadScreenProps {
   asMember?: boolean;
+  reportStep?: (slug: string, title: string) => void;
 }
 
 export const VisitorReadScreen = ({
   asMember = false,
+  reportStep,
 }: VisitorReadScreenProps) => {
   const [view, setView] = useState<'listing' | 'post'>('listing');
   const [showCommentJoin, setShowCommentJoin] = useState(false);
   const [showLockedJoin, setShowLockedJoin] = useState(false);
   const [showFollowJoin, setShowFollowJoin] = useState(false);
   const [showContact, setShowContact] = useState(false);
+
+  // Attach feedback to the sub-view (listing vs reading a post).
+  useEffect(() => {
+    if (view === 'post') {
+      reportStep?.('visitor-read:post', 'Visitor → Reading a post');
+    } else {
+      reportStep?.('visitor-read', 'A visitor lands on the blog');
+    }
+  }, [view, reportStep]);
 
   const newestPost = { ...draftPost, signedAt: '2026-05-14T09:30:00Z' };
   const allPosts = [newestPost, ...existingPosts];

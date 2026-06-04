@@ -211,7 +211,7 @@ const steps: DemoStep[] = [
     slug: 'visitor-read',
     title: 'A visitor lands on the blog',
     subtitle: '@jonny/blog — public posts open, members-only locked',
-    screen: () => <VisitorReadScreen />,
+    screen: ({ reportStep }) => <VisitorReadScreen reportStep={reportStep} />,
     annotations: [
       {
         side: 'left', top: 15, category: 'ui',

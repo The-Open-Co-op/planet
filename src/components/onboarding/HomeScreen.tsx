@@ -15,10 +15,23 @@ type HomeView = 'home' | 'contacts' | 'import' | 'chat' | 'alerts' | 'apps' | 'v
 interface HomeScreenProps {
   setDynamicAnnotations?: (annotations: null | never[]) => void;
   goToStep?: (slug: string) => void;
+  reportStep?: (slug: string, title: string) => void;
 }
 
+/** Sub-view → feedback context (slug + title). Slugs are owned by this screen
+ *  so they survive top-level demo steps being added/removed/reordered. */
+const VIEW_FEEDBACK: Record<HomeView, { slug: string; title: string }> = {
+  home: { slug: 'home', title: 'Home' },
+  contacts: { slug: 'home:contacts', title: 'Home → Contacts' },
+  import: { slug: 'home:import', title: 'Home → Import' },
+  chat: { slug: 'home:chat', title: 'Home → Chat' },
+  alerts: { slug: 'home:alerts', title: 'Home → Alerts' },
+  apps: { slug: 'home:apps', title: 'Home → App Store' },
+  vault: { slug: 'home:vault', title: 'Home → Vault' },
+};
+
 /** Home screen with in-frame navigation for demos */
-export const HomeScreen = ({ setDynamicAnnotations, goToStep }: HomeScreenProps = {}) => {
+export const HomeScreen = ({ setDynamicAnnotations, goToStep, reportStep }: HomeScreenProps = {}) => {
   const [view, setView] = useState<HomeView>('home');
   const [chatContactId, setChatContactId] = useState<string | null>(null);
 
@@ -28,7 +41,10 @@ export const HomeScreen = ({ setDynamicAnnotations, goToStep }: HomeScreenProps 
     } else {
       setDynamicAnnotations?.([]); // clear annotations
     }
-  }, [view, setDynamicAnnotations]);
+    // Attach feedback to the sub-view, not just the parent 'home' step.
+    const ctx = VIEW_FEEDBACK[view];
+    reportStep?.(ctx.slug, ctx.title);
+  }, [view, setDynamicAnnotations, reportStep]);
 
   // Map app paths to demo step slugs where available
   const stepMap: Record<string, string> = {

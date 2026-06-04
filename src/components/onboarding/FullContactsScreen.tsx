@@ -13,6 +13,7 @@ type AnnotationWithCategory = AnnotationItem & { category: 'ui' | 'protocol' };
 
 interface FullContactsScreenProps {
   setDynamicAnnotations?: (annotations: AnnotationWithCategory[] | null) => void;
+  reportStep?: (slug: string, title: string) => void;
 }
 
 /** Static nav for demo */
@@ -102,9 +103,22 @@ const nonMemberAnnotations: AnnotationWithCategory[] = [
 ];
 
 /** Step 08 — Full Contacts with My Profiles visible */
-export const FullContactsScreen = ({ setDynamicAnnotations }: FullContactsScreenProps) => {
+export const FullContactsScreen = ({ setDynamicAnnotations, reportStep }: FullContactsScreenProps) => {
   const [selectedContactId, setSelectedContactId] = useState<string | null>(null);
   const [chatContactId, setChatContactId] = useState<string | null>(null);
+
+  // Attach feedback to the sub-view (list vs contact detail vs chat).
+  useEffect(() => {
+    if (chatContactId) {
+      reportStep?.('vouching:chat', 'Network → Chat');
+    } else if (selectedContactId === 'contact:me') {
+      reportStep?.('vouching:profiles', 'Network → My Profiles');
+    } else if (selectedContactId) {
+      reportStep?.('vouching:contact', 'Network → Contact');
+    } else {
+      reportStep?.('vouching', 'Network building');
+    }
+  }, [selectedContactId, chatContactId, reportStep]);
 
   // Update annotations when contact is selected/deselected
   useEffect(() => {

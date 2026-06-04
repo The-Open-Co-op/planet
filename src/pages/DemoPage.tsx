@@ -224,7 +224,7 @@ const steps: DemoStep[] = [
     slug: 'vouching',
     title: 'Network building',
     subtitle: 'Contacts view, ready to invite and vouch',
-    screen: ({ setDynamicAnnotations }) => <FullContactsScreen setDynamicAnnotations={setDynamicAnnotations} />,
+    screen: ({ setDynamicAnnotations, reportStep }) => <FullContactsScreen setDynamicAnnotations={setDynamicAnnotations} reportStep={reportStep} />,
     annotations: [
       {
         side: 'left', top: 30, category: 'ui',

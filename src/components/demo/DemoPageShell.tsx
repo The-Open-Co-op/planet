@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, IconButton, useMediaQuery } from '@mui/material';
 import { ChevronLeft, ChevronRight, DesktopWindows, ArrowBack } from '@mui/icons-material';
@@ -11,6 +11,13 @@ export type AnnotationWithCategory = AnnotationItem & { category: 'ui' | 'protoc
 export interface StepHelpers {
   goToStep: (slug: string) => void;
   setDynamicAnnotations: (annotations: AnnotationWithCategory[] | null) => void;
+  /**
+   * Report a sub-view to the parent (feedback context) WITHOUT changing the
+   * active step. Use for in-frame navigation inside a single step (e.g. the
+   * Home screen's Contacts/Chat/Alerts tabs) so feedback attaches to the
+   * sub-view rather than piling onto the parent step.
+   */
+  reportStep: (slug: string, title: string) => void;
 }
 
 export interface DemoStep {
@@ -109,6 +116,13 @@ export const DemoPageShell = ({ title: _title, subtitle: _subtitle, basePath, st
     if (idx >= 0) goTo(idx);
   };
 
+  // Report an in-frame sub-view to the parent without moving the step index.
+  const reportStep = useCallback((slug: string, title: string) => {
+    try {
+      window.parent.postMessage({ type: 'demo-step-change', slug, title }, '*');
+    } catch (_) { /* not in iframe */ }
+  }, []);
+
   const visibleAnnotations = dynamicAnnotations || step.annotations;
 
   const bottomNav = (
@@ -163,7 +177,7 @@ export const DemoPageShell = ({ title: _title, subtitle: _subtitle, basePath, st
     return (
       <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Box sx={{ flex: 1 }}>
-          {typeof step.screen === 'function' ? step.screen({ goToStep, setDynamicAnnotations }) : step.screen}
+          {typeof step.screen === 'function' ? step.screen({ goToStep, setDynamicAnnotations, reportStep }) : step.screen}
         </Box>
         {bottomNav}
       </Box>
@@ -229,7 +243,7 @@ export const DemoPageShell = ({ title: _title, subtitle: _subtitle, basePath, st
       }}>
         <Box sx={{ position: 'relative' }}>
           <PhoneFrame key={step.slug}>
-            {typeof step.screen === 'function' ? step.screen({ goToStep, setDynamicAnnotations }) : step.screen}
+            {typeof step.screen === 'function' ? step.screen({ goToStep, setDynamicAnnotations, reportStep }) : step.screen}
           </PhoneFrame>
 
           {visibleAnnotations.map((annotation, i) => (

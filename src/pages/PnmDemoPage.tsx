@@ -15,7 +15,7 @@ const steps: DemoStep[] = [
     slug: 'home',
     title: 'Home',
     subtitle: 'The PLANET home screen',
-    screen: ({ setDynamicAnnotations, goToStep }) => <HomeScreen setDynamicAnnotations={setDynamicAnnotations} goToStep={goToStep} />,
+    screen: ({ setDynamicAnnotations, goToStep, reportStep }) => <HomeScreen setDynamicAnnotations={setDynamicAnnotations} goToStep={goToStep} reportStep={reportStep} />,
     annotations: [
       {
         side: 'left', top: 30, category: 'ui',
@@ -84,7 +84,7 @@ const steps: DemoStep[] = [
     slug: 'vault',
     title: 'Vault',
     subtitle: 'Encrypted personal data vault — identity, credentials, and settings',
-    screen: () => <VaultScreen />,
+    screen: ({ reportStep }) => <VaultScreen reportStep={reportStep} />,
     annotations: [
       {
         side: 'left', top: 25, category: 'ui',

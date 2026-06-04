@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
 import { Public, People, ChatBubble, Notifications } from '@mui/icons-material';
 import { AccountPage } from '@/components/account/AccountPage';
@@ -9,9 +9,28 @@ import { NotificationsPage } from '@/components/notifications/NotificationsPage'
 
 type VaultView = 'vault' | 'home' | 'contacts' | 'chat' | 'alerts';
 
+interface VaultScreenProps {
+  reportStep?: (slug: string, title: string) => void;
+}
+
+/** Sub-view → feedback context. Slugs namespaced under the parent 'vault' step. */
+const VIEW_FEEDBACK: Record<VaultView, { slug: string; title: string }> = {
+  vault: { slug: 'vault', title: 'Vault' },
+  home: { slug: 'vault:home', title: 'Vault → Home' },
+  contacts: { slug: 'vault:contacts', title: 'Vault → Contacts' },
+  chat: { slug: 'vault:chat', title: 'Vault → Chat' },
+  alerts: { slug: 'vault:alerts', title: 'Vault → Alerts' },
+};
+
 /** Step 10 — Vault with navigable demo nav */
-export const VaultScreen = () => {
+export const VaultScreen = ({ reportStep }: VaultScreenProps = {}) => {
   const [view, setView] = useState<VaultView>('vault');
+
+  // Attach feedback to the sub-view, not just the parent 'vault' step.
+  useEffect(() => {
+    const ctx = VIEW_FEEDBACK[view];
+    reportStep?.(ctx.slug, ctx.title);
+  }, [view, reportStep]);
 
   const navItems = [
     { label: 'Home', icon: <Public sx={{ fontSize: 20 }} />, target: 'home' as VaultView },

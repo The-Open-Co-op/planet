@@ -15,7 +15,7 @@ const steps: DemoStep[] = [
     slug: 'dashboard',
     title: 'Introducer Dashboard',
     subtitle: 'Overview of all introductions, stats, and outcomes',
-    screen: <DashboardScreen />,
+    screen: ({ reportStep }) => <DashboardScreen reportStep={reportStep} />,
     annotations: [
       {
         side: 'right', top: 17, category: 'ui',

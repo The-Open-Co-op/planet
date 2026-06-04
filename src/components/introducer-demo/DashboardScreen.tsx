@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Typography, Card, Chip, IconButton, TextField, Avatar } from '@mui/material';
 import { Handshake, Add, Star, CheckCircle, Waves, ExitToApp, ArrowBack, Lock, Send } from '@mui/icons-material';
 import { introductionHistory } from './mockData';
@@ -106,8 +106,21 @@ const InlineChatView = ({ intro, onBack }: { intro: IntroductionSummary; onBack:
   );
 };
 
-export const DashboardScreen = () => {
+interface DashboardScreenProps {
+  reportStep?: (slug: string, title: string) => void;
+}
+
+export const DashboardScreen = ({ reportStep }: DashboardScreenProps = {}) => {
   const [openIntro, setOpenIntro] = useState<IntroductionSummary | null>(null);
+
+  // Attach feedback to the sub-view (dashboard list vs an open intro chat).
+  useEffect(() => {
+    if (openIntro) {
+      reportStep?.('dashboard:chat', 'Introducer → Chat');
+    } else {
+      reportStep?.('dashboard', 'Introducer Dashboard');
+    }
+  }, [openIntro, reportStep]);
 
   if (openIntro) {
     return <InlineChatView intro={openIntro} onBack={() => setOpenIntro(null)} />;
