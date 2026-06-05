@@ -163,20 +163,63 @@ export const ContactCardDetailed = forwardRef<
 
 
 
-    const getRCardIcon = (cardType: RCardType) => {
-      const color = DEFAULT_PROFILE_CARDS.find(c => c.name === cardType)?.color || '#6b7280';
+    const getRCardColor = (cardType: RCardType) =>
+      DEFAULT_PROFILE_CARDS.find(c => c.name === cardType)?.color || '#6b7280';
+
+    const getRCardIcon = (cardType: RCardType, fontSize = 16) => {
+      const color = getRCardColor(cardType);
       switch (cardType) {
         case 'Business':
-          return <Business sx={{ fontSize: 16, color }} />;
+          return <Business sx={{ fontSize, color }} />;
         case 'Friends':
-          return <Groups sx={{ fontSize: 16, color }} />;
+          return <Groups sx={{ fontSize, color }} />;
         case 'Family':
-          return <FamilyRestroom sx={{ fontSize: 16, color }} />;
+          return <FamilyRestroom sx={{ fontSize, color }} />;
         case 'Community':
-          return <Public sx={{ fontSize: 16, color }} />;
+          return <Public sx={{ fontSize, color }} />;
         default:
           return null;
       }
+    };
+
+    /** Trust Profile pills — the relationship(s) this contact is connected through.
+     *  Shown in the list (demo/mobile) so the relationship is visible at a glance. */
+    const renderTrustProfilePills = () => {
+      if (contact.planetStatus?.value !== 'member' && contact.planetStatus?.value !== 'invited') {
+        return null;
+      }
+      const assigned = contact.rCardAssignments || [];
+      if (assigned.length === 0) return null;
+
+      return (
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.5 }}>
+          {assigned.map((assignment) => {
+            const color = getRCardColor(assignment.cardType);
+            return (
+              <Box
+                key={assignment.cardType}
+                sx={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 0.375,
+                  px: 0.625,
+                  py: 0.125,
+                  borderRadius: 1,
+                  border: '1px solid',
+                  borderColor: color,
+                  bgcolor: `${color}14`,
+                  flexShrink: 0,
+                }}
+              >
+                {getRCardIcon(assignment.cardType, 12)}
+                <Typography sx={{ fontSize: '0.6rem', fontWeight: 600, color, whiteSpace: 'nowrap' }}>
+                  {assignment.cardType}
+                </Typography>
+              </Box>
+            );
+          })}
+        </Box>
+      );
     };
 
     const renderCardAssignmentButtons = () => {
@@ -295,10 +338,10 @@ export const ContactCardDetailed = forwardRef<
           <Box sx={{display: "flex", alignItems: "center", gap: {xs: 0.5, md: 1}, mb: 0, justifyContent: {xs: "space-between", md: "flex-start"}}}>
             {renderContactName(name)}
             {renderIsMerged((contact.mergedFrom?.size ?? 0) > 0, theme)}
-            {isMobile && renderAccountFilers()}
           </Box>
 
           {renderJobTitleAndCompany(organization)}
+          {isMobile && renderTrustProfilePills()}
         </Box>
 
         {/* Second Column - Email & Phone */}

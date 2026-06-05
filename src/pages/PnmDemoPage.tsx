@@ -2,6 +2,7 @@ import { DemoPageShell } from '@/components/demo/DemoPageShell';
 import type { DemoStep } from '@/components/demo/DemoPageShell';
 
 import { HomeScreen } from '@/components/onboarding/HomeScreen';
+import { ContactsScreen } from '@/components/onboarding/ContactsScreen';
 import { EmojiVRCScreen } from '@/components/onboarding/EmojiVRCScreen';
 import { GroupChatScreen } from '@/components/onboarding/GroupChatScreen';
 import { VaultScreen } from '@/components/onboarding/VaultScreen';
@@ -33,6 +34,33 @@ const steps: DemoStep[] = [
   },
   {
     id: '02',
+    slug: 'contacts',
+    title: 'Contacts',
+    subtitle: 'Your network — filter by relationship, see the Trust Profiles you connect through',
+    screen: ({ goToStep }) => <ContactsScreen goToStep={goToStep} />,
+    annotations: [
+      {
+        side: 'right', top: 18, category: 'ui',
+        title: 'Filter by relationship',
+        description: 'Filter the list by relationship type (Trust Profile). A dropdown scales better than tags once a member has many relationship types.',
+        tag: 'UX',
+      },
+      {
+        side: 'left', top: 45, category: 'ui',
+        title: 'Trust Profiles at a glance',
+        description: "Each contact shows the Trust Profile(s) you're connected through — Friends, Family, Business, Community — so the relationship is visible without opening the contact.",
+        tag: 'UX',
+      },
+      {
+        side: 'right', top: 70, category: 'protocol',
+        title: 'Profiles from assignments',
+        description: 'Pills are rendered from each contact\'s rCardAssignments — the Trust Profiles (RCards) assigned when the connection was accepted or vouched.',
+        tag: 'Backend',
+      },
+    ],
+  },
+  {
+    id: '03',
     slug: 'reactions',
     title: 'Chat reactions',
     subtitle: 'Tap a message to react',
@@ -59,7 +87,7 @@ const steps: DemoStep[] = [
     ],
   },
   {
-    id: '03',
+    id: '04',
     slug: 'groups',
     title: 'Group Chat',
     subtitle: 'Create group chats — lightweight Verifiable Trust Communities',
@@ -80,7 +108,7 @@ const steps: DemoStep[] = [
     ],
   },
   {
-    id: '04',
+    id: '05',
     slug: 'vault',
     title: 'Vault',
     subtitle: 'Encrypted personal data vault — identity, credentials, and settings',
@@ -101,7 +129,7 @@ const steps: DemoStep[] = [
     ],
   },
   {
-    id: '05',
+    id: '06',
     slug: 'planet-apps',
     title: 'App Store',
     subtitle: 'Install additional apps to extend PLANET',
@@ -122,7 +150,7 @@ const steps: DemoStep[] = [
     ],
   },
   {
-    id: '06',
+    id: '07',
     slug: 'alerts',
     title: 'Alerts',
     subtitle: 'Vouches, connection requests, and system notifications',
@@ -149,7 +177,7 @@ const steps: DemoStep[] = [
     ],
   },
   {
-    id: '07',
+    id: '08',
     slug: 'feedback',
     title: '',
     subtitle: '',

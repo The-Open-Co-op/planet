@@ -1,4 +1,5 @@
 import type {Contact} from "@/types/contact";
+import type {RCardType} from "@/types/rcard";
 import type {SocialContact} from '@/.ldo/contact.typings';
 import type {Group} from "@/types/group";
 import {notificationService} from "./notificationService";
@@ -234,51 +235,33 @@ export const dataService = {
           // @ts-expect-error just mock
           contacts = contactsData.map((jsonContact) => processContactFromJSON(jsonContact, withIds));
           
-          // Add sample RCard assignments for testing - only for invited/member contacts
+          // Sample Trust Profile (RCard) assignments for the demo — keyed by
+          // contact @id. Spread across the list (incl. early names like Amanda
+          // and David) so the relationship pills are visible without scrolling.
+          const SAMPLE_ASSIGNMENTS: Record<string, RCardType[]> = {
+            'contact:1': ['Business', 'Community'],   // Sarah Mitchell
+            'contact:2': ['Friends'],                 // Michael Chen
+            'contact:3': ['Family', 'Friends'],       // Emily Rodriguez
+            'contact:4': ['Business'],                // David Thompson (invited)
+            'contact:5': ['Community'],               // Jessica Park
+            'contact:6': ['Business'],                // Robert Williams
+            'contact:7': ['Friends', 'Community'],    // Amanda Foster
+            'contact:8': ['Business'],                // James Liu
+            'contact:9': ['Family'],                  // Maria Gonzalez (invited)
+            'contact:10': ['Friends'],                // Thomas Anderson
+            'contact:11': ['Family', 'Community'],    // Linda Martinez
+          };
           if (contacts.length > 0) {
             contacts.forEach((contact) => {
-              // Only assign Trust Profiles to invited/member contacts
-              if (contact.planetStatus?.value === 'member' || contact.planetStatus?.value === 'invited') {
-                // Add different assignments based on contact ID for testing
-                if (contact['@id'] === 'contact:1') {
-                  contact.rCardAssignments = [
-                    {
-                      cardType: 'Business',
-                      assignedAt: new Date('2024-01-15'),
-                      assignedBy: 'current-user'
-                    },
-                    {
-                      cardType: 'Community',
-                      assignedAt: new Date('2024-02-01'), 
-                      assignedBy: 'current-user'
-                    }
-                  ];
-                } else if (contact['@id'] === 'contact:2') {
-                  contact.rCardAssignments = [
-                    {
-                      cardType: 'Friends',
-                      assignedAt: new Date('2024-01-20'),
-                      assignedBy: 'current-user'
-                    }
-                  ];
-                } else if (contact['@id'] === 'contact:3') {
-                  contact.rCardAssignments = [
-                    {
-                      cardType: 'Family',
-                      assignedAt: new Date('2024-01-25'),
-                      assignedBy: 'current-user'
-                    },
-                    {
-                      cardType: 'Friends',
-                      assignedAt: new Date('2024-02-10'),
-                      assignedBy: 'current-user'
-                    }
-                  ];
-                }
-              } else {
-                // Ensure non-invited contacts have no Trust Profile assignments
-                contact.rCardAssignments = [];
-              }
+              const id = contact['@id'] || '';
+              const isConnected = contact.planetStatus?.value === 'member' || contact.planetStatus?.value === 'invited';
+              // Only invited/member contacts can carry Trust Profile assignments.
+              const cardTypes = isConnected ? SAMPLE_ASSIGNMENTS[id] : undefined;
+              contact.rCardAssignments = (cardTypes || []).map((cardType, i) => ({
+                cardType,
+                assignedAt: new Date(2024, 0, 15 + i),
+                assignedBy: 'current-user',
+              }));
             });
           }
           

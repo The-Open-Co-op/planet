@@ -48,6 +48,7 @@ export const HomeScreen = ({ setDynamicAnnotations, goToStep, reportStep }: Home
 
   // Map app paths to demo step slugs where available
   const stepMap: Record<string, string> = {
+    '/contacts': 'contacts',
     '/settings': 'vault',
     '/apps': 'planet-apps',
   };
@@ -105,7 +106,12 @@ export const HomeScreen = ({ setDynamicAnnotations, goToStep, reportStep }: Home
         {navItems.map((item) => (
           <Box
             key={item.label}
-            onClick={() => { setView(item.target); setChatContactId(null); }}
+            onClick={() => {
+              // Contacts is now its own demo step — navigate there rather than in-frame.
+              if (item.target === 'contacts' && goToStep) { goToStep('contacts'); return; }
+              setView(item.target);
+              setChatContactId(null);
+            }}
             sx={{
               display: 'flex',
               flexDirection: 'column',
