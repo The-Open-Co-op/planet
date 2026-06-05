@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Box, Typography, TextField, Avatar, Card, Button, Checkbox } from '@mui/material';
-import { ArrowBack, Search, Send } from '@mui/icons-material';
+import { Box, Typography, TextField, Avatar, Card, Button, Checkbox, FormControl, Select, MenuItem } from '@mui/material';
+import { ArrowBack, Search, Send, Public, FamilyRestroom, Favorite, Business } from '@mui/icons-material';
 import { introMessage } from './mockData';
 import { dataService } from '@/services/dataService';
 import type { Contact } from '@/types/contact';
+import type { RCardType } from '@/types/rcard';
 import type { SocialContact } from '@/.ldo/contact.typings';
 import { resolveFrom } from '@/utils/contactUtils';
+import { useTrustProfiles } from '@/hooks/useTrustProfiles';
 import { DemoNav } from './DemoNav';
 
 const KEYBOARD_ROWS = [
@@ -14,10 +16,24 @@ const KEYBOARD_ROWS = [
   ['z','x','c','v','b','n','m'],
 ];
 
+const ICON_MAP: Record<string, React.ElementType> = {
+  Public,
+  FamilyRestroom,
+  Favorite,
+  Business,
+};
+
+// Trust Profiles a contact can actually be assigned to (matches RCardType).
+const ASSIGNABLE_PROFILES = new Set<RCardType>(['Friends', 'Family', 'Community', 'Business']);
+
 export const ComposeScreen = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [showKeyboard, setShowKeyboard] = useState(false);
+  const [profileFilter, setProfileFilter] = useState<string>('');
+  const { activeProfiles } = useTrustProfiles();
+  // Only offer profiles a contact can be assigned to as filter options.
+  const filterProfiles = activeProfiles.filter((p) => ASSIGNABLE_PROFILES.has(p.name as RCardType));
 
   useEffect(() => {
     dataService.getContacts().then((data) => {
@@ -40,6 +56,11 @@ export const ComposeScreen = () => {
   }, []);
 
   const selectedContacts = contacts.filter(c => selected.has(c['@id'] || ''));
+
+  // Filter the visible list by the chosen Trust Profile (assignment cardType).
+  const visibleContacts = profileFilter
+    ? contacts.filter(c => (c.rCardAssignments || []).some(a => a.cardType === profileFilter))
+    : contacts;
 
   const getName = (c: Contact) => resolveFrom(c as unknown as SocialContact, 'name')?.value || 'Unknown';
   const getInitials = (c: Contact) => {
@@ -75,12 +96,12 @@ export const ComposeScreen = () => {
         <Typography variant="body1" sx={{ fontWeight: 700 }}>New Introduction</Typography>
       </Box>
 
-      {/* Search */}
-      <Box sx={{ px: 2, pt: 1, pb: 0.5 }}>
+      {/* Search + Trust Profile filter */}
+      <Box sx={{ px: 2, pt: 1, pb: 0.5, display: 'flex', gap: 1, alignItems: 'center' }}>
         <TextField
-          fullWidth
           size="small"
           placeholder="Search..."
+          sx={{ flex: 1 }}
           slotProps={{
             input: {
               startAdornment: <Search sx={{ fontSize: 18, color: 'text.secondary', mr: 0.5 }} />,
@@ -88,11 +109,59 @@ export const ComposeScreen = () => {
             },
           }}
         />
+        <FormControl size="small" sx={{ minWidth: 132 }}>
+          <Select
+            value={profileFilter}
+            displayEmpty
+            onChange={(e) => setProfileFilter(e.target.value)}
+            sx={{ fontSize: '0.8rem' }}
+            renderValue={(value) => {
+              if (!value) return <Typography sx={{ fontSize: '0.8rem', color: 'text.secondary' }}>All profiles</Typography>;
+              const p = filterProfiles.find((fp) => fp.name === value);
+              const Icon = ICON_MAP[p?.icon || 'Public'] ?? Public;
+              return (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                  <Box sx={{ color: p?.color || '#6b7280', display: 'flex' }}>
+                    <Icon sx={{ fontSize: 16 }} />
+                  </Box>
+                  <Typography sx={{ color: p?.color || '#6b7280', fontWeight: 500, fontSize: '0.8rem' }}>
+                    {value}
+                  </Typography>
+                </Box>
+              );
+            }}
+          >
+            <MenuItem value="">
+              <Typography sx={{ fontSize: '0.85rem' }}>All Profiles</Typography>
+            </MenuItem>
+            {filterProfiles.map((p) => {
+              const Icon = ICON_MAP[p.icon || 'Public'] ?? Public;
+              const color = p.color || '#6b7280';
+              return (
+                <MenuItem key={p.id} value={p.name}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box sx={{ color, display: 'flex' }}>
+                      <Icon sx={{ fontSize: 18 }} />
+                    </Box>
+                    <Typography sx={{ color, fontWeight: 500, fontSize: '0.85rem' }}>
+                      {p.name}
+                    </Typography>
+                  </Box>
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </FormControl>
       </Box>
 
       {/* Contacts list — shrinks when keyboard is open */}
       <Box sx={{ flex: `0 1 ${showKeyboard ? 180 : 220}px`, overflow: 'auto', borderBottom: '1px solid', borderColor: 'divider', transition: 'flex-basis 0.2s' }}>
-        {contacts.map((contact) => {
+        {profileFilter && visibleContacts.length === 0 && (
+          <Typography sx={{ px: 2, py: 2, fontSize: '0.78rem', color: 'text.secondary', textAlign: 'center' }}>
+            No contacts in this Trust Profile yet.
+          </Typography>
+        )}
+        {visibleContacts.map((contact) => {
           const name = getName(contact);
           const initials = getInitials(contact);
           const contactId = contact['@id'] || '';
