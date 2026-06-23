@@ -42,7 +42,7 @@ const steps: DemoStep[] = [
     slug: 'welcome',
     title: 'Welcome to Feeds',
     subtitle: 'Your own algorithm, on your terms',
-    screen: ({ goToStep }) => <FeedWelcomeScreen onContinue={() => goToStep('settings')} />,
+    screen: ({ goToStep }) => <FeedWelcomeScreen onContinue={() => goToStep('add-follow')} />,
     annotations: [
       {
         side: 'left', top: 19.5, category: 'ui',
@@ -60,6 +60,35 @@ const steps: DemoStep[] = [
   },
   {
     id: '03',
+    slug: 'add-follow',
+    title: 'Find to follow',
+    subtitle: 'Browse contacts, public profiles, blogs and external RSS',
+    screen: ({ goToStep }) => (
+      <AddFollowScreen onBack={() => goToStep('welcome')} />
+    ),
+    annotations: [
+      {
+        side: 'left', top: 16.75, category: 'ui',
+        title: 'Search for sources to follow',
+        description: "Contacts filters Maya's PNM vault instantly. Web hits external indexes — type a query (try permaculture or co-ops) and tap Go.",
+        tag: 'UX',
+      },
+      {
+        side: 'left', top: 72, category: 'ui',
+        title: 'Hashtag scoping at follow time',
+        description: 'Tapping Follow opens a popup with options to follow all posts, or scope the follow to specific hashtags.',
+        tag: 'UX',
+      },
+      {
+        side: 'right', top: 28, category: 'protocol',
+        title: 'Contacts are local, web is network',
+        description: "Contacts live in the PNM vault — instant filter. Web searches fire a query at Murmurations (PLANET profiles + FP blogs) and FeedSearch.dev / Feedly (RSS).",
+        tag: 'Backend',
+      },
+    ],
+  },
+  {
+    id: '04',
     slug: 'settings',
     title: 'Feed Settings',
     subtitle: 'Pick the feed · tune the mix · choose who you follow',
@@ -92,35 +121,6 @@ const steps: DemoStep[] = [
         side: 'right', top: 82.5, category: 'protocol',
         title: 'Content mix is an independent axis',
         description: 'Sliders define the mix of content types the feed displays - applied at compose time, not at follow time. Recommendations come from shares, Opportunities come from Offers / Wants (demo TBD).',
-        tag: 'Backend',
-      },
-    ],
-  },
-  {
-    id: '04',
-    slug: 'add-follow',
-    title: 'Find to follow',
-    subtitle: 'Browse contacts, public profiles, blogs and external RSS',
-    screen: ({ goToStep }) => (
-      <AddFollowScreen onBack={() => goToStep('settings')} />
-    ),
-    annotations: [
-      {
-        side: 'left', top: 16.75, category: 'ui',
-        title: 'Search for sources to follow',
-        description: "Contacts filters Maya's PNM vault instantly. Web hits external indexes — type a query (try permaculture or co-ops) and tap Go.",
-        tag: 'UX',
-      },
-      {
-        side: 'left', top: 72, category: 'ui',
-        title: 'Hashtag scoping at follow time',
-        description: 'Tapping Follow opens a popup with options to follow all posts, or scope the follow to specific hashtags.',
-        tag: 'UX',
-      },
-      {
-        side: 'right', top: 28, category: 'protocol',
-        title: 'Contacts are local, web is network',
-        description: "Contacts live in the PNM vault — instant filter. Web searches fire a query at Murmurations (PLANET profiles + FP blogs) and FeedSearch.dev / Feedly (RSS).",
         tag: 'Backend',
       },
     ],

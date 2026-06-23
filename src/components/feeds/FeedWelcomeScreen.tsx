@@ -72,7 +72,7 @@ export const FeedWelcomeScreen = ({ onContinue }: FeedWelcomeScreenProps) => (
           '&:hover': { bgcolor: '#0052a3' },
         }}
       >
-        Set up your first feed
+        Find sources to follow
       </Button>
     </Box>
   </Box>
