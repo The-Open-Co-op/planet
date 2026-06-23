@@ -107,8 +107,9 @@ export const HomeScreen = ({ setDynamicAnnotations, goToStep, reportStep }: Home
           <Box
             key={item.label}
             onClick={() => {
-              // Contacts is now its own demo step — navigate there rather than in-frame.
+              // Contacts and Chat are now their own demo steps — navigate there rather than in-frame.
               if (item.target === 'contacts' && goToStep) { goToStep('contacts'); return; }
+              if (item.target === 'chat' && goToStep) { goToStep('chat'); return; }
               setView(item.target);
               setChatContactId(null);
             }}

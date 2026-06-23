@@ -35,7 +35,7 @@ import {
   FloatingActions
 } from '@/components/contacts';
 import {useMergeContacts} from "@/hooks/contacts/useMergeContacts.ts";
-import {useForceMobile} from "@/components/demo/DemoContext";
+import {useForceMobile, useOnboardingDemo} from "@/components/demo/DemoContext";
 
 interface ContactListPageProps {
   /** When true, hides manage/add buttons, relationship filter, My Profiles card, and greys out non-connected contacts */
@@ -46,6 +46,7 @@ interface ContactListPageProps {
 
 const ContactListPage = ({ onboardingMode = false, connectedContactIds: _connectedContactIds = [] }: ContactListPageProps) => {
   const forceMobile = useForceMobile();
+  const onboardingDemo = useOnboardingDemo();
   const mobileDisplay = forceMobile ? 'none' : { xs: 'none', md: 'inline' };
   const currentUserGroupIds = useMemo(() => ['group1', 'group2', 'group3'], []);
   const navigate = useNavigate();
@@ -205,12 +206,15 @@ const ContactListPage = ({ onboardingMode = false, connectedContactIds: _connect
   };
 
   const handleAddContact = () => {
-    navigate('/contacts/create');
+    // In the demo phone frame, stay in-frame instead of routing to a full page.
+    if (onboardingDemo.active) onboardingDemo.onAddContact?.();
+    else navigate('/contacts/create');
     handleAddMenuClose();
   };
 
   const handleImportContacts = () => {
-    navigate('/import');
+    if (onboardingDemo.active) onboardingDemo.onImport?.();
+    else navigate('/import');
     handleAddMenuClose();
   };
 

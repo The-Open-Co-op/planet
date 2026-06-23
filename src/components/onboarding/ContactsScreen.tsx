@@ -1,10 +1,14 @@
 import { useState } from 'react';
-import { Box, Typography } from '@mui/material';
-import { Public, People, ChatBubble, Notifications } from '@mui/icons-material';
+import { Box, Typography, IconButton } from '@mui/material';
+import { Public, People, ChatBubble, Notifications, ArrowBack } from '@mui/icons-material';
 import { OnboardingDemoProvider } from '@/components/demo/DemoContext';
 import ContactListPage from '@/pages/ContactListPage';
 import ContactViewPage from '@/pages/ContactViewPage';
+import CreateContactPage from '@/pages/CreateContactPage';
+import { ImportScreen } from '@/components/onboarding/ImportScreen';
 import { ChatView } from '@/components/chat/ChatView';
+
+type SubView = 'create' | 'import' | null;
 
 interface ContactsScreenProps {
   goToStep?: (slug: string) => void;
@@ -14,7 +18,7 @@ interface ContactsScreenProps {
 const NAV_ITEMS = [
   { label: 'Home', icon: <Public sx={{ fontSize: 20 }} />, target: 'home' },
   { label: 'Contacts', icon: <People sx={{ fontSize: 20 }} />, target: 'contacts' },
-  { label: 'Chat', icon: <ChatBubble sx={{ fontSize: 20 }} />, target: 'reactions' },
+  { label: 'Chat', icon: <ChatBubble sx={{ fontSize: 20 }} />, target: 'chat' },
   { label: 'Alerts', icon: <Notifications sx={{ fontSize: 20 }} />, target: 'alerts' },
 ];
 
@@ -24,8 +28,11 @@ const NAV_ITEMS = [
 export const ContactsScreen = ({ goToStep }: ContactsScreenProps = {}) => {
   const [selectedContactId, setSelectedContactId] = useState<string | null>(null);
   const [chatContactId, setChatContactId] = useState<string | null>(null);
+  const [subView, setSubView] = useState<SubView>(null);
 
-  const clearDetail = () => { setSelectedContactId(null); setChatContactId(null); };
+  const clearDetail = () => { setSelectedContactId(null); setChatContactId(null); setSubView(null); };
+
+  const hasDetail = Boolean(selectedContactId || chatContactId || subView);
 
   return (
     <OnboardingDemoProvider
@@ -33,13 +40,31 @@ export const ContactsScreen = ({ goToStep }: ContactsScreenProps = {}) => {
       hideMe={false}
       onContactClick={(id) => setSelectedContactId(id)}
       onChatClick={(id) => setChatContactId(id)}
+      onAddContact={() => setSubView('create')}
+      onImport={() => setSubView('import')}
     >
       <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-        <Box sx={{ flex: 1, overflow: 'auto', mb: (selectedContactId || chatContactId) ? 0 : -2 }}>
+        <Box sx={{ flex: 1, overflow: 'auto', mb: hasDetail ? 0 : -2 }}>
           {chatContactId ? (
             <ChatView contactId={chatContactId} onBack={clearDetail} />
           ) : selectedContactId ? (
             <ContactViewPage contactId={selectedContactId} onBack={() => setSelectedContactId(null)} />
+          ) : subView === 'create' ? (
+            <CreateContactPage
+              onBack={() => setSubView(null)}
+              onSaved={(id) => { setSubView(null); setSelectedContactId(id); }}
+            />
+          ) : subView === 'import' ? (
+            <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <Box sx={{ px: 1, pt: 1 }}>
+                <IconButton size="small" onClick={() => setSubView(null)}>
+                  <ArrowBack sx={{ fontSize: 20 }} />
+                </IconButton>
+              </Box>
+              <Box sx={{ flex: 1, overflow: 'auto' }}>
+                <ImportScreen onImport={() => setSubView(null)} />
+              </Box>
+            </Box>
           ) : (
             <ContactListPage />
           )}

@@ -3,6 +3,7 @@ import type { DemoStep } from '@/components/demo/DemoPageShell';
 
 import { HomeScreen } from '@/components/onboarding/HomeScreen';
 import { ContactsScreen } from '@/components/onboarding/ContactsScreen';
+import { ChatsScreen } from '@/components/onboarding/ChatsScreen';
 import { EmojiVRCScreen } from '@/components/onboarding/EmojiVRCScreen';
 import { GroupChatScreen } from '@/components/onboarding/GroupChatScreen';
 import { VaultScreen } from '@/components/onboarding/VaultScreen';
@@ -61,6 +62,33 @@ const steps: DemoStep[] = [
   },
   {
     id: '03',
+    slug: 'chat',
+    title: 'Chat',
+    subtitle: 'Your conversations — start a new chat or open an existing one',
+    screen: ({ goToStep }) => <ChatsScreen goToStep={goToStep} />,
+    annotations: [
+      {
+        side: 'right', top: 18, category: 'ui',
+        title: 'Start a new chat',
+        description: 'Tap + to start a 1:1 chat or create a group. Picking a PLANET member opens the conversation in-frame — no page reload.',
+        tag: 'UX',
+      },
+      {
+        side: 'left', top: 50, category: 'ui',
+        title: 'Conversation list',
+        description: 'All your DMs and group chats in one place, newest first. Tap any row to open the thread.',
+        tag: 'UX',
+      },
+      {
+        side: 'right', top: 70, category: 'protocol',
+        title: 'DIDComm channels',
+        description: 'Each conversation runs over an end-to-end encrypted DIDComm channel keyed to the participants\' DIDs — messages render from the local vault.',
+        tag: 'Backend',
+      },
+    ],
+  },
+  {
+    id: '04',
     slug: 'reactions',
     title: 'Chat reactions',
     subtitle: 'Tap a message to react',
@@ -87,7 +115,7 @@ const steps: DemoStep[] = [
     ],
   },
   {
-    id: '04',
+    id: '05',
     slug: 'groups',
     title: 'Group Chat',
     subtitle: 'Create group chats — lightweight Verifiable Trust Communities',
@@ -108,7 +136,7 @@ const steps: DemoStep[] = [
     ],
   },
   {
-    id: '05',
+    id: '06',
     slug: 'vault',
     title: 'Vault',
     subtitle: 'Encrypted personal data vault — identity, credentials, and settings',
@@ -129,7 +157,7 @@ const steps: DemoStep[] = [
     ],
   },
   {
-    id: '06',
+    id: '07',
     slug: 'planet-apps',
     title: 'App Store',
     subtitle: 'Install additional apps to extend PLANET',
@@ -150,7 +178,7 @@ const steps: DemoStep[] = [
     ],
   },
   {
-    id: '07',
+    id: '08',
     slug: 'alerts',
     title: 'Alerts',
     subtitle: 'Vouches, connection requests, and system notifications',
@@ -177,7 +205,7 @@ const steps: DemoStep[] = [
     ],
   },
   {
-    id: '08',
+    id: '09',
     slug: 'feedback',
     title: '',
     subtitle: '',

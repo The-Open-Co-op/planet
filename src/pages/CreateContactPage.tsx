@@ -10,7 +10,14 @@ import {Contact} from "@/types/contact.ts";
 import type {SocialContact} from '@/.ldo/contact.typings';
 import {contactCommonProperties, contactLdSetProperties} from "@/utils/contactUtils.ts";
 
-const CreateContactPage = () => {
+interface CreateContactPageProps {
+  /** When set (e.g. inside the demo phone frame), called instead of routing back to /contacts */
+  onBack?: () => void;
+  /** When set, called with the new contact id instead of navigating to its full page */
+  onSaved?: (contactId: string) => void;
+}
+
+const CreateContactPage = ({ onBack, onSaved }: CreateContactPageProps = {}) => {
   const navigate = useNavigate();
   const isNextgraph = isNextGraphEnabled();
   const {createContact} = useSaveContacts();
@@ -45,9 +52,11 @@ const CreateContactPage = () => {
     }
 
     const newContact = !isNextgraph ? await dataService.addContact(contact) : await createContact(contact);
-    navigate(`/contacts/${newContact!["@id"]}`);
+    const newId = newContact!["@id"];
     dataService.removeDraftContact();
-  }, [contact, createContact, isNextgraph, navigate]);
+    if (onSaved && newId) onSaved(newId);
+    else navigate(`/contacts/${newId}`);
+  }, [contact, createContact, isNextgraph, navigate, onSaved]);
 
   const resetContact = useCallback(() => {
     dataService.removeDraftContact();
@@ -55,7 +64,8 @@ const CreateContactPage = () => {
   }, [initContact])
 
   const handleBack = async () => {
-    navigate("/contacts");
+    if (onBack) onBack();
+    else navigate("/contacts");
   };
 
   return (

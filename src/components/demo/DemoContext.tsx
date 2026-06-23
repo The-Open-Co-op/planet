@@ -29,6 +29,10 @@ interface OnboardingDemoState {
   onContactClick?: (contactId: string) => void;
   /** Override chat click — if set, clicking Chat calls this instead of navigating */
   onChatClick?: (contactId: string) => void;
+  /** Override the "Add Contact" action — if set, calls this instead of navigating */
+  onAddContact?: () => void;
+  /** Override the "Import Contacts" action — if set, calls this instead of navigating */
+  onImport?: () => void;
 }
 
 const OnboardingDemoContext = createContext<OnboardingDemoState>({
@@ -42,15 +46,19 @@ export const OnboardingDemoProvider = ({
   hideMe = true,
   onContactClick,
   onChatClick,
+  onAddContact,
+  onImport,
   children,
 }: {
   connectedContactIds: string[];
   hideMe?: boolean;
   onContactClick?: (contactId: string) => void;
   onChatClick?: (contactId: string) => void;
+  onAddContact?: () => void;
+  onImport?: () => void;
   children: React.ReactNode;
 }) => (
-  <OnboardingDemoContext.Provider value={{ active: true, connectedContactIds, hideMe, onContactClick, onChatClick }}>
+  <OnboardingDemoContext.Provider value={{ active: true, connectedContactIds, hideMe, onContactClick, onChatClick, onAddContact, onImport }}>
     {children}
   </OnboardingDemoContext.Provider>
 );
