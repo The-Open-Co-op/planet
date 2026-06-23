@@ -150,7 +150,7 @@ const steps: DemoStep[] = [
       {
         side: 'left', top: 45.5, category: 'ui',
         title: 'Per-post controls',
-        description: 'Post can be editted and deleted. Settings live up in the top-right.',
+        description: 'Post can be edited and deleted. Settings live up in the top-right.',
         tag: 'UX',
       },
       {
@@ -220,13 +220,13 @@ const steps: DemoStep[] = [
         tag: 'UX',
       },
       {
-        side: 'right', top: 26.25, category: 'ui',
+        side: 'right', top: 24.75, category: 'ui',
         title: 'Verified badge → tap for proof',
         description: "Tap the badge to see the DID and signature, verified against the DID resolver.",
         tag: 'UX',
       },
       {
-        side: 'right', top: 39.5, category: 'ui',
+        side: 'right', top: 41, category: 'ui',
         title: 'Contact opens in a popup',
         description: "Contact is open to anyone — no PLANET account needed. The form opens inline as a popup so the visitor doesn't leave the blog. Rate-limited + honeypot.",
         tag: 'UX',

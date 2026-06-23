@@ -58,7 +58,8 @@ export const ConversationList = ({ onConversationClick }: { onConversationClick?
     setSelectedMemberIds([]);
     setGroupName('');
     setGroupPhoto(null);
-    navigate(`/chat/${conv.contactId}`);
+    if (onConversationClick) onConversationClick(conv.contactId);
+    else navigate(`/chat/${conv.contactId}`);
   };
 
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -284,7 +285,10 @@ export const ConversationList = ({ onConversationClick }: { onConversationClick?
             renderMemberRow(contact, {
               onClick: () => {
                 setScreen('list');
-                navigate(`/chat/${contact['@id']}`);
+                const id = contact['@id'];
+                if (!id) return;
+                if (onConversationClick) onConversationClick(id);
+                else navigate(`/chat/${id}`);
               },
             })
           )}

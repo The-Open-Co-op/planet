@@ -91,7 +91,7 @@ const steps: DemoStep[] = [
       {
         side: 'right', top: 82.5, category: 'protocol',
         title: 'Content mix is an independent axis',
-        description: 'Sliders define the mix of content types the feed displays - applied at compose time, not at follow time. Reccomendations come from shares, Opportunities come from Offers / Wants (demo TBD).',
+        description: 'Sliders define the mix of content types the feed displays - applied at compose time, not at follow time. Recommendations come from shares, Opportunities come from Offers / Wants (demo TBD).',
         tag: 'Backend',
       },
     ],
