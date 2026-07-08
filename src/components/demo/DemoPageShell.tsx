@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, IconButton, useMediaQuery } from '@mui/material';
 import { ChevronLeft, ChevronRight, DesktopWindows, ArrowBack } from '@mui/icons-material';
@@ -72,6 +72,26 @@ export const DemoPageShell = ({ title: _title, subtitle: _subtitle, basePath, st
     : 0;
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [dynamicAnnotations, setDynamicAnnotations] = useState<AnnotationWithCategory[] | null>(null);
+
+  // Scale the phone + annotations cluster to fit narrow / small screens so the
+  // side annotations never clip. 1:1 on wide screens, shrinks to fit below that.
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el) return;
+    const DESIGN_W = 950; // phone (375) + two 270px annotation columns + gaps
+    const DESIGN_H = 700; // phone height (667) + breathing room
+    const fit = () => {
+      const { width, height } = el.getBoundingClientRect();
+      if (!width || !height) return;
+      setScale(Math.min(width / DESIGN_W, height / DESIGN_H, 1));
+    };
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   useEffect(() => {
     if (stepSlug) {
@@ -234,14 +254,19 @@ export const DemoPageShell = ({ title: _title, subtitle: _subtitle, basePath, st
       </Box>
 
       {/* Phone + Annotations */}
-      <Box sx={{
+      <Box ref={stageRef} sx={{
         flex: 1,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         minHeight: 0,
+        overflow: 'hidden',
       }}>
-        <Box sx={{ position: 'relative' }}>
+        <Box sx={{
+          position: 'relative',
+          transform: `scale(${scale})`,
+          transformOrigin: 'center center',
+        }}>
           <PhoneFrame key={step.slug}>
             {typeof step.screen === 'function' ? step.screen({ goToStep, setDynamicAnnotations, reportStep }) : step.screen}
           </PhoneFrame>
