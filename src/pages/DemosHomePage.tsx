@@ -66,7 +66,7 @@ const DemoCard = ({ title, subtitle, description, icon, path, parentSlug, stepCo
 };
 
 const DemosHomePage = () => {
-  const isMobile = useMediaQuery('(max-width:900px)');
+  const isMobile = useMediaQuery('(max-width:600px)');
 
   if (isMobile) {
     return (
