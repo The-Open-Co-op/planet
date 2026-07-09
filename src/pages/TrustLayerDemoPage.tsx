@@ -180,7 +180,27 @@ const TrustLayerDemoPage = () => {
             an audit trail of who issues whom a PHC — providing a mechanism to exclude
             unwanted bots and their promoters.
           </Typography>
-          <Typography variant="body2" sx={{ mt: 2 }}>
+
+          <Box sx={{ mt: 3 }}>
+            <Box
+              component="img"
+              src="/images/phc-enrollment-usage.png"
+              alt="Illustration of enrollment and usage of a personhood credential"
+              sx={{
+                width: '100%',
+                height: 'auto',
+                borderRadius: 2,
+                border: '1px solid',
+                borderColor: 'divider',
+                bgcolor: 'background.paper',
+              }}
+            />
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1, textAlign: 'center' }}>
+              Illustration of enrollment and usage of a personhood credential
+            </Typography>
+          </Box>
+
+          <Typography variant="body2" sx={{ mt: 3 }}>
             <BlueLink href={PHC_DOC}>Read more about personhood credentials →</BlueLink>
           </Typography>
         </Section>

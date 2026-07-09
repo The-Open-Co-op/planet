@@ -11,9 +11,9 @@ import {
   SectionEyebrow,
   SectionHeading,
   OrgValueLine,
-  ScreenHeader,
   OC_BLUE,
 } from '@/components/trust-demo/sectionKit';
+import { MobileWebScreen } from '@/components/trust-demo/MobileWebScreen';
 
 const stepLabelSx = {
   color: 'text.secondary',
@@ -52,7 +52,7 @@ export default function JourneyGreens() {
       <SectionEyebrow>Journey 1 — Joining a Community</SectionEyebrow>
       <SectionHeading>Greens Grocery Co-op</SectionHeading>
 
-      <Typography variant="body1" sx={{ color: 'text.secondary', maxWidth: 680 }}>
+      <Typography variant="body1" sx={{ color: 'text.secondary' }}>
         Sarah wants to join Greens Grocery Co-op, a member-owned grocery in Bristol — membership
         gets her a vote on what they stock and member pricing. Greens Grocery is open to anyone, but
         members of other cooperative organisations get fast-tracked past the waiting list.
@@ -79,22 +79,22 @@ export default function JourneyGreens() {
         }
       >
         <PhoneFrame>
-          <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <ScreenHeader org="Greens Grocery Co-op" strap="Join us" />
-            <Box sx={{ flex: 1, overflow: 'auto', p: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-              <Typography variant="body2" sx={{ color: 'text.primary' }}>
-                Join Green's Grocery Co-op to have your say on what we stock and access member
-                pricing — big discounts for bulk orders. Membership is open to all. Members of other
-                cooperative organisations get fast-track approval.
-              </Typography>
-              <Button variant="contained" fullWidth startIcon={<Check />} sx={primaryBtnSx}>
-                Join with my co-op membership
-              </Button>
-              <Button variant="outlined" fullWidth startIcon={<Add />} sx={secondaryBtnSx}>
-                Apply as a new member
-              </Button>
-            </Box>
-          </Box>
+          <MobileWebScreen url="greensgrocery.coop/join" siteName="Greens Grocery Co-op">
+            <Typography variant="h6" sx={{ fontWeight: 800, mb: 0.5 }}>
+              Join us
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'text.primary' }}>
+              Join Green's Grocery Co-op to have your say on what we stock and access member
+              pricing — big discounts for bulk orders. Membership is open to all. Members of other
+              cooperative organisations get fast-track approval.
+            </Typography>
+            <Button variant="contained" fullWidth startIcon={<Check />} sx={primaryBtnSx}>
+              Join with my co-op membership
+            </Button>
+            <Button variant="outlined" fullWidth startIcon={<Add />} sx={secondaryBtnSx}>
+              Apply as a new member
+            </Button>
+          </MobileWebScreen>
         </PhoneFrame>
       </FlankedPhone>
 
