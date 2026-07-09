@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useState, type ReactNode} from 'react';
 import {useNextGraphAuth, useResource, useSubject} from '@/lib/nextgraph';
 import {isNextGraphEnabled} from '@/utils/featureFlags';
 import {
@@ -18,11 +18,12 @@ import {SocialContactShapeType} from "@/.ldo/contact.shapeTypes";
 import {mockPersonhoodCredentials, socialContactToProfileData} from "@/mocks/profile";
 
 
-export const AccountPageContent = ({handleLogout: externalHandleLogout}: AccountPageProps) => {
+export const AccountPageContent = ({handleLogout: externalHandleLogout, topContent}: AccountPageProps) => {
   const [personhoodCredentials] = useState<PersonhoodCredentials>(mockPersonhoodCredentials);
 
   return (
     <StandardPage title="Vault">
+      {topContent}
       {/* Account Settings Content (My Cards functionality moved to contacts) */}
       <Box>
         <AccountSettings 
@@ -74,16 +75,16 @@ const NextGraphAccountPage = () => {
   return <AccountPageContent profileData={profileData} handleLogout={handleLogout} isNextGraph={true}/>;
 };
 
-const MockAccountPage = () => {
-  return <AccountPageContent isNextGraph={false}/>;
+const MockAccountPage = ({topContent}: {topContent?: ReactNode}) => {
+  return <AccountPageContent isNextGraph={false} topContent={topContent}/>;
 };
 
-export const AccountPage = () => {
+export const AccountPage = ({topContent}: {topContent?: ReactNode} = {}) => {
   const isNextGraph = isNextGraphEnabled();
 
   if (isNextGraph) {
     return <NextGraphAccountPage/>;
   }
 
-  return <MockAccountPage/>;
+  return <MockAccountPage topContent={topContent}/>;
 };

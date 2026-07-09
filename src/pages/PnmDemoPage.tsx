@@ -143,13 +143,13 @@ const steps: DemoStep[] = [
     screen: ({ reportStep }) => <VaultScreen reportStep={reportStep} />,
     annotations: [
       {
-        side: 'left', top: 25, category: 'ui',
+        side: 'left', top: 37, category: 'ui',
         title: 'Encrypted local vault',
         description: "Data is stored in the members' encrypted local vault, anchored to their DID. In order for PLANET to continue to function if a device is offline members need a Verifiable Trust Agent (VTA). We assign members to the PLANET VTA by default to simplify onboarding.",
         tag: 'UX',
       },
       {
-        side: 'right', top: 55, category: 'ui',
+        side: 'right', top: 67, category: 'ui',
         title: 'Select your Verifiable Trust Agent provider',
         description: "Members can choose their Verifiable Trust Agent (VTA) and backup hosting provider and can switch providers at anytime. Members' identity and connections stay with them — they're in the app, not on the provider's servers.",
         tag: 'UX',

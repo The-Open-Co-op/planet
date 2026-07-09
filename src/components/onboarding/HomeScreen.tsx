@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Box, Typography } from '@mui/material';
-import { Public, People, ChatBubble, Notifications } from '@mui/icons-material';
+import { Box } from '@mui/material';
+import { DemoTabBar } from '@/components/onboarding/DemoTabBar';
+import type { DemoTab } from '@/components/onboarding/DemoTabBar';
 import AppsPage from '@/pages/AppsPage';
 import ContactListPage from '@/pages/ContactListPage';
 import { ConversationList } from '@/components/chat/ConversationList';
@@ -67,12 +68,21 @@ export const HomeScreen = ({ setDynamicAnnotations, goToStep, reportStep }: Home
     else if (path === '/settings') setView('vault');
   };
 
-  const navItems = [
-    { label: 'Home', icon: <Public sx={{ fontSize: 20 }} />, target: 'home' as HomeView },
-    { label: 'Contacts', icon: <People sx={{ fontSize: 20 }} />, target: 'contacts' as HomeView },
-    { label: 'Chat', icon: <ChatBubble sx={{ fontSize: 20 }} />, target: 'chat' as HomeView },
-    { label: 'Alerts', icon: <Notifications sx={{ fontSize: 20 }} />, target: 'alerts' as HomeView },
-  ];
+  const handleTab = (t: DemoTab) => {
+    // Contacts and Chat are their own demo steps — navigate there rather than in-frame.
+    if (goToStep && (t === 'contacts' || t === 'chat')) {
+      goToStep(t);
+      setChatContactId(null);
+      return;
+    }
+    setView(t);
+    setChatContactId(null);
+  };
+
+  const activeTab: DemoTab | undefined =
+    view === 'home' || view === 'contacts' || view === 'chat' || view === 'alerts' || view === 'vault'
+      ? view
+      : undefined;
 
   const renderView = () => {
     switch (view) {
@@ -93,42 +103,7 @@ export const HomeScreen = ({ setDynamicAnnotations, goToStep, reportStep }: Home
       <Box sx={{ flex: 1, overflow: 'auto', mb: (view === 'home' || chatContactId) ? 0 : -2 }}>
         {renderView()}
       </Box>
-      <Box sx={{
-        display: 'flex',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        borderTop: '1px solid',
-        borderColor: 'divider',
-        bgcolor: 'background.default',
-        py: 0.75,
-        flexShrink: 0,
-      }}>
-        {navItems.map((item) => (
-          <Box
-            key={item.label}
-            onClick={() => {
-              // Contacts and Chat are now their own demo steps — navigate there rather than in-frame.
-              if (item.target === 'contacts' && goToStep) { goToStep('contacts'); return; }
-              if (item.target === 'chat' && goToStep) { goToStep('chat'); return; }
-              setView(item.target);
-              setChatContactId(null);
-            }}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              color: view === item.target ? 'primary.main' : 'text.secondary',
-              cursor: 'pointer',
-              '&:hover': { color: 'primary.main' },
-            }}
-          >
-            {item.icon}
-            <Typography sx={{ fontSize: '0.55rem', mt: 0.25, fontWeight: view === item.target ? 600 : 400 }}>
-              {item.label}
-            </Typography>
-          </Box>
-        ))}
-      </Box>
+      <DemoTabBar active={activeTab} onSelect={handleTab} />
     </Box>
   );
 };

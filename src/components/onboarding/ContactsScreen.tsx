@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { Box, Typography, IconButton } from '@mui/material';
-import { Public, People, ChatBubble, Notifications, ArrowBack } from '@mui/icons-material';
+import { Box, IconButton } from '@mui/material';
+import { ArrowBack } from '@mui/icons-material';
+import { DemoTabBar } from '@/components/onboarding/DemoTabBar';
+import type { DemoTab } from '@/components/onboarding/DemoTabBar';
 import { OnboardingDemoProvider } from '@/components/demo/DemoContext';
 import ContactListPage from '@/pages/ContactListPage';
 import ContactViewPage from '@/pages/ContactViewPage';
@@ -14,14 +16,6 @@ interface ContactsScreenProps {
   goToStep?: (slug: string) => void;
 }
 
-/** Bottom-nav targets — map each tab to a real PNM demo step where one exists. */
-const NAV_ITEMS = [
-  { label: 'Home', icon: <Public sx={{ fontSize: 20 }} />, target: 'home' },
-  { label: 'Contacts', icon: <People sx={{ fontSize: 20 }} />, target: 'contacts' },
-  { label: 'Chat', icon: <ChatBubble sx={{ fontSize: 20 }} />, target: 'chat' },
-  { label: 'Alerts', icon: <Notifications sx={{ fontSize: 20 }} />, target: 'alerts' },
-];
-
 /** Standalone Contacts step — the full contacts list with the PNM bottom nav.
  *  Split out from the Home screen so feedback attaches to its own step.
  *  Tapping a contact opens its detail in-frame (not a full-page route). */
@@ -31,6 +25,12 @@ export const ContactsScreen = ({ goToStep }: ContactsScreenProps = {}) => {
   const [subView, setSubView] = useState<SubView>(null);
 
   const clearDetail = () => { setSelectedContactId(null); setChatContactId(null); setSubView(null); };
+
+  const handleTab = (t: DemoTab) => {
+    // Already on Contacts — return to the list if a detail is open; else navigate.
+    if (t === 'contacts') { clearDetail(); return; }
+    goToStep?.(t);
+  };
 
   const hasDetail = Boolean(selectedContactId || chatContactId || subView);
 
@@ -69,46 +69,7 @@ export const ContactsScreen = ({ goToStep }: ContactsScreenProps = {}) => {
             <ContactListPage />
           )}
         </Box>
-        <Box sx={{
-          display: 'flex',
-          justifyContent: 'space-around',
-          alignItems: 'center',
-          borderTop: '1px solid',
-          borderColor: 'divider',
-          bgcolor: 'background.default',
-          py: 0.75,
-          flexShrink: 0,
-        }}>
-          {NAV_ITEMS.map((item) => {
-            const active = item.label === 'Contacts';
-            return (
-              <Box
-                key={item.label}
-                onClick={() => {
-                  if (active) {
-                    // Already on Contacts — return to the list if a detail is open.
-                    clearDetail();
-                    return;
-                  }
-                  goToStep?.(item.target);
-                }}
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  color: active ? 'primary.main' : 'text.secondary',
-                  cursor: 'pointer',
-                  '&:hover': { color: 'primary.main' },
-                }}
-              >
-                {item.icon}
-                <Typography sx={{ fontSize: '0.55rem', mt: 0.25, fontWeight: active ? 600 : 400 }}>
-                  {item.label}
-                </Typography>
-              </Box>
-            );
-          })}
-        </Box>
+        <DemoTabBar active="contacts" onSelect={handleTab} />
       </Box>
     </OnboardingDemoProvider>
   );

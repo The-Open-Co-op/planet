@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { RCardWithPrivacy } from '@/types/notification';
 import type { PersonhoodCredentials } from '@/types/personhood';
 
@@ -24,6 +25,8 @@ export interface AccountPageProps {
   profileData?: ProfileData;
   handleLogout?: () => Promise<void>;
   isNextGraph: boolean;
+  /** Optional content rendered right under the "Vault" title (e.g. a My Credentials entry). */
+  topContent?: ReactNode;
 }
 
 export interface CustomSocialLink {

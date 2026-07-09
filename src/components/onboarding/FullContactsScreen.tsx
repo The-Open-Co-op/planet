@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Box, Typography } from '@mui/material';
-import { Public, People, ChatBubble, Notifications } from '@mui/icons-material';
+import { Box } from '@mui/material';
 import { OnboardingDemoProvider } from '@/components/demo/DemoContext';
 import ContactListPage from '@/pages/ContactListPage';
 import ContactViewPage from '@/pages/ContactViewPage';
 import { ChatView } from '@/components/chat/ChatView';
 import { dataService } from '@/services/dataService';
 import { chatStore } from '@/mocks/chat';
+import { DemoTabBar } from '@/components/onboarding/DemoTabBar';
 import type { AnnotationItem } from '@/components/demo/Annotation';
 
 type AnnotationWithCategory = AnnotationItem & { category: 'ui' | 'protocol' };
@@ -15,32 +15,6 @@ interface FullContactsScreenProps {
   setDynamicAnnotations?: (annotations: AnnotationWithCategory[] | null) => void;
   reportStep?: (slug: string, title: string) => void;
 }
-
-/** Static nav for demo */
-const DemoNav = () => (
-  <Box sx={{
-    display: 'flex',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    borderTop: '1px solid',
-    borderColor: 'divider',
-    bgcolor: 'background.default',
-    py: 0.75,
-    flexShrink: 0,
-  }}>
-    {[
-      { label: 'Home', icon: <Public sx={{ fontSize: 20 }} /> },
-      { label: 'Contacts', icon: <People sx={{ fontSize: 20, color: 'primary.main' }} />, active: true },
-      { label: 'Chat', icon: <ChatBubble sx={{ fontSize: 20 }} /> },
-      { label: 'Alerts', icon: <Notifications sx={{ fontSize: 20 }} /> },
-    ].map((item) => (
-      <Box key={item.label} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: item.active ? 'primary.main' : 'text.secondary' }}>
-        {item.icon}
-        <Typography sx={{ fontSize: '0.55rem', mt: 0.25, fontWeight: item.active ? 600 : 400 }}>{item.label}</Typography>
-      </Box>
-    ))}
-  </Box>
-);
 
 /** Annotations for connected PLANET members */
 const connectedMemberAnnotations: AnnotationWithCategory[] = [
@@ -169,7 +143,7 @@ export const FullContactsScreen = ({ setDynamicAnnotations, reportStep }: FullCo
             <ContactListPage />
           )}
         </Box>
-        <DemoNav />
+        <DemoTabBar active="contacts" />
       </Box>
     </OnboardingDemoProvider>
   );

@@ -1,15 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
-import {
-  Public,
-  People,
-  ChatBubble,
-  Notifications,
-  AccountBalanceWallet,
-  VerifiedUser,
-  ChevronRight,
-  ArrowBack,
-} from '@mui/icons-material';
+import { VerifiedUser, ChevronRight, ArrowBack } from '@mui/icons-material';
 import { AccountPage } from '@/components/account/AccountPage';
 import AppsPage from '@/pages/AppsPage';
 import ContactListPage from '@/pages/ContactListPage';
@@ -17,6 +8,8 @@ import { ConversationList } from '@/components/chat/ConversationList';
 import { NotificationsPage } from '@/components/notifications/NotificationsPage';
 import { CredentialVault } from '@/components/trust-demo/CredentialVault';
 import { SARAH_VAULT } from '@/components/trust-demo/trustDemoData';
+import { DemoTabBar } from '@/components/onboarding/DemoTabBar';
+import type { DemoTab } from '@/components/onboarding/DemoTabBar';
 
 type VaultView = 'vault' | 'credentials' | 'home' | 'contacts' | 'chat' | 'alerts';
 
@@ -36,12 +29,12 @@ const VIEW_FEEDBACK: Record<VaultView, { slug: string; title: string }> = {
   alerts: { slug: 'vault:alerts', title: 'Vault → Alerts' },
 };
 
-/** Entry row inside the main vault that opens the credentials screen. */
+/** Entry row (under the Vault title) that opens the credentials screen. */
 const MyCredentialsEntry = ({ onOpen }: { onOpen: () => void }) => (
   <Box
     onClick={onOpen}
     sx={{
-      m: 1.5,
+      mb: 2,
       p: 1.75,
       display: 'flex',
       alignItems: 'center',
@@ -75,14 +68,6 @@ export const VaultScreen = ({ reportStep, initialView = 'vault' }: VaultScreenPr
     reportStep?.(ctx.slug, ctx.title);
   }, [view, reportStep]);
 
-  const navItems = [
-    { label: 'Vault', icon: <AccountBalanceWallet sx={{ fontSize: 20 }} />, target: 'vault' as VaultView },
-    { label: 'Home', icon: <Public sx={{ fontSize: 20 }} />, target: 'home' as VaultView },
-    { label: 'Contacts', icon: <People sx={{ fontSize: 20 }} />, target: 'contacts' as VaultView },
-    { label: 'Chat', icon: <ChatBubble sx={{ fontSize: 20 }} />, target: 'chat' as VaultView },
-    { label: 'Alerts', icon: <Notifications sx={{ fontSize: 20 }} />, target: 'alerts' as VaultView },
-  ];
-
   const renderView = () => {
     switch (view) {
       case 'home': return <AppsPage />;
@@ -109,53 +94,23 @@ export const VaultScreen = ({ reportStep, initialView = 'vault' }: VaultScreenPr
           </Box>
         );
       default:
-        // Main vault — the credentials entry sits alongside identity & settings.
+        // Main vault — My Credentials sits under the "Vault" title, above settings.
         return (
           <Box sx={{ height: '100%', overflow: 'auto' }}>
-            <MyCredentialsEntry onOpen={() => setView('credentials')} />
-            <AccountPage />
+            <AccountPage topContent={<MyCredentialsEntry onOpen={() => setView('credentials')} />} />
           </Box>
         );
     }
   };
+
+  const activeTab: DemoTab = view === 'credentials' ? 'vault' : view;
 
   return (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <Box sx={{ flex: 1, overflow: 'auto', mb: -2 }}>
         {renderView()}
       </Box>
-      <Box sx={{
-        display: 'flex',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        borderTop: '1px solid',
-        borderColor: 'divider',
-        bgcolor: 'background.default',
-        py: 0.75,
-        flexShrink: 0,
-      }}>
-        {navItems.map((item) => (
-          <Box
-            key={item.label}
-            onClick={() => setView(item.target)}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              color: view === item.target || (item.target === 'vault' && view === 'credentials')
-                ? 'primary.main'
-                : 'text.secondary',
-              cursor: 'pointer',
-              '&:hover': { color: 'primary.main' },
-            }}
-          >
-            {item.icon}
-            <Typography sx={{ fontSize: '0.55rem', mt: 0.25, fontWeight: view === item.target ? 600 : 400 }}>
-              {item.label}
-            </Typography>
-          </Box>
-        ))}
-      </Box>
+      <DemoTabBar active={activeTab} onSelect={(t) => setView(t)} />
     </Box>
   );
 };

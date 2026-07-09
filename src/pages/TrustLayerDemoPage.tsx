@@ -1,9 +1,10 @@
-import { Box, Typography, Link, Stack } from '@mui/material';
-import { KeyboardArrowDown } from '@mui/icons-material';
+import { Box, Typography, Link, Stack, IconButton } from '@mui/material';
+import { KeyboardArrowDown, ArrowBack } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 import { PhoneFrame } from '@/components/demo/PhoneFrame';
 import { VaultScreen } from '@/components/onboarding/VaultScreen';
 import { SectionTrackerProvider, Section } from '@/components/trust-demo/SectionTracker';
-import { AnnotationPair } from '@/components/trust-demo/InlineAnnotation';
+import { FlankedPhone } from '@/components/trust-demo/FlankedPhone';
 import { GlossaryAside } from '@/components/trust-demo/GlossaryAside';
 import { CryptoSimulatedBadge } from '@/components/trust-demo/CryptoSimulatedBadge';
 import { LINKS } from '@/components/trust-demo/trustDemoData';
@@ -76,40 +77,83 @@ const OrgValueLine = ({ children }: { children: React.ReactNode }) => (
 );
 
 const TrustLayerDemoPage = () => {
+  const navigate = useNavigate();
+  const goBack = () => {
+    try {
+      if (window.self !== window.top) {
+        window.parent.postMessage({ type: 'demo-navigate', slug: '' }, '*');
+        return;
+      }
+    } catch (_) {
+      /* not embedded */
+    }
+    navigate('/demo');
+  };
+
   return (
     <Box sx={{ height: '100vh', overflowY: 'auto', overflowX: 'hidden', bgcolor: 'background.default' }}>
+      {/* Demo header — back to all demos (matches the other demos) */}
+      <Box
+        sx={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 20,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1.5,
+          px: 3,
+          py: '10px',
+          bgcolor: 'background.paper',
+          borderBottom: '1px solid',
+          borderColor: 'divider',
+        }}
+      >
+        <IconButton onClick={goBack} size="small" sx={{ border: '1px solid', borderColor: 'divider' }}>
+          <ArrowBack sx={{ fontSize: 18 }} />
+        </IconButton>
+        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+          Trust Layer Demo
+        </Typography>
+      </Box>
+
       <SectionTrackerProvider>
         {/* ── Hero ───────────────────────────────────────────── */}
-        <Section slug="intro" title="Intro" maxWidth={980} bg="paper" sx={{ minHeight: '92vh', justifyContent: 'center' }}>
+        <Section slug="intro" title="Intro" bg="paper" sx={{ minHeight: '92vh', justifyContent: 'center' }}>
           <Typography
             sx={{
               fontWeight: 800,
               letterSpacing: '-0.02em',
               color: OC_BLUE,
               mb: 3,
-              fontSize: { xs: '2rem', sm: '2.5rem', md: '2.8rem' },
+              fontSize: { xs: '2rem', sm: '2.4rem', md: '2.5rem' },
             }}
           >
             The internet is missing a trust layer.
           </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ mb: 2.5, fontSize: '1.05rem', maxWidth: 760 }}>
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 2.5, fontSize: '1.05rem' }}>
             The Web has been captured by “big tech” platforms that hijack our attention,
             harvest our data and sell it to the highest bidders. It's drowning in ads,
             clickbait, deepfakes and AI slop — leaving us unsure what's real and who to
             trust. Our connections and content are locked in walled gardens, and every new
             platform means recreating your profile from scratch.
           </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ mb: 2.5, fontSize: '1.05rem', maxWidth: 760 }}>
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 2.5, fontSize: '1.05rem' }}>
             The <BlueLink href={LINKS.firstPersonProject}>First Person Project</BlueLink> is
             building the open protocols to change this — aligned with a stack of recognised
             open standards. No single organisation owns any of it.
           </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ mb: 3.5, fontSize: '1.05rem', maxWidth: 760 }}>
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 3.5, fontSize: '1.05rem' }}>
             <BlueLink href={LINKS.openCoop}>The Open Co-op</BlueLink> is the member-owned
             initiative specifying and building the tools and network to make it real. Below
             are working demos of the concept.
           </Typography>
 
+          <Typography
+            variant="overline"
+            sx={{ color: 'text.secondary', fontWeight: 700, display: 'block', mb: 1 }}
+          >
+            Built on open standards
+          </Typography>
           <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
             <StandardLink href={LINKS.w3cVc}>W3C Verifiable Credentials</StandardLink>
             <StandardLink href={LINKS.trustOverIp}>Trust over IP</StandardLink>
@@ -117,14 +161,27 @@ const TrustLayerDemoPage = () => {
             <StandardLink href={LINKS.ayra}>Ayra</StandardLink>
           </Stack>
 
-          <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', gap: 1, color: 'text.disabled' }}>
+          <Box
+            onClick={() =>
+              document.getElementById('vault')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+            }
+            sx={{
+              mt: 6,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 1,
+              color: 'text.secondary',
+              cursor: 'pointer',
+              '&:hover': { color: OC_BLUE },
+            }}
+          >
             <KeyboardArrowDown />
             <Typography variant="caption">Scroll to begin — Sarah's vault</Typography>
           </Box>
         </Section>
 
         {/* ── §1 The Vault ───────────────────────────────────── */}
-        <Section slug="vault" title="The Vault" maxWidth={760} bg="default">
+        <Section slug="vault" title="The Vault" bg="default">
           <SectionEyebrow>Section 1 — The Vault</SectionEyebrow>
           <Typography variant="h4" sx={{ fontWeight: 700, mb: 2, color: OC_BLUE }}>
             Everyone has a vault
@@ -138,18 +195,7 @@ const TrustLayerDemoPage = () => {
             Tap a card to see its details, share it, or inspect the raw data model.
           </Typography>
 
-          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-            <PhoneFrame>
-              <VaultScreen initialView="credentials" />
-            </PhoneFrame>
-          </Box>
-
-          {/* First place signatures appear (Signed by / proofValue) — note goes here. */}
-          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1 }}>
-            <CryptoSimulatedBadge />
-          </Box>
-
-          <AnnotationPair
+          <FlankedPhone
             ux={
               <>
                 Sarah's vault holds her credentials as cards — the endorsements and
@@ -164,16 +210,25 @@ const TrustLayerDemoPage = () => {
                 vault — no third party holds her keys.
               </>
             }
-          />
+          >
+            <PhoneFrame>
+              <VaultScreen initialView="credentials" />
+            </PhoneFrame>
+          </FlankedPhone>
 
           <OrgValueLine>
             members arrive with verifiable history. No forms. No chasing references. No
             personal data liability.
           </OrgValueLine>
+
+          {/* First place signatures appear (Signed by / proofValue) — note goes here. */}
+          <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
+            <CryptoSimulatedBadge />
+          </Box>
         </Section>
 
         {/* ── Personhood ─────────────────────────────────────── */}
-        <Section slug="personhood" title="Staying human" maxWidth={680} bg="paper">
+        <Section slug="personhood" title="Staying human" bg="paper">
           <SectionEyebrow>How the network stays human</SectionEyebrow>
           <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: OC_BLUE }}>
             A defence against bots — and unwanted AI
@@ -191,7 +246,7 @@ const TrustLayerDemoPage = () => {
         </Section>
 
         {/* Journeys 1–4, developer section and closing land in later phases. */}
-        <Section slug="more-coming" title="More coming" maxWidth={680} bg="default" sx={{ pb: 12 }}>
+        <Section slug="more-coming" title="More coming" bg="default" sx={{ pb: 12 }}>
           <Box
             sx={{
               p: 3,
