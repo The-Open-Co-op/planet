@@ -217,8 +217,12 @@ export default function JourneyGreens() {
 
       <OrgValueLine>
         Greens Grocery gains verified members in seconds, with zero admin overhead and no excess
-        personal data stored. KYC costs drop to near zero — the work of verification has already been
-        done cryptographically by the issuing community.
+        personal data stored. It also sidesteps the cost of <GlossaryAside term="KYC" />: those
+        identity checks are slow, expensive and create data liabilities — a mid-sized co-op can
+        spend thousands of pounds a year on manual verification, onboarding forms and
+        reference-chasing. Verifiable credentials do away with all of it — the work has already
+        been done by the issuing community, cryptographically signed and instantly checkable.
+        No forms, no manual review, no personal data stored.
       </OrgValueLine>
     </Section>
   );

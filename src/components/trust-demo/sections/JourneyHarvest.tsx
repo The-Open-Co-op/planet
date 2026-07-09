@@ -3,7 +3,6 @@ import { Check, VerifiedUser } from '@mui/icons-material';
 import { Section } from '@/components/trust-demo/SectionTracker';
 import { PhoneFrame } from '@/components/demo/PhoneFrame';
 import { FlankedPhone } from '@/components/trust-demo/FlankedPhone';
-import { GlossaryAside } from '@/components/trust-demo/GlossaryAside';
 import { MyTermsChip } from '@/components/trust-demo/MyTermsChip';
 import {
   SectionHeading,
@@ -188,12 +187,8 @@ export default function JourneyHarvest() {
 
       <OrgValueLine>
         Harvest offers verified member discounts with zero fraud risk and no personal data to
-        store — and sidesteps the cost of <GlossaryAside term="KYC" />. Those identity checks are
-        slow, expensive and create data liabilities: a mid-sized co-op can spend thousands of
-        pounds a year on manual verification, onboarding forms and reference-chasing. Verifiable
-        credentials do away with all of it — the work has already been done by the issuing
-        community, cryptographically signed and instantly checkable. No forms, no manual review,
-        no personal data stored.
+        store — and, again, none of the KYC overhead that comes with storing and managing customer
+        identity data.
       </OrgValueLine>
     </Section>
   );
