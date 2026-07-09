@@ -95,9 +95,6 @@ const TrustLayerDemoPage = () => {
       {/* Demo header — back to all demos (matches the other demos) */}
       <Box
         sx={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 20,
           display: 'flex',
           alignItems: 'center',
           gap: 1.5,
