@@ -1,4 +1,4 @@
-import { Box, Typography, Link, Stack, IconButton } from '@mui/material';
+import { Box, Typography, Stack, IconButton } from '@mui/material';
 import { KeyboardArrowDown, ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { PhoneFrame } from '@/components/demo/PhoneFrame';
@@ -7,74 +7,17 @@ import { SectionTrackerProvider, Section } from '@/components/trust-demo/Section
 import { FlankedPhone } from '@/components/trust-demo/FlankedPhone';
 import { GlossaryAside } from '@/components/trust-demo/GlossaryAside';
 import { CryptoSimulatedBadge } from '@/components/trust-demo/CryptoSimulatedBadge';
+import { OC_BLUE, BlueLink, StandardLink, SectionEyebrow, OrgValueLine } from '@/components/trust-demo/sectionKit';
 import { LINKS } from '@/components/trust-demo/trustDemoData';
+import JourneyGreens from '@/components/trust-demo/sections/JourneyGreens';
+import JourneyHarvest from '@/components/trust-demo/sections/JourneyHarvest';
+import JourneyFoundry from '@/components/trust-demo/sections/JourneyFoundry';
+import JourneyManchester from '@/components/trust-demo/sections/JourneyManchester';
+import { KnowSection, DevelopersSection, ClosingSection } from '@/components/trust-demo/sections/KnowDevClosing';
 
-/** The Open Co-op blue — used for titles and links. */
-const OC_BLUE = '#0066CC';
-
+/** Google Doc explaining personhood credentials in depth. */
 const PHC_DOC =
   'https://docs.google.com/document/d/1RtS86BqyVn3i3mXm48VhC-SRaYvW2W_MvR4w6x9KQWY/edit?tab=t.0#heading=h.i544xd6ocqhm';
-
-const BlueLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
-  <Link
-    href={href}
-    target="_blank"
-    rel="noopener noreferrer"
-    underline="hover"
-    sx={{ color: OC_BLUE, fontWeight: 600 }}
-  >
-    {children}
-  </Link>
-);
-
-const StandardLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
-  <Link
-    href={href}
-    target="_blank"
-    rel="noopener noreferrer"
-    underline="hover"
-    sx={{
-      px: 1.5,
-      py: 0.75,
-      borderRadius: 1.5,
-      border: '1px solid',
-      borderColor: 'divider',
-      bgcolor: 'background.paper',
-      color: OC_BLUE,
-      fontSize: '0.8rem',
-      fontWeight: 600,
-      '&:hover': { borderColor: OC_BLUE },
-    }}
-  >
-    {children}
-  </Link>
-);
-
-const SectionEyebrow = ({ children }: { children: React.ReactNode }) => (
-  <Typography variant="overline" sx={{ color: OC_BLUE, fontWeight: 700, display: 'block', mb: 1.5 }}>
-    {children}
-  </Typography>
-);
-
-const OrgValueLine = ({ children }: { children: React.ReactNode }) => (
-  <Box
-    sx={{
-      mt: 3,
-      p: 2,
-      borderLeft: '3px solid',
-      borderColor: 'success.main',
-      bgcolor: 'rgba(46,125,50,0.05)',
-      borderRadius: '0 8px 8px 0',
-    }}
-  >
-    <Typography variant="caption" sx={{ fontWeight: 700, color: 'success.dark', display: 'block', mb: 0.5, letterSpacing: '0.03em' }}>
-      For communities:
-    </Typography>
-    <Typography variant="body2" sx={{ color: 'text.primary' }}>
-      {children}
-    </Typography>
-  </Box>
-);
 
 const TrustLayerDemoPage = () => {
   const navigate = useNavigate();
@@ -242,25 +185,16 @@ const TrustLayerDemoPage = () => {
           </Typography>
         </Section>
 
-        {/* Journeys 1–4, developer section and closing land in later phases. */}
-        <Section slug="more-coming" title="More coming" bg="default" sx={{ pb: 12 }}>
-          <Box
-            sx={{
-              p: 3,
-              borderRadius: 3,
-              border: '1px dashed',
-              borderColor: 'divider',
-              textAlign: 'center',
-              color: 'text.secondary',
-            }}
-          >
-            <Typography variant="body2">
-              Next: four journeys — joining a co-op with trust, member discounts, getting
-              vouched in, and finding your people somewhere new — plus the developer section
-              and call to action.
-            </Typography>
-          </Box>
-        </Section>
+        {/* Journeys 1–4 */}
+        <JourneyGreens />
+        <JourneyHarvest />
+        <JourneyFoundry />
+        <JourneyManchester />
+
+        {/* Know teaser · Developers · Closing */}
+        <KnowSection />
+        <DevelopersSection />
+        <ClosingSection />
       </SectionTrackerProvider>
     </Box>
   );
