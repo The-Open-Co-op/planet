@@ -1,4 +1,4 @@
-import { Box, Typography, Stack, IconButton } from '@mui/material';
+import { Box, Typography, IconButton } from '@mui/material';
 import { KeyboardArrowDown, ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { PhoneFrame } from '@/components/demo/PhoneFrame';
@@ -94,13 +94,13 @@ const TrustLayerDemoPage = () => {
           >
             Built on open standards
           </Typography>
-          <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75 }}>
             <StandardLink href={LINKS.w3cDids}>W3C Decentralised Identifiers</StandardLink>
             <StandardLink href={LINKS.w3cVc}>W3C Verifiable Credentials 2.0</StandardLink>
             <StandardLink href={LINKS.toipDtgSpec}>Trust over IP — DTG spec</StandardLink>
             <StandardLink href={LINKS.myTermsSdBase}>IEEE 7012-2025 (MyTerms)</StandardLink>
             <StandardLink href={LINKS.ayra}>Ayra Trust Registry Fabric</StandardLink>
-          </Stack>
+          </Box>
 
           <Box
             onClick={() =>
@@ -210,9 +210,9 @@ const TrustLayerDemoPage = () => {
         <JourneyFoundry />
         <JourneyManchester />
 
-        {/* Know teaser · Developers · Closing */}
-        <KnowSection />
+        {/* Developers · Know teaser · Closing */}
         <DevelopersSection />
+        <KnowSection />
         <ClosingSection />
       </SectionTrackerProvider>
     </Box>

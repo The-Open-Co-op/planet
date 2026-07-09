@@ -23,15 +23,16 @@ export const StandardLink = ({ href, children }: { href: string; children: React
     rel="noopener noreferrer"
     underline="hover"
     sx={{
-      px: 1.5,
-      py: 0.75,
+      px: 1,
+      py: 0.5,
       borderRadius: 1.5,
       border: '1px solid',
       borderColor: 'divider',
       bgcolor: 'background.paper',
       color: OC_BLUE,
-      fontSize: '0.8rem',
+      fontSize: '0.72rem',
       fontWeight: 600,
+      whiteSpace: 'nowrap',
       '&:hover': { borderColor: OC_BLUE },
     }}
   >

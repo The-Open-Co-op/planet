@@ -36,6 +36,7 @@ export const CredentialCard = ({ credential }: CredentialCardProps) => {
     <>
       <Box
         sx={{
+          flexShrink: 0,
           borderRadius: 2.5,
           border: '1px solid',
           borderColor: 'divider',
@@ -50,51 +51,58 @@ export const CredentialCard = ({ credential }: CredentialCardProps) => {
           onClick={() => setExpanded((e) => !e)}
           sx={{
             display: 'flex',
-            alignItems: 'center',
+            alignItems: 'flex-start',
             gap: 1.5,
             p: 1.75,
             cursor: 'pointer',
           }}
         >
-          <Box
-            sx={{
-              flexShrink: 0,
-              px: 1,
-              py: 0.5,
-              borderRadius: 1.5,
-              bgcolor: `${accent}14`,
-              color: accent,
-              fontWeight: 800,
-              fontSize: '0.7rem',
-              letterSpacing: '0.04em',
-            }}
-          >
-            {credential.type}
-          </Box>
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Typography sx={{ fontWeight: 700, lineHeight: 1.3 }} noWrap>
-              {credential.title}
-            </Typography>
-            <Typography variant="caption" color="text.secondary" noWrap sx={{ display: 'block' }}>
+            {/* Title line — pill sits centred with the title */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box
+                sx={{
+                  flexShrink: 0,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  px: 1,
+                  py: 0.5,
+                  borderRadius: 1.5,
+                  bgcolor: `${accent}14`,
+                  color: accent,
+                  fontWeight: 800,
+                  fontSize: '0.7rem',
+                  lineHeight: 1,
+                  letterSpacing: '0.04em',
+                }}
+              >
+                {credential.type}
+              </Box>
+              <Typography sx={{ fontWeight: 700, lineHeight: 1.3, flex: 1, minWidth: 0 }} noWrap>
+                {credential.title}
+              </Typography>
+              {credential.active && (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexShrink: 0 }}>
+                  <Circle sx={{ fontSize: 8, color: 'success.main' }} />
+                  <Typography variant="caption" color="text.secondary">
+                    Active
+                  </Typography>
+                </Box>
+              )}
+              <ExpandMore
+                sx={{
+                  flexShrink: 0,
+                  color: 'text.secondary',
+                  transform: expanded ? 'rotate(180deg)' : 'none',
+                  transition: 'transform 0.2s',
+                }}
+              />
+            </Box>
+            <Typography variant="caption" color="text.secondary" noWrap sx={{ display: 'block', mt: 0.25 }}>
               {credential.subtitle}
             </Typography>
           </Box>
-          {credential.active && (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexShrink: 0 }}>
-              <Circle sx={{ fontSize: 8, color: 'success.main' }} />
-              <Typography variant="caption" color="text.secondary">
-                Active
-              </Typography>
-            </Box>
-          )}
-          <ExpandMore
-            sx={{
-              flexShrink: 0,
-              color: 'text.secondary',
-              transform: expanded ? 'rotate(180deg)' : 'none',
-              transition: 'transform 0.2s',
-            }}
-          />
         </Box>
 
         {/* Expanded detail */}

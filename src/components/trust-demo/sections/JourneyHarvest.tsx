@@ -88,7 +88,7 @@ export default function JourneyHarvest() {
         }
       >
         <PhoneFrame>
-          <MobileWebScreen url="harvestcollective.coop/checkout" siteName="Harvest Collective">
+          <MobileWebScreen url="harvestcollective.coop/checkout" siteName="Harvest Collective" accent="#BE185D">
             <Typography variant="subtitle2" sx={{ fontWeight: 800 }}>
               Your basket
             </Typography>
@@ -148,7 +148,7 @@ export default function JourneyHarvest() {
         }
       >
         <PhoneFrame>
-          <MobileWebScreen url="harvestcollective.coop/checkout" siteName="Harvest Collective">
+          <MobileWebScreen url="harvestcollective.coop/checkout" siteName="Harvest Collective" accent="#BE185D">
             <Box
               sx={{
                 display: 'flex',

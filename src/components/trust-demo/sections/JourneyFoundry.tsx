@@ -15,7 +15,7 @@ import {
   OC_BLUE,
   BlueLink,
 } from '@/components/trust-demo/sectionKit';
-import { LINKS } from '@/components/trust-demo/trustDemoData';
+import { LINKS, CREDENTIAL_ACCENT } from '@/components/trust-demo/trustDemoData';
 import type { DemoCredential } from '@/components/trust-demo/trustDemoData';
 import { NotificationItem } from '@/components/notifications/NotificationItem/NotificationItem';
 import type { Notification } from '@/types/notification';
@@ -319,8 +319,42 @@ export default function JourneyFoundry() {
         and their governance policy checks it automatically, in seconds.
       </Typography>
 
-      <DesktopCard org="Foundry Worker Co-op">
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2, color: 'success.main' }}>
+      <DesktopCard org="Foundry Worker Co-op" accent="#C2410C">
+        <Typography variant="overline" sx={{ color: 'text.secondary', fontWeight: 700, display: 'block' }}>
+          Membership application
+        </Typography>
+        <Typography variant="h6" sx={{ fontWeight: 800, mb: 2 }}>
+          Marcus
+        </Typography>
+
+        <ListLabel>Credentials presented</ListLabel>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75, mt: 0.75, mb: 2.5 }}>
+          {MARCUS_SHARING.map((c) => (
+            <Box key={c.id} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box
+                sx={{
+                  flexShrink: 0,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  px: 1,
+                  py: 0.25,
+                  borderRadius: 1.5,
+                  bgcolor: `${CREDENTIAL_ACCENT[c.type]}14`,
+                  color: CREDENTIAL_ACCENT[c.type],
+                  fontWeight: 800,
+                  fontSize: '0.65rem',
+                  lineHeight: 1,
+                  letterSpacing: '0.04em',
+                }}
+              >
+                {c.type}
+              </Box>
+              <Typography variant="body2">{c.title}</Typography>
+            </Box>
+          ))}
+        </Box>
+
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5, color: 'success.main' }}>
           <VerifiedUser sx={{ fontSize: 22 }} />
           <Typography sx={{ fontWeight: 800, letterSpacing: '0.03em' }}>
             ✓ MEMBERSHIP APPROVED
@@ -331,10 +365,6 @@ export default function JourneyFoundry() {
           <AuditRow text="Both issuers are active members — confirmed" />
           <AuditRow text="Credentials within validity period — confirmed" />
         </Box>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-          Additional context received: existing co-op membership verified · peer endorsement
-          on record · network relationships: 6
-        </Typography>
       </DesktopCard>
 
       <AnnotationPair
@@ -356,11 +386,11 @@ export default function JourneyFoundry() {
       <OrgValueLine>
         For Foundry: governance rules are enforced automatically, with a full verifiable audit
         trail, no admin burden and no KYC overhead — new members are already verified by the
-        community's own trust graph. The two-vouches requirement lives as an{' '}
-        <BlueLink href={LINKS.openPolicyAgent}>Open Policy Agent</BlueLink> (OPA) rule —
-        machine-readable policy the whole co-op can read and agree on — so a membership decision
-        comes from the community's own rules, not an admin's discretion, and every check is logged
-        and auditable.
+        community's own trust graph. Every community defines its own governance however it likes;{' '}
+        <BlueLink href={LINKS.openPolicyAgent}>Open Policy Agent</BlueLink> (OPA) expresses those
+        rules as machine-readable JSON so they can be applied automatically. Foundry's own rule —
+        two vouches from current members — is what evaluates Marcus's application here, with no
+        admin in the loop and every check logged and auditable.
       </OrgValueLine>
     </Section>
   );

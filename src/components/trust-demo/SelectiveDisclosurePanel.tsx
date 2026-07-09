@@ -28,7 +28,7 @@ const Row = ({ ok, children }: { ok: boolean; children: ReactNode }) => (
 );
 
 const Label = ({ children }: { children: ReactNode }) => (
-  <Typography variant="caption" sx={{ fontWeight: 700, letterSpacing: '0.05em', color: 'text.secondary', display: 'block', mt: 1.5, mb: 0.5 }}>
+  <Typography variant="caption" sx={{ fontWeight: 700, letterSpacing: '0.05em', color: 'text.secondary', display: 'block', mt: 1, mb: 0.5 }}>
     {children}
   </Typography>
 );
@@ -42,7 +42,7 @@ export const SelectiveDisclosurePanel = ({
   cta = 'Present credential',
   onPresent,
 }: SelectiveDisclosurePanelProps) => (
-  <Box sx={{ p: 2, height: '100%', overflow: 'auto' }}>
+  <Box sx={{ p: 1.5, height: '100%', overflow: 'auto' }}>
     <Typography variant="caption" sx={{ fontWeight: 700, color: '#0066CC', letterSpacing: '0.04em' }}>
       {org.toUpperCase()} IS ASKING TO VERIFY
     </Typography>
@@ -61,13 +61,13 @@ export const SelectiveDisclosurePanel = ({
     </Box>
 
     <Label>TERMS OF THIS EXCHANGE</Label>
-    <MyTermsChip />
+    <MyTermsChip compact />
 
     <Button
       fullWidth
       variant="contained"
       onClick={onPresent}
-      sx={{ mt: 2, textTransform: 'none', fontWeight: 700, bgcolor: '#0066CC', '&:hover': { bgcolor: '#0055AA' } }}
+      sx={{ mt: 1.5, textTransform: 'none', fontWeight: 700, bgcolor: '#0066CC', '&:hover': { bgcolor: '#0055AA' } }}
     >
       {cta}
     </Button>

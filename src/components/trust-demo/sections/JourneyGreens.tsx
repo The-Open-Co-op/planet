@@ -13,6 +13,7 @@ import {
   OC_BLUE,
 } from '@/components/trust-demo/sectionKit';
 import { MobileWebScreen } from '@/components/trust-demo/MobileWebScreen';
+import { DemoTabBar } from '@/components/onboarding/DemoTabBar';
 
 const stepLabelSx = {
   color: OC_BLUE,
@@ -77,7 +78,7 @@ export default function JourneyGreens() {
         }
       >
         <PhoneFrame>
-          <MobileWebScreen url="greensgrocery.coop/join" siteName="Greens Grocery Co-op">
+          <MobileWebScreen url="greensgrocery.coop/join" siteName="Greens Grocery Co-op" accent="#2E7D32">
             <Typography variant="h6" sx={{ fontWeight: 800, mb: 0.5 }}>
               Join us
             </Typography>
@@ -125,18 +126,26 @@ export default function JourneyGreens() {
         }
       >
         <PhoneFrame>
-          <SelectiveDisclosurePanel
-            org="Greens Grocery Co-op"
-            ask="You hold a valid membership credential from a recognised cooperative organisation."
-            willShare={['Your name', 'Member of Bristol Tech Co-op', 'Valid since Jan 2023']}
-            wontShare={[
-              'Your contact details',
-              'Your other credentials',
-              'Your relationships',
-              'Any other personal data',
-            ]}
-            cta="Present credential"
-          />
+          <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{ px: 2, py: 1, borderBottom: '1px solid', borderColor: 'divider' }}>
+              <Typography sx={{ fontWeight: 800 }}>Vault</Typography>
+            </Box>
+            <Box sx={{ flex: 1, minHeight: 0 }}>
+              <SelectiveDisclosurePanel
+                org="Greens Grocery Co-op"
+                ask="You hold a valid membership credential from a recognised cooperative organisation."
+                willShare={['Your name', 'Member of Bristol Tech Co-op', 'Valid since Jan 2023']}
+                wontShare={[
+                  'Your contact details',
+                  'Your other credentials',
+                  'Your relationships',
+                  'Any other personal data',
+                ]}
+                cta="Present credential"
+              />
+            </Box>
+            <DemoTabBar active="vault" />
+          </Box>
         </PhoneFrame>
       </FlankedPhone>
 
@@ -151,7 +160,7 @@ export default function JourneyGreens() {
         personal data stored.
       </Typography>
 
-      <DesktopCard org="Greens Grocery Co-op">
+      <DesktopCard org="Greens Grocery Co-op" accent="#2E7D32">
         <Box sx={{ p: 2.5, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
           <Typography variant="subtitle1" sx={{ fontWeight: 800, color: 'success.dark', letterSpacing: '0.03em' }}>
             ✓ NEW MEMBER VERIFIED
