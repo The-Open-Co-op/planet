@@ -108,7 +108,7 @@ interface SectionProps {
 }
 
 /** A tracked section of the scroll page. Registers itself for feedback scoping. */
-export const Section = ({ slug, title, children, maxWidth = 820, bg = 'default', sx }: SectionProps) => {
+export const Section = ({ slug, title, children, maxWidth = 920, bg = 'default', sx }: SectionProps) => {
   const ctx = useContext(SectionTrackerContext);
   const ref = useRef<HTMLDivElement>(null);
   const [meta] = useState<SectionMeta>({ slug, title });
