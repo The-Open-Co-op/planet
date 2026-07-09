@@ -102,11 +102,13 @@ interface SectionProps {
   children: ReactNode;
   /** Optional max content width. */
   maxWidth?: number;
+  /** Background band — alternate 'paper' (white) / 'default' (off-white). */
+  bg?: 'paper' | 'default';
   sx?: object;
 }
 
 /** A tracked section of the scroll page. Registers itself for feedback scoping. */
-export const Section = ({ slug, title, children, maxWidth = 720, sx }: SectionProps) => {
+export const Section = ({ slug, title, children, maxWidth = 720, bg = 'default', sx }: SectionProps) => {
   const ctx = useContext(SectionTrackerContext);
   const ref = useRef<HTMLDivElement>(null);
   const [meta] = useState<SectionMeta>({ slug, title });
@@ -124,6 +126,7 @@ export const Section = ({ slug, title, children, maxWidth = 720, sx }: SectionPr
       component="section"
       sx={{
         scrollMarginTop: '24px',
+        bgcolor: bg === 'paper' ? 'background.paper' : 'background.default',
         px: { xs: 3, sm: 5 },
         py: { xs: 6, sm: 9 },
         display: 'flex',

@@ -23,25 +23,21 @@ export const InlineAnnotation = ({ kind, children }: InlineAnnotationProps) => {
   return (
     <Box
       sx={{
-        display: 'flex',
-        gap: 1.5,
         p: 1.75,
         borderRadius: 2,
         bgcolor: s.bg,
         border: '1px solid',
         borderColor: `${s.color}22`,
-        alignItems: 'flex-start',
       }}
     >
       <Typography
-        component="span"
+        component="div"
         sx={{
-          flexShrink: 0,
           color: s.color,
           fontWeight: 700,
           fontSize: '0.6rem',
           letterSpacing: '0.08em',
-          mt: '2px',
+          mb: 0.75,
         }}
       >
         {s.label}

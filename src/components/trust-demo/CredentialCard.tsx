@@ -14,51 +14,13 @@ import {
   Share,
   Code,
   Close,
-  QrCode2,
 } from '@mui/icons-material';
+import { QRCodeSVG } from 'qrcode.react';
 import type { DemoCredential } from './trustDemoData';
 import { CREDENTIAL_ACCENT } from './trustDemoData';
 
-/** A deterministic QR-like block (decorative — this is a simulated demo). */
-const FauxQr = ({ seed }: { seed: string }) => {
-  const n = 21;
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
-  const cells: boolean[] = [];
-  for (let i = 0; i < n * n; i++) {
-    h = (h * 1103515245 + 12345) & 0x7fffffff;
-    cells.push((h & 1) === 1);
-  }
-  const isFinder = (r: number, c: number) => {
-    const inBox = (br: number, bc: number) =>
-      r >= br && r < br + 7 && c >= bc && c < bc + 7;
-    return inBox(0, 0) || inBox(0, n - 7) || inBox(n - 7, 0);
-  };
-  return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(${n}, 1fr)`,
-        width: 180,
-        height: 180,
-        p: 1,
-        bgcolor: '#fff',
-        borderRadius: 2,
-        border: '1px solid',
-        borderColor: 'divider',
-      }}
-    >
-      {cells.map((on, i) => {
-        const r = Math.floor(i / n);
-        const c = i % n;
-        const filled = isFinder(r, c) ? true : on;
-        return (
-          <Box key={i} sx={{ aspectRatio: '1', bgcolor: filled ? '#0F1114' : 'transparent' }} />
-        );
-      })}
-    </Box>
-  );
-};
+/** Single demo presentation target — real, scannable QR (same for all creds). */
+const DEMO_QR_VALUE = 'https://collab.open.coop/demo/planet-trust-layer';
 
 interface CredentialCardProps {
   credential: DemoCredential;
@@ -195,17 +157,14 @@ export const CredentialCard = ({ credential }: CredentialCardProps) => {
               <Close fontSize="small" />
             </IconButton>
           </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-            <FauxQr seed={credential.id} />
-          </Box>
-          <Typography sx={{ fontWeight: 700, mb: 0.5 }}>
-            <QrCode2 sx={{ fontSize: 16, verticalAlign: 'text-bottom', mr: 0.5 }} />
+          <Typography sx={{ fontWeight: 700, mb: 2 }}>
             Share {credential.type}
           </Typography>
-          <Typography variant="caption" color="text.secondary">
-            Scan to present “{credential.title}”. The holder selects exactly what to
-            disclose — nothing is shared until they approve.
-          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box sx={{ p: 2, bgcolor: '#fff', borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
+              <QRCodeSVG value={DEMO_QR_VALUE} size={176} level="M" />
+            </Box>
+          </Box>
         </DialogContent>
       </Dialog>
     </>
