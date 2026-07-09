@@ -6,7 +6,6 @@ import { FlankedPhone } from '@/components/trust-demo/FlankedPhone';
 import { GlossaryAside } from '@/components/trust-demo/GlossaryAside';
 import { MyTermsChip } from '@/components/trust-demo/MyTermsChip';
 import {
-  SectionEyebrow,
   SectionHeading,
   OrgValueLine,
   ScreenHeader,
@@ -15,7 +14,7 @@ import {
 } from '@/components/trust-demo/sectionKit';
 
 const stepLabelSx = {
-  color: 'text.secondary',
+  color: OC_BLUE,
   fontWeight: 700,
   display: 'block',
   mt: 5,
@@ -48,10 +47,9 @@ const Row = ({ label, value }: { label: string; value: string }) => (
 export default function JourneyHarvest() {
   return (
     <Section slug="journey-harvest" title="Journey 2 · Member Discount" bg="paper">
-      <SectionEyebrow>Journey 2 — The Economic Value of Membership</SectionEyebrow>
-      <SectionHeading>Member Discount</SectionHeading>
+      <SectionHeading>The Value of Membership</SectionHeading>
 
-      <Typography variant="body1" sx={{ color: 'text.secondary', maxWidth: 680 }}>
+      <Typography variant="body1" sx={{ color: 'text.secondary' }}>
         Sarah's credentials don't just open doors — they unlock real economic value, without
         handing her data to anyone. Here she's shopping at Harvest Collective, a cooperative
         wholefoods supplier.
@@ -156,13 +154,13 @@ export default function JourneyHarvest() {
         </PhoneFrame>
       </FlankedPhone>
 
-      <Typography variant="body1" sx={{ color: 'text.secondary', mt: 5, maxWidth: 680 }}>
+      <Typography variant="body1" sx={{ color: 'text.secondary', mt: 5 }}>
         Every community Sarah joins adds value through the credentials stored in her vault — and
         that value travels with her. Her credentials are not locked to a supplier and do not
         expose her data by default.
       </Typography>
 
-      <Typography variant="body1" sx={{ color: 'text.secondary', mt: 2, maxWidth: 680 }}>
+      <Typography variant="body1" sx={{ color: 'text.secondary', mt: 2 }}>
         A note on cost: <GlossaryAside term="KYC" /> processes — the identity checks organisations
         run to verify who they're dealing with — are slow, expensive, and create personal-data
         liabilities. A mid-sized cooperative can spend thousands of pounds a year on manual

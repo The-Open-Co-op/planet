@@ -8,7 +8,6 @@ import { SelectiveDisclosurePanel } from '@/components/trust-demo/SelectiveDiscl
 import { AnnotationPair } from '@/components/trust-demo/InlineAnnotation';
 import { GlossaryAside } from '@/components/trust-demo/GlossaryAside';
 import {
-  SectionEyebrow,
   SectionHeading,
   OrgValueLine,
   OC_BLUE,
@@ -16,7 +15,7 @@ import {
 import { MobileWebScreen } from '@/components/trust-demo/MobileWebScreen';
 
 const stepLabelSx = {
-  color: 'text.secondary',
+  color: OC_BLUE,
   fontWeight: 700,
   display: 'block',
   mt: 5,
@@ -49,8 +48,7 @@ const Row = ({ label, value }: { label: string; value: string }) => (
 export default function JourneyGreens() {
   return (
     <Section slug="journey-greens" title="Journey 1 · Greens Grocery" bg="default">
-      <SectionEyebrow>Journey 1 — Joining a Community</SectionEyebrow>
-      <SectionHeading>Greens Grocery Co-op</SectionHeading>
+      <SectionHeading>Joining a Community</SectionHeading>
 
       <Typography variant="body1" sx={{ color: 'text.secondary' }}>
         Sarah wants to join Greens Grocery Co-op, a member-owned grocery in Bristol — membership
@@ -103,6 +101,12 @@ export default function JourneyGreens() {
         Step 2 — Sarah presents her credential
       </Typography>
 
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 1 }}>
+        Sarah taps “Join with my co-op membership.” Her vault opens and offers her existing
+        Bristol Tech Co-op membership — the one credential that satisfies Greens Grocery's
+        fast-track rule — and she chooses to present it.
+      </Typography>
+
       <FlankedPhone
         ux={
           <>
@@ -139,6 +143,12 @@ export default function JourneyGreens() {
       {/* STEP 3 */}
       <Typography variant="overline" sx={stepLabelSx}>
         Step 3 — Approved
+      </Typography>
+
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 1 }}>
+        Now we switch to Greens Grocery's side. On their laptop, a co-op admin sees the
+        result of Sarah's presentation — a new member verified in seconds, with none of her
+        personal data stored.
       </Typography>
 
       <DesktopCard org="Greens Grocery Co-op">

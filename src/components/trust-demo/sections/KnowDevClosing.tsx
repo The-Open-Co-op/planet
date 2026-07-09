@@ -2,7 +2,6 @@ import { Box, Typography, Button } from '@mui/material';
 import { Section } from '@/components/trust-demo/SectionTracker';
 import { GlossaryAside } from '@/components/trust-demo/GlossaryAside';
 import {
-  SectionEyebrow,
   SectionHeading,
   BlueLink,
   StandardLink,
@@ -13,7 +12,6 @@ import { LINKS } from '@/components/trust-demo/trustDemoData';
 /* ── §6 The Know Component (teaser) ─────────────────────────────── */
 export const KnowSection = () => (
   <Section slug="know" title="The Know Component" bg="default">
-    <SectionEyebrow>Section 6 — The Know Component</SectionEyebrow>
     <SectionHeading>Your community's knowledge, inside its own walls</SectionHeading>
     <Typography variant="body1" color="text.secondary" sx={{ mb: 2.5 }}>
       Every community generates knowledge — decisions made, projects documented, expertise
@@ -67,7 +65,6 @@ const result = await planet.verify({
 
 export const DevelopersSection = () => (
   <Section slug="developers" title="For Developers" bg="paper">
-    <SectionEyebrow>Section 7 — For Developers</SectionEyebrow>
     <SectionHeading>Built on open standards</SectionHeading>
 
     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 3 }}>
@@ -129,7 +126,6 @@ const CtaCard = ({ prompt, action, href }: { prompt: string; action: string; hre
 
 export const ClosingSection = () => (
   <Section slug="closing" title="Closing" bg="default" sx={{ pb: 12 }}>
-    <SectionEyebrow>Section 8 — Closing</SectionEyebrow>
     <SectionHeading>The trust layer the internet never had</SectionHeading>
     <Typography variant="body1" color="text.secondary" sx={{ mb: 2.5 }}>
       We're building it on open protocols, owned by no one, governed cooperatively. The

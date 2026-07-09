@@ -7,7 +7,6 @@ import { DesktopCard } from '@/components/trust-demo/DesktopCard';
 import { AnnotationPair } from '@/components/trust-demo/InlineAnnotation';
 import { GlossaryAside } from '@/components/trust-demo/GlossaryAside';
 import {
-  SectionEyebrow,
   SectionHeading,
   OrgValueLine,
   ScreenHeader,
@@ -17,7 +16,7 @@ import {
 import { LINKS } from '@/components/trust-demo/trustDemoData';
 
 const stepLabelSx = {
-  color: 'text.secondary',
+  color: OC_BLUE,
   fontWeight: 700,
   display: 'block',
   mt: 5,
@@ -123,10 +122,9 @@ const AuditRow = ({ text }: { text: string }) => (
 export default function JourneyFoundry() {
   return (
     <Section slug="journey-foundry" title="Journey 3 · Getting Vouched In" bg="default">
-      <SectionEyebrow>Journey 3 — Getting Vouched In</SectionEyebrow>
-      <SectionHeading>Marcus joins the Foundry Worker Co-op</SectionHeading>
+      <SectionHeading>Getting Vouched In</SectionHeading>
 
-      <Typography variant="body1" sx={{ color: 'text.secondary', maxWidth: 680 }}>
+      <Typography variant="body1" sx={{ color: 'text.secondary' }}>
         When you join a new platform today you start from zero — years of reputation and
         relationships are ignored, and you have to earn trust all over again. PLANET changes
         this: your credentials, and the trust they carry, travel with you. Marcus wants to

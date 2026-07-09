@@ -5,7 +5,6 @@ import { PhoneFrame } from '@/components/demo/PhoneFrame';
 import { FlankedPhone } from '@/components/trust-demo/FlankedPhone';
 import { GlossaryAside } from '@/components/trust-demo/GlossaryAside';
 import {
-  SectionEyebrow,
   SectionHeading,
   OrgValueLine,
   ScreenHeader,
@@ -14,7 +13,7 @@ import {
 import type { ReactNode } from 'react';
 
 const stepLabelSx = {
-  color: 'text.secondary',
+  color: OC_BLUE,
   fontWeight: 700,
   display: 'block',
   mt: 5,
@@ -72,10 +71,9 @@ const TickRow = ({ children }: { children: ReactNode }) => (
 export default function JourneyManchester() {
   return (
     <Section slug="journey-manchester" title="Journey 4 · Finding Your People" bg="paper">
-      <SectionEyebrow>Journey 4 — Finding Your People Somewhere New</SectionEyebrow>
       <SectionHeading>Finding Your People</SectionHeading>
 
-      <Typography variant="body1" sx={{ color: 'text.secondary', maxWidth: 680 }}>
+      <Typography variant="body1" sx={{ color: 'text.secondary' }}>
         Sarah is moving to Manchester. She wants to find a new place to live and connect with
         others building a regenerative economy there — in a city where nobody knows her yet.
       </Typography>
@@ -221,7 +219,7 @@ export default function JourneyManchester() {
         </PhoneFrame>
       </FlankedPhone>
 
-      <Typography variant="body1" sx={{ color: 'text.secondary', mt: 5, maxWidth: 680 }}>
+      <Typography variant="body1" sx={{ color: 'text.secondary', mt: 5 }}>
         The same thing happens when Sarah approaches the Manchester Mutual Credit Network — her
         existing credentials speak for her trustworthiness, and she's extended a line of credit
         immediately, despite being brand new to the community.

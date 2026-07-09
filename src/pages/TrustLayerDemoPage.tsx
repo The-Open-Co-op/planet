@@ -7,7 +7,7 @@ import { SectionTrackerProvider, Section } from '@/components/trust-demo/Section
 import { FlankedPhone } from '@/components/trust-demo/FlankedPhone';
 import { GlossaryAside } from '@/components/trust-demo/GlossaryAside';
 import { CryptoSimulatedBadge } from '@/components/trust-demo/CryptoSimulatedBadge';
-import { OC_BLUE, BlueLink, StandardLink, SectionEyebrow, OrgValueLine } from '@/components/trust-demo/sectionKit';
+import { OC_BLUE, BlueLink, StandardLink, OrgValueLine } from '@/components/trust-demo/sectionKit';
 import { LINKS } from '@/components/trust-demo/trustDemoData';
 import JourneyGreens from '@/components/trust-demo/sections/JourneyGreens';
 import JourneyHarvest from '@/components/trust-demo/sections/JourneyHarvest';
@@ -122,7 +122,6 @@ const TrustLayerDemoPage = () => {
 
         {/* ── §1 The Vault ───────────────────────────────────── */}
         <Section slug="vault" title="The Vault" bg="default">
-          <SectionEyebrow>Section 1 — The Vault</SectionEyebrow>
           <Typography variant="h4" sx={{ fontWeight: 700, mb: 2, color: OC_BLUE }}>
             Everyone has a vault
           </Typography>
@@ -169,9 +168,8 @@ const TrustLayerDemoPage = () => {
 
         {/* ── Personhood ─────────────────────────────────────── */}
         <Section slug="personhood" title="Staying human" bg="paper">
-          <SectionEyebrow>How the network stays human</SectionEyebrow>
           <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: OC_BLUE }}>
-            A defence against bots — and unwanted AI
+            Defence against bots — and unwanted AI
           </Typography>
           <Typography variant="body1" color="text.secondary">
             A <GlossaryAside term="PHC" /> is a cryptographic proof that you are a real human
