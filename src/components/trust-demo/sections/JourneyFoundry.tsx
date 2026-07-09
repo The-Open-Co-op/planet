@@ -177,7 +177,7 @@ export default function JourneyFoundry() {
         backend={
           <>
             Foundry's rule — two <GlossaryAside term="VRC" />s from current members — is
-            encoded in their <GlossaryAside term="VTC" /> governance policy as an{' '}
+            encoded in their VTC governance policy as an{' '}
             <BlueLink href={LINKS.openPolicyAgent}>Open Policy Agent</BlueLink> (OPA) rule. It
             isn't held by any admin or subject to individual discretion; the rules are
             transparent and auditable.

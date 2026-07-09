@@ -1,6 +1,5 @@
 import { Box, Typography, Button } from '@mui/material';
 import { Section } from '@/components/trust-demo/SectionTracker';
-import { GlossaryAside } from '@/components/trust-demo/GlossaryAside';
 import {
   SectionHeading,
   BlueLink,
@@ -94,7 +93,7 @@ export const KnowSection = () => (
       People are already pasting sensitive community knowledge into public AI tools — where it
       leaks to whoever runs them. The Know component gives a community its own assistant instead:
       trained on its documents, discussions and collective expertise, and running inside the
-      community's own trust boundary (its <GlossaryAside term="VTC" />). It answers only to
+      community's own trust boundary (its VTC). It answers only to
       members, nothing it learns ever leaves, and the community itself decides what it knows and
       who can ask.
     </Typography>
