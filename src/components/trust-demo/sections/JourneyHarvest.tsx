@@ -8,10 +8,9 @@ import { MyTermsChip } from '@/components/trust-demo/MyTermsChip';
 import {
   SectionHeading,
   OrgValueLine,
-  ScreenHeader,
   OC_BLUE,
-  BlueLink,
 } from '@/components/trust-demo/sectionKit';
+import { MobileWebScreen } from '@/components/trust-demo/MobileWebScreen';
 
 const stepLabelSx = {
   color: OC_BLUE,
@@ -40,6 +39,18 @@ const Row = ({ label, value }: { label: string; value: string }) => (
     </Typography>
     <Typography variant="body2" sx={{ fontWeight: 700 }}>
       {value}
+    </Typography>
+  </Box>
+);
+
+const BasketItem = ({ name, price }: { name: string; price: string }) => (
+  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+    <Box sx={{ width: 26, height: 26, borderRadius: 0.75, bgcolor: 'grey.100', flexShrink: 0 }} />
+    <Typography variant="body2" sx={{ flex: 1, minWidth: 0, fontWeight: 500 }} noWrap>
+      {name}
+    </Typography>
+    <Typography variant="body2" sx={{ fontWeight: 700 }}>
+      {price}
     </Typography>
   </Box>
 );
@@ -77,11 +88,30 @@ export default function JourneyHarvest() {
         }
       >
         <PhoneFrame>
-          <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <ScreenHeader org="Harvest Collective" strap="Checkout" />
-            <Box sx={{ flex: 1, overflow: 'auto', p: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-              <Row label="Subtotal" value="£42.00" />
-              <Divider />
+          <MobileWebScreen url="harvestcollective.coop/checkout" siteName="Harvest Collective">
+            <Typography variant="subtitle2" sx={{ fontWeight: 800 }}>
+              Your basket
+            </Typography>
+            <BasketItem name="Organic porridge oats · 1kg" price="£7.00" />
+            <BasketItem name="Fairtrade coffee beans · 500g" price="£9.50" />
+            <BasketItem name="Wholewheat pasta · 500g" price="£6.00" />
+            <BasketItem name="Cold-pressed olive oil · 1L" price="£12.50" />
+            <BasketItem name="Mixed nuts · 750g" price="£7.00" />
+            <Divider />
+            <Row label="Subtotal" value="£42.00" />
+            <Box
+              sx={{
+                mt: 0.5,
+                p: 1.5,
+                borderRadius: 1.5,
+                bgcolor: 'rgba(0,102,204,0.06)',
+                border: '1px solid',
+                borderColor: 'rgba(0,102,204,0.2)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 1,
+              }}
+            >
               <Typography variant="body2" sx={{ color: 'text.primary' }}>
                 Are you a member of a cooperative organisation? Members get 10% off.
               </Typography>
@@ -92,7 +122,7 @@ export default function JourneyHarvest() {
                 Continue without discount
               </Button>
             </Box>
-          </Box>
+          </MobileWebScreen>
         </PhoneFrame>
       </FlankedPhone>
 
@@ -110,8 +140,7 @@ export default function JourneyHarvest() {
         }
         backend={
           <>
-            The same credential also gets Sarah into{' '}
-            <BlueLink href="https://open.coop/">The Co-operative Network</BlueLink>'s annual
+            The same credential also gets Sarah into her national Co-op network's annual
             conference at member rate, the cooperative legal helpline, and discounts at other
             suppliers in the network. Value travels with her, in her vault — not locked to any
             supplier.
@@ -119,38 +148,35 @@ export default function JourneyHarvest() {
         }
       >
         <PhoneFrame>
-          <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <ScreenHeader org="Harvest Collective" strap="Checkout" />
-            <Box sx={{ flex: 1, overflow: 'auto', p: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1,
-                  p: 1.5,
-                  borderRadius: 1.5,
-                  bgcolor: 'rgba(46,125,50,0.1)',
-                  border: '1px solid',
-                  borderColor: 'success.main',
-                }}
-              >
-                <VerifiedUser sx={{ color: 'success.main', fontSize: 20 }} />
-                <Typography variant="caption" sx={{ fontWeight: 800, color: 'success.dark', letterSpacing: '0.04em' }}>
-                  CO-OP MEMBER VERIFIED
-                </Typography>
-              </Box>
-              <Row label="10% member discount applied" value="−£4.20" />
-              <Divider />
-              <Row label="Total" value="£37.80" />
-              <Button variant="contained" fullWidth startIcon={<Check />} sx={primaryBtnSx}>
-                Complete order
-              </Button>
-              <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                No account created. No email captured. No data retained by Harvest Collective.
+          <MobileWebScreen url="harvestcollective.coop/checkout" siteName="Harvest Collective">
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                p: 1.5,
+                borderRadius: 1.5,
+                bgcolor: 'rgba(46,125,50,0.1)',
+                border: '1px solid',
+                borderColor: 'success.main',
+              }}
+            >
+              <VerifiedUser sx={{ color: 'success.main', fontSize: 20 }} />
+              <Typography variant="caption" sx={{ fontWeight: 800, color: 'success.dark', letterSpacing: '0.04em' }}>
+                CO-OP MEMBER VERIFIED
               </Typography>
-              <MyTermsChip />
             </Box>
-          </Box>
+            <Row label="10% member discount applied" value="−£4.20" />
+            <Divider />
+            <Row label="Total" value="£37.80" />
+            <Button variant="contained" fullWidth startIcon={<Check />} sx={primaryBtnSx}>
+              Complete order
+            </Button>
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+              No account created. No email captured. No data retained by Harvest Collective.
+            </Typography>
+            <MyTermsChip />
+          </MobileWebScreen>
         </PhoneFrame>
       </FlankedPhone>
 
@@ -160,20 +186,14 @@ export default function JourneyHarvest() {
         expose her data by default.
       </Typography>
 
-      <Typography variant="body1" sx={{ color: 'text.secondary', mt: 2 }}>
-        A note on cost: <GlossaryAside term="KYC" /> processes — the identity checks organisations
-        run to verify who they're dealing with — are slow, expensive, and create personal-data
-        liabilities. A mid-sized cooperative can spend thousands of pounds a year on manual
-        verification, onboarding forms, reference-chasing and data compliance. Verifiable
-        credentials eliminate this: the work of verification has already been done by the issuing
-        community, cryptographically signed, and is instantly checkable. No forms. No manual
-        review. No personal data stored.
-      </Typography>
-
       <OrgValueLine>
-        Harvest Collective offers verified member discounts with zero fraud risk and without
-        handling personal data — avoiding the ongoing KYC costs that come with storing and
-        managing customer identity data.
+        Harvest offers verified member discounts with zero fraud risk and no personal data to
+        store — and sidesteps the cost of <GlossaryAside term="KYC" />. Those identity checks are
+        slow, expensive and create data liabilities: a mid-sized co-op can spend thousands of
+        pounds a year on manual verification, onboarding forms and reference-chasing. Verifiable
+        credentials do away with all of it — the work has already been done by the issuing
+        community, cryptographically signed and instantly checkable. No forms, no manual review,
+        no personal data stored.
       </OrgValueLine>
     </Section>
   );
