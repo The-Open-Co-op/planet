@@ -95,10 +95,11 @@ const TrustLayerDemoPage = () => {
             Built on open standards
           </Typography>
           <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
-            <StandardLink href={LINKS.w3cVc}>W3C Verifiable Credentials</StandardLink>
-            <StandardLink href={LINKS.trustOverIp}>Trust over IP</StandardLink>
-            <StandardLink href={LINKS.myTerms}>MyTerms (IEEE 7012)</StandardLink>
-            <StandardLink href={LINKS.ayra}>Ayra</StandardLink>
+            <StandardLink href={LINKS.w3cDids}>W3C Decentralised Identifiers</StandardLink>
+            <StandardLink href={LINKS.w3cVc}>W3C Verifiable Credentials 2.0</StandardLink>
+            <StandardLink href={LINKS.toipDtgSpec}>Trust over IP — DTG spec</StandardLink>
+            <StandardLink href={LINKS.myTermsSdBase}>IEEE 7012-2025 (MyTerms)</StandardLink>
+            <StandardLink href={LINKS.ayra}>Ayra Trust Registry Fabric</StandardLink>
           </Stack>
 
           <Box

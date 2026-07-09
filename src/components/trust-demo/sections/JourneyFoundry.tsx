@@ -15,6 +15,8 @@ import {
 } from '@/components/trust-demo/sectionKit';
 import { LINKS } from '@/components/trust-demo/trustDemoData';
 import { MobileWebScreen } from '@/components/trust-demo/MobileWebScreen';
+import { NotificationItem } from '@/components/notifications/NotificationItem/NotificationItem';
+import type { Notification } from '@/types/notification';
 
 const stepLabelSx = {
   color: OC_BLUE,
@@ -32,14 +34,16 @@ const primaryBtnSx = {
 } as const;
 
 const Screen = ({
+  org = 'Foundry Worker Co-op',
   strap,
   children,
 }: {
+  org?: string;
   strap: string;
   children: React.ReactNode;
 }) => (
   <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-    <ScreenHeader org="Foundry Worker Co-op" strap={strap} />
+    <ScreenHeader org={org} strap={strap} />
     <Box
       sx={{
         flex: 1,
@@ -55,19 +59,40 @@ const Screen = ({
   </Box>
 );
 
-const KeyValue = ({ label, value }: { label: string; value: string }) => (
-  <Box sx={{ display: 'flex', gap: 1, alignItems: 'baseline' }}>
-    <Typography
-      variant="caption"
-      sx={{ fontWeight: 700, color: 'text.secondary', minWidth: 64 }}
-    >
-      {label}
-    </Typography>
-    <Typography variant="body2" sx={{ fontWeight: 600 }}>
-      {value}
-    </Typography>
-  </Box>
-);
+const noop = () => {};
+const vouchIcon = () => <Handshake sx={{ fontSize: 18 }} />;
+
+/** Marcus's incoming vouches, rendered with the real Alerts NotificationItem card. */
+const MARCUS_VOUCHES: Notification[] = [
+  {
+    id: 'vouch-priya',
+    type: 'vouch',
+    title: 'New vouch',
+    message: 'Vouched for you — Foundry Worker Co-op application',
+    fromUserName: 'Priya Kumar',
+    targetUserId: 'marcus',
+    isRead: false,
+    isActionable: true,
+    status: 'pending',
+    metadata: { vouchId: 'vrc-priya' },
+    createdAt: new Date('2024-06-01T10:00:00Z'),
+    updatedAt: new Date('2024-06-01T10:00:00Z'),
+  },
+  {
+    id: 'vouch-tom',
+    type: 'vouch',
+    title: 'New vouch',
+    message: 'Vouched for you — Foundry Worker Co-op application',
+    fromUserName: 'Tom Ellis',
+    targetUserId: 'marcus',
+    isRead: false,
+    isActionable: true,
+    status: 'pending',
+    metadata: { vouchId: 'vrc-tom' },
+    createdAt: new Date('2024-06-01T09:30:00Z'),
+    updatedAt: new Date('2024-06-01T09:30:00Z'),
+  },
+];
 
 const VrcRow = ({ text }: { text: string }) => (
   <Box
@@ -191,6 +216,13 @@ export default function JourneyFoundry() {
         Step 2 — Priya and Tom vouch for Marcus
       </Typography>
 
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 1 }}>
+        Priya and Tom each open Marcus's contact card and tap{' '}
+        <Box component="span" sx={{ fontWeight: 600, color: 'text.primary' }}>Vouch</Box> — the same
+        action every PLANET member already has. Moments later, both vouches land in Marcus's
+        alerts.
+      </Typography>
+
       <FlankedPhone
         ux={
           <>
@@ -207,31 +239,21 @@ export default function JourneyFoundry() {
         }
       >
         <PhoneFrame>
-          <Screen strap="Priya's vault · Issue a Verifiable Relationship Credential">
-            <KeyValue label="To" value="Marcus" />
-            <KeyValue label="Context" value="Foundry Worker Co-op application" />
-            <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
-              <Typography
-                variant="caption"
-                sx={{ fontWeight: 700, color: 'text.secondary', minWidth: 64 }}
-              >
-                Statement
-              </Typography>
-              <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                I know Marcus and vouch for him as a trustworthy collaborator.
-              </Typography>
-            </Box>
-            <Button variant="contained" fullWidth sx={primaryBtnSx}>
-              Issue VRC to Marcus
-            </Button>
-            <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
-              Tom issues one too: "I worked alongside Marcus at Bristol Tech Co-op. Reliable
-              and skilled." Marcus's vault now holds both:
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              <VrcRow text="VRC · Priya Kumar" />
-              <VrcRow text="VRC · Tom Ellis" />
-            </Box>
+          <Screen org="Marcus's Vault" strap="Alerts">
+            <NotificationItem
+              notification={MARCUS_VOUCHES[0]}
+              onClick={noop}
+              onAccept={noop}
+              onReject={noop}
+              getNotificationIcon={vouchIcon}
+            />
+            <NotificationItem
+              notification={MARCUS_VOUCHES[1]}
+              onClick={noop}
+              onAccept={noop}
+              onReject={noop}
+              getNotificationIcon={vouchIcon}
+            />
           </Screen>
         </PhoneFrame>
       </FlankedPhone>
@@ -256,7 +278,7 @@ export default function JourneyFoundry() {
         }
       >
         <PhoneFrame>
-          <Screen strap="Marcus's application to Foundry">
+          <Screen org="Marcus's Vault" strap="Application to Foundry">
             <ListLabel>Required</ListLabel>
             <CheckRow text="VRC · Priya Kumar (Foundry)" />
             <CheckRow text="VRC · Tom Ellis (Foundry)" />

@@ -4,10 +4,10 @@ import { Section } from '@/components/trust-demo/SectionTracker';
 import { PhoneFrame } from '@/components/demo/PhoneFrame';
 import { FlankedPhone } from '@/components/trust-demo/FlankedPhone';
 import { GlossaryAside } from '@/components/trust-demo/GlossaryAside';
+import { MobileWebScreen } from '@/components/trust-demo/MobileWebScreen';
 import {
   SectionHeading,
   OrgValueLine,
-  ScreenHeader,
   OC_BLUE,
 } from '@/components/trust-demo/sectionKit';
 import type { ReactNode } from 'react';
@@ -98,38 +98,38 @@ export default function JourneyManchester() {
         }
       >
         <PhoneFrame>
-          <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <ScreenHeader org="Find cooperative communities" />
-            <Box sx={{ flex: 1, overflow: 'auto', p: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1,
-                  px: 1.5,
-                  py: 1,
-                  borderRadius: 1.5,
-                  border: '1px solid',
-                  borderColor: 'divider',
-                  bgcolor: 'background.paper',
-                }}
-              >
-                <Search sx={{ color: 'text.secondary', fontSize: 20 }} />
-                <InputBase value="Manchester" readOnly sx={{ flex: 1, fontSize: '0.9rem' }} />
-              </Box>
-
-              <ResultRow
-                icon={<Home sx={{ fontSize: 20 }} />}
-                title="Mossley Housing Co-op"
-                subtitle="1 room available · Members of housing co-ops given priority · Applications open now"
-              />
-              <ResultRow
-                icon={<AccountBalance sx={{ fontSize: 20 }} />}
-                title="Manchester Mutual Credit Network"
-                subtitle="Open to members of recognised cooperative organisations"
-              />
+          <MobileWebScreen url="find.coop" siteName="Find Co-ops" accent="#4F46E5">
+            <Typography variant="h6" sx={{ fontWeight: 800, mb: 0.5 }}>
+              Find cooperative communities
+            </Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                px: 1.5,
+                py: 1,
+                borderRadius: 1.5,
+                border: '1px solid',
+                borderColor: 'divider',
+                bgcolor: 'background.paper',
+              }}
+            >
+              <Search sx={{ color: 'text.secondary', fontSize: 20 }} />
+              <InputBase value="Manchester" readOnly sx={{ flex: 1, fontSize: '0.9rem' }} />
             </Box>
-          </Box>
+
+            <ResultRow
+              icon={<Home sx={{ fontSize: 20 }} />}
+              title="Mossley Housing Co-op"
+              subtitle="1 room available · Members of housing co-ops given priority · Applications open now"
+            />
+            <ResultRow
+              icon={<AccountBalance sx={{ fontSize: 20 }} />}
+              title="Manchester Mutual Credit Network"
+              subtitle="Open to members of recognised cooperative organisations"
+            />
+          </MobileWebScreen>
         </PhoneFrame>
       </FlankedPhone>
 
@@ -154,68 +154,65 @@ export default function JourneyManchester() {
         }
       >
         <PhoneFrame>
-          <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <ScreenHeader org="Mossley Housing Co-op" />
-            <Box sx={{ flex: 1, overflow: 'auto', p: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-              <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                1 room available — shared house, central Manchester
+          <MobileWebScreen url="mossleyhousing.coop" siteName="Mossley Housing Co-op" accent="#0F766E">
+            <Typography variant="body2" sx={{ fontWeight: 700 }}>
+              1 room available — shared house, central Manchester
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Monthly contribution: £650 all-inclusive
+            </Typography>
+
+            <Box
+              sx={{
+                p: 1.5,
+                borderRadius: 1.5,
+                border: '1px solid',
+                borderColor: 'divider',
+                bgcolor: 'background.paper',
+              }}
+            >
+              <Typography variant="caption" sx={{ fontWeight: 800, letterSpacing: '0.04em', color: 'text.secondary', display: 'block', mb: 0.75 }}>
+                MEMBERSHIP CRITERIA
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Monthly contribution: £650 all-inclusive
+              <Typography variant="caption" sx={{ display: 'block', color: 'text.primary', mb: 0.5 }}>
+                Priority given to applicants holding a <GlossaryAside term="VMC" /> from another
+                housing co-op
               </Typography>
-
-              <Box
-                sx={{
-                  p: 1.5,
-                  borderRadius: 1.5,
-                  border: '1px solid',
-                  borderColor: 'divider',
-                  bgcolor: 'background.paper',
-                }}
-              >
-                <Typography variant="caption" sx={{ fontWeight: 800, letterSpacing: '0.04em', color: 'text.secondary', display: 'block', mb: 0.75 }}>
-                  MEMBERSHIP CRITERIA
-                </Typography>
-                <Typography variant="caption" sx={{ display: 'block', color: 'text.primary', mb: 0.5 }}>
-                  Priority given to applicants holding a <GlossaryAside term="VMC" /> from another
-                  housing co-op
-                </Typography>
-                <Typography variant="caption" sx={{ display: 'block', color: 'text.primary' }}>
-                  All cooperative members welcome to apply
-                </Typography>
-              </Box>
-
-              <Box
-                sx={{
-                  p: 1.5,
-                  borderRadius: 1.5,
-                  bgcolor: 'rgba(46,125,50,0.1)',
-                  border: '1px solid',
-                  borderColor: 'success.main',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 0.75,
-                }}
-              >
-                <Typography variant="caption" sx={{ fontWeight: 800, letterSpacing: '0.04em', color: 'success.dark', display: 'block', mb: 0.25 }}>
-                  YOUR CREDENTIALS MATCH THEIR CRITERIA
-                </Typography>
-                <TickRow>Multiple cooperative memberships verified</TickRow>
-                <TickRow>Peer relationships on record</TickRow>
-                <TickRow>Verified track record across the network</TickRow>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5 }}>
-                  <ArrowForward sx={{ color: 'success.dark', fontSize: 18 }} />
-                  <Typography variant="caption" sx={{ fontWeight: 800, color: 'success.dark', letterSpacing: '0.04em' }}>
-                    PRIORITY APPLICANT
-                  </Typography>
-                </Box>
-              </Box>
-
-              <Button variant="contained" fullWidth sx={primaryBtnSx}>
-                Apply now
-              </Button>
+              <Typography variant="caption" sx={{ display: 'block', color: 'text.primary' }}>
+                All cooperative members welcome to apply
+              </Typography>
             </Box>
-          </Box>
+
+            <Box
+              sx={{
+                p: 1.5,
+                borderRadius: 1.5,
+                bgcolor: 'rgba(46,125,50,0.1)',
+                border: '1px solid',
+                borderColor: 'success.main',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 0.75,
+              }}
+            >
+              <Typography variant="caption" sx={{ fontWeight: 800, letterSpacing: '0.04em', color: 'success.dark', display: 'block', mb: 0.25 }}>
+                YOUR CREDENTIALS MATCH THEIR CRITERIA
+              </Typography>
+              <TickRow>Multiple cooperative memberships verified</TickRow>
+              <TickRow>Peer relationships on record</TickRow>
+              <TickRow>Verified track record across the network</TickRow>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5 }}>
+                <ArrowForward sx={{ color: 'success.dark', fontSize: 18 }} />
+                <Typography variant="caption" sx={{ fontWeight: 800, color: 'success.dark', letterSpacing: '0.04em' }}>
+                  PRIORITY APPLICANT
+                </Typography>
+              </Box>
+            </Box>
+
+            <Button variant="contained" fullWidth sx={primaryBtnSx}>
+              Apply now
+            </Button>
+          </MobileWebScreen>
         </PhoneFrame>
       </FlankedPhone>
 
