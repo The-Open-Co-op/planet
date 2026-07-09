@@ -34,6 +34,7 @@ import PnmDemoPage from "@/pages/PnmDemoPage";
 import DemosHomePage from "@/pages/DemosHomePage";
 import BlogDemoPage from "@/pages/BlogDemoPage";
 import FeedsDemoPage from "@/pages/FeedsDemoPage";
+import TrustLayerDemoPage from "@/pages/TrustLayerDemoPage";
 import ChatPage from "@/pages/ChatPage";
 
 const theme = createPlanetTheme();
@@ -125,6 +126,7 @@ const AppRoutes = () => (
         <Route path="/demo/blog/:step" element={<BlogDemoPage />} />
         <Route path="/demo/feeds" element={<FeedsDemoPage />} />
         <Route path="/demo/feeds/:step" element={<FeedsDemoPage />} />
+        <Route path="/demo/trust-layer" element={<TrustLayerDemoPage />} />
         {/* Backward compat: old /demo/:step URLs map to onboarding */}
         <Route path="/demo/:step" element={<DemoPage />} />
         <Route path="/onboarding" element={<SocialContractPage />} />

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Card, Button, useMediaQuery } from '@mui/material';
-import { DesktopWindows, PhoneIphone, Handshake, Apps, InstallMobile, PersonAdd, Article, DynamicFeed } from '@mui/icons-material';
+import { DesktopWindows, PhoneIphone, Handshake, Apps, InstallMobile, PersonAdd, Article, DynamicFeed, VerifiedUser } from '@mui/icons-material';
 
 interface DemoCardProps {
   title: string;
@@ -110,6 +110,15 @@ const DemosHomePage = () => {
       </Typography>
 
       <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 3, maxWidth: 1100, width: '100%' }}>
+        <DemoCard
+          title="Trust Layer"
+          subtitle="The whole story, end to end"
+          description="A trust layer for the internet, told through four journeys: Sarah's vault of verifiable credentials, joining a co-op with trust, member discounts with no data handed over, getting vouched in, and finding your people somewhere new."
+          icon={<VerifiedUser sx={{ fontSize: 40, color: 'primary.main' }} />}
+          path="/demo/trust-layer"
+          parentSlug="planet-trust-layer"
+          stepCount={9}
+        />
         <DemoCard
           title="PWA Onboarding"
           subtitle="Invite-only, install-as-PWA"

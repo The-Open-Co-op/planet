@@ -1,13 +1,21 @@
 import { useState, useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
-import { Public, People, ChatBubble, Notifications } from '@mui/icons-material';
+import {
+  Public,
+  People,
+  ChatBubble,
+  Notifications,
+  AccountBalanceWallet,
+  Settings,
+} from '@mui/icons-material';
 import { AccountPage } from '@/components/account/AccountPage';
 import AppsPage from '@/pages/AppsPage';
 import ContactListPage from '@/pages/ContactListPage';
 import { ConversationList } from '@/components/chat/ConversationList';
 import { NotificationsPage } from '@/components/notifications/NotificationsPage';
+import { CredentialVault } from '@/components/trust-demo/CredentialVault';
 
-type VaultView = 'vault' | 'home' | 'contacts' | 'chat' | 'alerts';
+type VaultView = 'vault' | 'home' | 'contacts' | 'chat' | 'alerts' | 'account';
 
 interface VaultScreenProps {
   reportStep?: (slug: string, title: string) => void;
@@ -20,9 +28,10 @@ const VIEW_FEEDBACK: Record<VaultView, { slug: string; title: string }> = {
   contacts: { slug: 'vault:contacts', title: 'Vault → Contacts' },
   chat: { slug: 'vault:chat', title: 'Vault → Chat' },
   alerts: { slug: 'vault:alerts', title: 'Vault → Alerts' },
+  account: { slug: 'vault:account', title: 'Vault → Account' },
 };
 
-/** Step 10 — Vault with navigable demo nav */
+/** Step 10 — Vault with navigable demo nav. Lands on the credential vault. */
 export const VaultScreen = ({ reportStep }: VaultScreenProps = {}) => {
   const [view, setView] = useState<VaultView>('vault');
 
@@ -33,10 +42,12 @@ export const VaultScreen = ({ reportStep }: VaultScreenProps = {}) => {
   }, [view, reportStep]);
 
   const navItems = [
+    { label: 'Vault', icon: <AccountBalanceWallet sx={{ fontSize: 20 }} />, target: 'vault' as VaultView },
     { label: 'Home', icon: <Public sx={{ fontSize: 20 }} />, target: 'home' as VaultView },
     { label: 'Contacts', icon: <People sx={{ fontSize: 20 }} />, target: 'contacts' as VaultView },
     { label: 'Chat', icon: <ChatBubble sx={{ fontSize: 20 }} />, target: 'chat' as VaultView },
     { label: 'Alerts', icon: <Notifications sx={{ fontSize: 20 }} />, target: 'alerts' as VaultView },
+    { label: 'Account', icon: <Settings sx={{ fontSize: 20 }} />, target: 'account' as VaultView },
   ];
 
   const renderView = () => {
@@ -45,7 +56,14 @@ export const VaultScreen = ({ reportStep }: VaultScreenProps = {}) => {
       case 'contacts': return <ContactListPage />;
       case 'chat': return <ConversationList />;
       case 'alerts': return <NotificationsPage />;
-      default: return <AccountPage />;
+      case 'account': return <AccountPage />;
+      default:
+        return (
+          <CredentialVault
+            title="Your Vault"
+            caption="Verifiable credentials, held only by you"
+          />
+        );
     }
   };
 
