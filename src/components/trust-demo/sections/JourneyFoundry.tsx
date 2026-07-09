@@ -1,20 +1,22 @@
 import { Box, Typography, Button } from '@mui/material';
-import { Check, Handshake, VerifiedUser } from '@mui/icons-material';
+import { Check, VerifiedUser } from '@mui/icons-material';
 import { Section } from '@/components/trust-demo/SectionTracker';
 import { PhoneFrame } from '@/components/demo/PhoneFrame';
 import { FlankedPhone } from '@/components/trust-demo/FlankedPhone';
 import { DesktopCard } from '@/components/trust-demo/DesktopCard';
 import { AnnotationPair } from '@/components/trust-demo/InlineAnnotation';
 import { GlossaryAside } from '@/components/trust-demo/GlossaryAside';
+import { CredentialCard } from '@/components/trust-demo/CredentialCard';
+import { MobileWebScreen } from '@/components/trust-demo/MobileWebScreen';
+import { DemoTabBar } from '@/components/onboarding/DemoTabBar';
 import {
   SectionHeading,
   OrgValueLine,
-  ScreenHeader,
   OC_BLUE,
   BlueLink,
 } from '@/components/trust-demo/sectionKit';
 import { LINKS } from '@/components/trust-demo/trustDemoData';
-import { MobileWebScreen } from '@/components/trust-demo/MobileWebScreen';
+import type { DemoCredential } from '@/components/trust-demo/trustDemoData';
 import { NotificationItem } from '@/components/notifications/NotificationItem/NotificationItem';
 import type { Notification } from '@/types/notification';
 
@@ -33,36 +35,11 @@ const primaryBtnSx = {
   '&:hover': { bgcolor: '#0055AA' },
 } as const;
 
-const Screen = ({
-  org = 'Foundry Worker Co-op',
-  strap,
-  children,
-}: {
-  org?: string;
-  strap: string;
-  children: React.ReactNode;
-}) => (
-  <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-    <ScreenHeader org={org} strap={strap} />
-    <Box
-      sx={{
-        flex: 1,
-        overflow: 'auto',
-        p: 2,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 1.5,
-      }}
-    >
-      {children}
-    </Box>
-  </Box>
-);
-
 const noop = () => {};
-const vouchIcon = () => <Handshake sx={{ fontSize: 18 }} />;
+/** Same vouch icon the real Alerts screen uses. */
+const vouchIcon = () => <VerifiedUser sx={{ fontSize: 18, color: '#0066CC' }} />;
 
-/** Marcus's incoming vouches, rendered with the real Alerts NotificationItem card. */
+/** Marcus's incoming vouches — rendered with the real Alerts NotificationItem card. */
 const MARCUS_VOUCHES: Notification[] = [
   {
     id: 'vouch-priya',
@@ -94,45 +71,72 @@ const MARCUS_VOUCHES: Notification[] = [
   },
 ];
 
-const VrcRow = ({ text }: { text: string }) => (
-  <Box
-    sx={{
-      display: 'flex',
-      alignItems: 'center',
-      gap: 1,
-      p: 1,
-      borderRadius: 1.5,
-      border: '1px solid',
-      borderColor: 'divider',
-      bgcolor: 'background.paper',
-    }}
-  >
-    <Handshake sx={{ fontSize: 18, color: OC_BLUE }} />
-    <Typography variant="body2" sx={{ fontWeight: 600 }}>
-      {text}
-    </Typography>
-  </Box>
-);
+const rawVc = (type: string, issuer: string, claim: Record<string, unknown>) => ({
+  '@context': ['https://www.w3.org/ns/credentials/v2', 'https://firstperson.network/credentials/dtg/v1'],
+  type: ['VerifiableCredential', type],
+  issuer,
+  credentialSubject: { id: 'did:key:z6MkMarcus...', ...claim },
+  proof: { type: 'DataIntegrityProof', cryptosuite: 'eddsa-rdfc-2022', proofValue: 'z3FXQj...' },
+});
 
-const CheckRow = ({ text }: { text: string }) => (
-  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-    <Check sx={{ fontSize: 18, color: 'success.main' }} />
-    <Typography variant="body2" sx={{ fontWeight: 600 }}>
-      {text}
-    </Typography>
-  </Box>
-);
+/** What Marcus shares in his application — same card graphics as My Credentials. */
+const MARCUS_SHARING: DemoCredential[] = [
+  {
+    id: 'm-vrc-priya',
+    type: 'VRC',
+    title: 'Priya Kumar (Foundry)',
+    subtitle: 'Verifiable Relationship Credential',
+    detail: '“I know Marcus and vouch for him as a trustworthy collaborator.”',
+    signedBy: 'Priya Kumar',
+    active: true,
+    rawJson: rawVc('RelationshipCredential', 'did:key:z6MkPriya...', { relationshipType: 'vouch', context: 'Foundry Worker Co-op application' }),
+  },
+  {
+    id: 'm-vrc-tom',
+    type: 'VRC',
+    title: 'Tom Ellis (Foundry)',
+    subtitle: 'Verifiable Relationship Credential',
+    detail: '“I worked alongside Marcus at Bristol Tech Co-op. Reliable and skilled.”',
+    signedBy: 'Tom Ellis',
+    active: true,
+    rawJson: rawVc('RelationshipCredential', 'did:key:z6MkTom...', { relationshipType: 'vouch', context: 'Foundry Worker Co-op application' }),
+  },
+  {
+    id: 'm-vmc-oc',
+    type: 'VMC',
+    title: 'The Open Co-op',
+    subtitle: 'Verifiable Membership Credential',
+    detail: 'Member since 2022',
+    signedBy: 'The Open Co-op',
+    active: true,
+    rawJson: rawVc('MembershipCredential', 'did:web:open.coop', { membershipType: 'full', memberSince: '2022' }),
+  },
+  {
+    id: 'm-vec-oc',
+    type: 'VEC',
+    title: 'The Open Co-op',
+    subtitle: 'Verifiable Endorsement Credential',
+    detail: '“Strong systems thinker, great to work with.”',
+    signedBy: 'The Open Co-op member',
+    active: true,
+    rawJson: rawVc('EndorsementCredential', 'did:key:z6MkOCmember...', { endorsement: 'Strong systems thinker, great to work with' }),
+  },
+  {
+    id: 'm-vrc-network',
+    type: 'VRC',
+    title: '6 mutual relationships',
+    subtitle: 'Verifiable Relationship Credentials',
+    detail: 'Across the wider cooperative network',
+    signedBy: 'Various members',
+    active: true,
+    rawJson: rawVc('RelationshipCredential', 'did:key:z6MkVarious...', { relationshipType: 'mutual', count: 6 }),
+  },
+];
 
 const ListLabel = ({ children }: { children: React.ReactNode }) => (
   <Typography
     variant="caption"
-    sx={{
-      fontWeight: 700,
-      color: 'text.secondary',
-      letterSpacing: '0.04em',
-      display: 'block',
-      mt: 0.5,
-    }}
+    sx={{ fontWeight: 700, color: 'text.secondary', letterSpacing: '0.04em', display: 'block', mt: 0.5 }}
   >
     {children}
   </Typography>
@@ -189,15 +193,7 @@ export default function JourneyFoundry() {
               We're a small worker-owned co-op and run a tight team. We ask that new members
               are personally vouched for by two existing members.
             </Typography>
-            <Box
-              sx={{
-                p: 1.5,
-                borderRadius: 1.5,
-                border: '1px solid',
-                borderColor: 'divider',
-                bgcolor: 'background.paper',
-              }}
-            >
+            <Box sx={{ p: 1.5, borderRadius: 1.5, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
               <ListLabel>Requirements</ListLabel>
               <Typography variant="body2" sx={{ fontWeight: 600, mt: 0.5 }}>
                 Two VRCs (Verifiable Relationship Credentials) from current Foundry members.
@@ -211,22 +207,32 @@ export default function JourneyFoundry() {
         </PhoneFrame>
       </FlankedPhone>
 
+      <Typography variant="body1" color="text.secondary" sx={{ mt: 3 }}>
+        When Marcus taps{' '}
+        <Box component="span" sx={{ fontWeight: 600, color: 'text.primary' }}>Apply for membership</Box>,
+        the Foundry site hands off to his PLANET vault — his own app opens to gather what the
+        application needs.
+      </Typography>
+
       {/* STEP 2 */}
       <Typography variant="overline" sx={stepLabelSx}>
         Step 2 — Priya and Tom vouch for Marcus
       </Typography>
 
       <Typography variant="body1" color="text.secondary" sx={{ mb: 1 }}>
-        Priya and Tom each open Marcus's contact card and tap{' '}
-        <Box component="span" sx={{ fontWeight: 600, color: 'text.primary' }}>Vouch</Box> — the same
-        action every PLANET member already has. Moments later, both vouches land in Marcus's
-        alerts.
+        Marcus already knows Priya and Tom — both current Foundry members — so he asks them to
+        vouch for him. Vouching is how PLANET members issue VRCs to each other: a couple of taps,
+        and a signed relationship credential is on its way. Both vouches arrive in Marcus's{' '}
+        <Box component="span" sx={{ fontWeight: 600, color: 'text.primary' }}>Alerts</Box>, where he
+        accepts them — and they're then held in his vault, ready to include in his Foundry
+        application.
       </Typography>
 
       <FlankedPhone
         ux={
           <>
-            Two people who already know Marcus vouch for him directly — a couple of taps each.
+            The vouches arrive in Marcus's alerts. He taps Accept on each, and it becomes a
+            signed relationship credential held in his vault.
           </>
         }
         backend={
@@ -239,28 +245,40 @@ export default function JourneyFoundry() {
         }
       >
         <PhoneFrame>
-          <Screen org="Marcus's Vault" strap="Alerts">
-            <NotificationItem
-              notification={MARCUS_VOUCHES[0]}
-              onClick={noop}
-              onAccept={noop}
-              onReject={noop}
-              getNotificationIcon={vouchIcon}
-            />
-            <NotificationItem
-              notification={MARCUS_VOUCHES[1]}
-              onClick={noop}
-              onAccept={noop}
-              onReject={noop}
-              getNotificationIcon={vouchIcon}
-            />
-          </Screen>
+          <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{ px: 2, py: 1.5, borderBottom: '1px solid', borderColor: 'divider' }}>
+              <Typography sx={{ fontWeight: 800 }}>Alerts</Typography>
+            </Box>
+            <Box sx={{ flex: 1, overflow: 'auto', p: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+              <NotificationItem
+                notification={MARCUS_VOUCHES[0]}
+                onClick={noop}
+                onAccept={noop}
+                onReject={noop}
+                getNotificationIcon={vouchIcon}
+              />
+              <NotificationItem
+                notification={MARCUS_VOUCHES[1]}
+                onClick={noop}
+                onAccept={noop}
+                onReject={noop}
+                getNotificationIcon={vouchIcon}
+              />
+            </Box>
+            <DemoTabBar active="alerts" />
+          </Box>
         </PhoneFrame>
       </FlankedPhone>
 
       {/* STEP 3 */}
       <Typography variant="overline" sx={stepLabelSx}>
         Step 3 — Marcus presents his application bundle
+      </Typography>
+
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 1 }}>
+        Back on the Foundry website, Marcus reviews his application. The two required vouches are
+        in place, and he chooses to share some extra context — the same credentials from his
+        vault, presented to Foundry.
       </Typography>
 
       <FlankedPhone
@@ -278,32 +296,31 @@ export default function JourneyFoundry() {
         }
       >
         <PhoneFrame>
-          <Screen org="Marcus's Vault" strap="Application to Foundry">
+          <MobileWebScreen url="foundry.coop/apply" siteName="Foundry Worker Co-op" accent="#C2410C">
+            <Typography variant="h6" sx={{ fontWeight: 800, mb: 0.5 }}>
+              Your application
+            </Typography>
             <ListLabel>Required</ListLabel>
-            <CheckRow text="VRC · Priya Kumar (Foundry)" />
-            <CheckRow text="VRC · Tom Ellis (Foundry)" />
-            <ListLabel>Also sharing (Marcus's choice)</ListLabel>
-            <VrcRow text="VMC · The Open Co-op — Member since 2022" />
-            <VrcRow text="VEC · 'Strong systems thinker, great to work with'" />
-            <VrcRow text="VRC · 6 mutual relationships across the network" />
-            <Box sx={{ flex: 1 }} />
-            <Button variant="contained" fullWidth sx={primaryBtnSx}>
+            <CredentialCard credential={MARCUS_SHARING[0]} />
+            <CredentialCard credential={MARCUS_SHARING[1]} />
+            <ListLabel>Also sharing (your choice)</ListLabel>
+            <CredentialCard credential={MARCUS_SHARING[2]} />
+            <CredentialCard credential={MARCUS_SHARING[3]} />
+            <CredentialCard credential={MARCUS_SHARING[4]} />
+            <Button variant="contained" fullWidth sx={{ ...primaryBtnSx, mt: 1 }}>
               Submit application
             </Button>
-          </Screen>
+          </MobileWebScreen>
         </PhoneFrame>
       </FlankedPhone>
 
+      <Typography variant="body1" color="text.secondary" sx={{ mt: 4, mb: 1 }}>
+        Now to Foundry's side. On their laptop, a co-op admin sees the application come through —
+        and their governance policy checks it automatically, in seconds.
+      </Typography>
+
       <DesktopCard org="Foundry Worker Co-op">
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-            mb: 2,
-            color: 'success.main',
-          }}
-        >
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2, color: 'success.main' }}>
           <VerifiedUser sx={{ fontSize: 22 }} />
           <Typography sx={{ fontWeight: 800, letterSpacing: '0.03em' }}>
             ✓ MEMBERSHIP APPROVED
@@ -337,9 +354,13 @@ export default function JourneyFoundry() {
       />
 
       <OrgValueLine>
-        For Foundry: governance rules enforced automatically, with a full verifiable audit
-        trail, no admin burden, and no KYC overhead — new members are already verified by the
-        community's own trust graph.
+        For Foundry: governance rules are enforced automatically, with a full verifiable audit
+        trail, no admin burden and no KYC overhead — new members are already verified by the
+        community's own trust graph. The two-vouches requirement lives as an{' '}
+        <BlueLink href={LINKS.openPolicyAgent}>Open Policy Agent</BlueLink> (OPA) rule —
+        machine-readable policy the whole co-op can read and agree on — so a membership decision
+        comes from the community's own rules, not an admin's discretion, and every check is logged
+        and auditable.
       </OrgValueLine>
     </Section>
   );
