@@ -14,6 +14,7 @@ import {
   BlueLink,
 } from '@/components/trust-demo/sectionKit';
 import { LINKS } from '@/components/trust-demo/trustDemoData';
+import { MobileWebScreen } from '@/components/trust-demo/MobileWebScreen';
 
 const stepLabelSx = {
   color: OC_BLUE,
@@ -155,7 +156,10 @@ export default function JourneyFoundry() {
         }
       >
         <PhoneFrame>
-          <Screen strap="Membership">
+          <MobileWebScreen url="foundry.coop/join" siteName="Foundry Worker Co-op" accent="#C2410C">
+            <Typography variant="h6" sx={{ fontWeight: 800, mb: 0.5 }}>
+              Membership
+            </Typography>
             <Typography variant="body2" color="text.secondary">
               We're a small worker-owned co-op and run a tight team. We ask that new members
               are personally vouched for by two existing members.
@@ -178,7 +182,7 @@ export default function JourneyFoundry() {
             <Button variant="contained" fullWidth sx={primaryBtnSx}>
               Apply for membership
             </Button>
-          </Screen>
+          </MobileWebScreen>
         </PhoneFrame>
       </FlankedPhone>
 
