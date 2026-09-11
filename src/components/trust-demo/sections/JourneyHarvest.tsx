@@ -4,6 +4,7 @@ import { Section } from '@/components/trust-demo/SectionTracker';
 import { PhoneFrame } from '@/components/demo/PhoneFrame';
 import { FlankedPhone } from '@/components/trust-demo/FlankedPhone';
 import { MyTermsChip } from '@/components/trust-demo/MyTermsChip';
+import { GlossaryAside } from '@/components/trust-demo/GlossaryAside';
 import {
   SectionHeading,
   OrgValueLine,
@@ -44,7 +45,16 @@ const Row = ({ label, value }: { label: string; value: string }) => (
 
 const BasketItem = ({ name, price }: { name: string; price: string }) => (
   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-    <Box sx={{ width: 26, height: 26, borderRadius: 0.75, bgcolor: 'grey.100', flexShrink: 0 }} />
+    <Box
+      sx={{
+        width: 26,
+        height: 26,
+        borderRadius: 0.75,
+        bgcolor: 'rgba(190,24,93,0.12)',
+        border: '1px solid rgba(190,24,93,0.3)',
+        flexShrink: 0,
+      }}
+    />
     <Typography variant="body2" sx={{ flex: 1, minWidth: 0, fontWeight: 500 }} noWrap>
       {name}
     </Typography>
@@ -60,8 +70,8 @@ export default function JourneyHarvest() {
       <SectionHeading>The Value of Membership</SectionHeading>
 
       <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-        Sarah's credentials don't just open doors — they unlock real economic value, without
-        handing her data to anyone. Here she's shopping at Harvest Collective, a cooperative
+        Sarah's credentials don't just open doors — they unlock real economic value, while
+        revealing nothing more than she needs to. Here she's shopping at Harvest Collective, a cooperative
         wholefoods supplier.
       </Typography>
 
@@ -139,10 +149,10 @@ export default function JourneyHarvest() {
         }
         backend={
           <>
-            The same credential also gets Sarah into her national Co-op network's annual
-            conference at member rate, the cooperative legal helpline, and discounts at other
-            suppliers in the network. Value travels with her, in her vault — not locked to any
-            supplier.
+            Harvest verifies the presentation's signature against the issuing co-op's{' '}
+            <GlossaryAside term="C-DID" /> and checks the credential hasn't been revoked. The terms
+            of the exchange — no account, no email, nothing retained — were agreed under IEEE 7012
+            (MyTerms) before the proof was shared, and both sides hold a signed record of them.
           </>
         }
       >
@@ -180,9 +190,12 @@ export default function JourneyHarvest() {
       </FlankedPhone>
 
       <Typography variant="body1" sx={{ color: 'text.secondary', mt: 5 }}>
-        Every community Sarah joins adds value through the credentials stored in her vault — and
-        that value travels with her. Her credentials are not locked to a supplier and do not
-        expose her data by default.
+        The same credential also gets Sarah into her national co-op network's annual conference
+        at member rate, the cooperative legal helpline, and discounts at other suppliers in the
+        network. And it compounds: every community she joins issues her another credential, and
+        every credential unlocks more — more discounts, more doors, more places she's already
+        trusted. That value travels with her, not locked to any supplier, and never exposing her
+        data by default.
       </Typography>
 
       <OrgValueLine>

@@ -8,103 +8,6 @@ import {
 } from '@/components/trust-demo/sectionKit';
 import { LINKS } from '@/components/trust-demo/trustDemoData';
 
-/* ── Community OS ───────────────────────────────────────────────── */
-const OsComponent = ({ n, name, desc, instead }: { n: string; name: string; desc: string; instead: string }) => (
-  <Box sx={{ p: 2.25, borderRadius: 2.5, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
-    <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mb: 1 }}>
-      <Typography sx={{ fontWeight: 800, color: OC_BLUE, fontSize: '0.8rem' }}>{n}</Typography>
-      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>{name}</Typography>
-    </Box>
-    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>{desc}</Typography>
-    <Typography variant="caption" sx={{ color: 'text.disabled' }}>{instead}</Typography>
-  </Box>
-);
-
-export const KnowSection = () => (
-  <Section slug="community-os" title="Community OS" bg="paper">
-    <SectionHeading>Community OS</SectionHeading>
-    <Typography variant="body1" color="text.secondary" sx={{ mb: 2.5 }}>
-      Most communities run on a patchwork of platforms they don't own — a mailing list here, a
-      chat group there, a spreadsheet of members, a form for votes, documents scattered across
-      drives. Each tool quietly extracts a little value, none of them talk to each other, and the
-      community's own data ends up living everywhere except with the community.
-    </Typography>
-    <Typography variant="body1" color="text.secondary" sx={{ mb: 2.5 }}>
-      The First Person protocols and VTC framework will make it possible to bring all of this
-      together in one place that the community actually owns — a single, privacy-first platform
-      built on the trust layer you've just seen. Verified membership, DIDs and credentials run
-      quietly underneath; what people see is one clean, integrated tool that simply works.
-    </Typography>
-    <Typography variant="body1" color="text.secondary" sx={{ mb: 3.5 }}>
-      Our goal is to develop a comprehensive package for communities, under the working title{' '}
-      <Box component="span" sx={{ fontWeight: 600, color: 'text.primary' }}>Community OS</Box> — an
-      intuitive, integrated tool that provides five key features:
-    </Typography>
-
-    <Box
-      sx={{
-        // Break out wider than the prose on desktop so all five sit side by side.
-        width: { xs: '100%', md: 'min(1160px, 94vw)' },
-        position: { md: 'relative' },
-        left: { md: '50%' },
-        transform: { md: 'translateX(-50%)' },
-        display: 'grid',
-        gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: 'repeat(5, 1fr)' },
-        gap: 2,
-        mb: 4,
-      }}
-    >
-      <OsComponent
-        n="01"
-        name="Members"
-        desc="A verified membership directory, onboarding and credentials — so 'who's a member' is always current, and provable."
-        instead="Instead of spreadsheets and a members area"
-      />
-      <OsComponent
-        n="02"
-        name="Communicate"
-        desc="Announcements and newsletters that reach your real, verified members — not scraped or unverified inboxes."
-        instead="Instead of Mailchimp and Brevo"
-      />
-      <OsComponent
-        n="03"
-        name="Discuss"
-        desc="A members-only forum and chat whose history the community owns — it can't be deleted by an algorithm, banned by a platform, or sold to an advertiser."
-        instead="Instead of Facebook Groups, WhatsApp and Slack"
-      />
-      <OsComponent
-        n="04"
-        name="Decide"
-        desc="Proposals and votes with genuine one-member-one-vote — auditable and defensible, because membership is cryptographically attested."
-        instead="Instead of Google Forms and AGM proxies"
-      />
-      <OsComponent
-        n="05"
-        name="Know"
-        desc="A shared knowledge base with a private AI assistant, trained on the community's own knowledge and kept inside its walls."
-        instead="Instead of ChatGPT, Notion and shared drives"
-      />
-    </Box>
-
-    <Typography variant="h6" sx={{ fontWeight: 700, color: OC_BLUE, mb: 1 }}>
-      A private AI, inside your community's walls
-    </Typography>
-    <Typography variant="body1" color="text.secondary" sx={{ mb: 2.5 }}>
-      People are already pasting sensitive community knowledge into public AI tools — where it
-      leaks to whoever runs them. The Know component gives a community its own assistant instead:
-      trained on its documents, discussions and collective expertise, and running inside the
-      community's own trust boundary (its VTC). It answers only to
-      members, nothing it learns ever leaves, and the community itself decides what it knows and
-      who can ask.
-    </Typography>
-
-    <Typography variant="body2">
-      Community OS is in development.{' '}
-      <BlueLink href={LINKS.ctaPilot}>Talk to us about piloting it →</BlueLink>
-    </Typography>
-  </Section>
-);
-
 /* ── §7 For Developers ──────────────────────────────────────────── */
 const CodeBlock = () => (
   <Box
@@ -139,8 +42,8 @@ export const DevelopersSection = () => (
   <Section slug="developers" title="For Developers" bg="default">
     <SectionHeading>For Developers</SectionHeading>
     <Typography variant="body1" color="text.secondary" sx={{ mb: 2.5 }}>
-      The PLANET trust layer is built entirely on open, recognised standards — no proprietary
-      formats and no lock-in. Every piece below is an open specification anyone can build on and
+      The trust layer is built entirely on open, recognised standards — no proprietary
+      formats and no lock-in. Every piece is an open specification anyone can build on and
       interoperate with.
     </Typography>
 
@@ -204,19 +107,26 @@ const CtaCard = ({ prompt, action, href }: { prompt: string; action: string; hre
 );
 
 export const ClosingSection = () => (
-  <Section slug="closing" title="Closing" bg="default" sx={{ pb: 12 }}>
+  <Section slug="closing" title="Closing" bg="paper" sx={{ pb: 12 }}>
     <SectionHeading>Get involved</SectionHeading>
     <Typography variant="body1" color="text.secondary" sx={{ mb: 2.5 }}>
-      We're building the trust layer the internet never had — on open protocols, owned by no one,
-      governed cooperatively. The network grows with every person and community that joins, and
-      we're looking for collaborators, early adopters, and everyone else who recognises this
-      matters.
+      Today's web runs on platforms that hijack our attention, harvest our data and lock our
+      connections inside walled gardens — leaving us unsure what's real and who to trust, and
+      starting from scratch every time we join something new. You've just seen the alternative:
+      trust that lives with people, not platforms.
+    </Typography>
+    <Typography variant="body1" color="text.secondary" sx={{ mb: 2.5 }}>
+      None of it is owned by a single organisation. The{' '}
+      <BlueLink href={LINKS.firstPersonProject}>First Person Project</BlueLink> is defining the
+      open protocols — including the Trust over IP DTG credential spec that the graph is built
+      on. <BlueLink href={LINKS.openCoop}>The Open Co-op</BlueLink> is the member-owned initiative
+      building the tools and the network, and it grows with every person and community that joins.
     </Typography>
 
     <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 2, mt: 3 }}>
       <CtaCard
-        prompt="Run a cooperative or community network?"
-        action="Pilot Community OS"
+        prompt="Run a cooperative or community?"
+        action="Get in touch"
         href={LINKS.ctaPilot}
       />
       <CtaCard
@@ -225,7 +135,7 @@ export const ClosingSection = () => (
         href={LINKS.ctaBuild}
       />
       <CtaCard
-        prompt="Want to help build a member-owned trust network for the internet?"
+        prompt="Want to help?"
         action="Join The Open Co-op"
         href={LINKS.ctaJoin}
       />

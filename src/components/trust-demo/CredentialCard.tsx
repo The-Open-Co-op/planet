@@ -24,9 +24,11 @@ const DEMO_QR_VALUE = 'https://collab.open.coop/demo/planet-trust-layer';
 
 interface CredentialCardProps {
   credential: DemoCredential;
+  /** When set, shows an × in the header so the holder can drop this card from a presentation. */
+  onRemove?: () => void;
 }
 
-export const CredentialCard = ({ credential }: CredentialCardProps) => {
+export const CredentialCard = ({ credential, onRemove }: CredentialCardProps) => {
   const [expanded, setExpanded] = useState(false);
   const [showJson, setShowJson] = useState(false);
   const [showQr, setShowQr] = useState(false);
@@ -98,6 +100,19 @@ export const CredentialCard = ({ credential }: CredentialCardProps) => {
                   transition: 'transform 0.2s',
                 }}
               />
+              {onRemove && (
+                <IconButton
+                  size="small"
+                  aria-label="Don't share this credential"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onRemove();
+                  }}
+                  sx={{ flexShrink: 0, ml: -0.5, mr: -0.75, color: 'text.secondary' }}
+                >
+                  <Close sx={{ fontSize: 16 }} />
+                </IconButton>
+              )}
             </Box>
             <Typography variant="caption" color="text.secondary" noWrap sx={{ display: 'block', mt: 0.25 }}>
               {credential.subtitle}
@@ -145,8 +160,11 @@ export const CredentialCard = ({ credential }: CredentialCardProps) => {
                   color: 'grey.50',
                   fontSize: '0.68rem',
                   lineHeight: 1.5,
-                  overflow: 'auto',
+                  overflowX: 'hidden',
+                  overflowY: 'auto',
                   maxHeight: 280,
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-all',
                   fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
                 }}
               >

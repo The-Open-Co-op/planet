@@ -56,7 +56,12 @@ export const GLOSSARY: Record<string, { full: string; plain: string }> = {
   'M-DID': {
     full: 'Member DID',
     plain:
-      "An individual member's unique decentralised identifier — controlled only by that person.",
+      'A decentralised identifier belonging to an individual member. A person holds several, and uses different ones in different contexts.',
+  },
+  VC: {
+    full: 'Verifiable Credential',
+    plain:
+      'A tamper-proof digital statement — a membership, an endorsement, a proof of personhood — signed by whoever issued it, so anyone can check it is genuine. Held in your vault and shared only when you choose.',
   },
   DTG: {
     full: 'Decentralised Trust Graph',

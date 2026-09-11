@@ -7,13 +7,13 @@ import { SectionTrackerProvider, Section } from '@/components/trust-demo/Section
 import { FlankedPhone } from '@/components/trust-demo/FlankedPhone';
 import { GlossaryAside } from '@/components/trust-demo/GlossaryAside';
 import { CryptoSimulatedBadge } from '@/components/trust-demo/CryptoSimulatedBadge';
-import { OC_BLUE, BlueLink, StandardLink, OrgValueLine } from '@/components/trust-demo/sectionKit';
+import { OC_BLUE, BlueLink } from '@/components/trust-demo/sectionKit';
 import { LINKS } from '@/components/trust-demo/trustDemoData';
 import JourneyGreens from '@/components/trust-demo/sections/JourneyGreens';
 import JourneyHarvest from '@/components/trust-demo/sections/JourneyHarvest';
 import JourneyFoundry from '@/components/trust-demo/sections/JourneyFoundry';
 import JourneyManchester from '@/components/trust-demo/sections/JourneyManchester';
-import { KnowSection, DevelopersSection, ClosingSection } from '@/components/trust-demo/sections/KnowDevClosing';
+import { DevelopersSection, ClosingSection } from '@/components/trust-demo/sections/KnowDevClosing';
 
 /** Google Doc explaining personhood credentials in depth. */
 const PHC_DOC =
@@ -68,46 +68,51 @@ const TrustLayerDemoPage = () => {
               fontSize: { xs: '2rem', sm: '2.4rem', md: '2.5rem' },
             }}
           >
-            The internet is missing a trust layer.
+            Trust that travels with you
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ mb: 2.5, fontSize: '1.05rem' }}>
-            The Web has been captured by “big tech” platforms that hijack our attention,
-            harvest our data and sell it to the highest bidders. It's drowning in ads,
-            clickbait, deepfakes and AI slop — leaving us unsure what's real and who to
-            trust. Our connections and content are locked in walled gardens, and every new
-            platform means recreating your profile from scratch.
+            This is a demo of a trust layer for the internet: a way for people to carry proof of
+            who they are, who vouches for them and the communities they belong to — and use it
+            anywhere, sharing only what they choose, with whom they choose.
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ mb: 2.5, fontSize: '1.05rem' }}>
-            The <BlueLink href={LINKS.firstPersonProject}>First Person Project</BlueLink> is
-            building the open protocols to change this — aligned with a stack of recognised
-            open standards. No single organisation owns any of it.
+            It builds on the <GlossaryAside term="DTG">Decentralised Trust Graph (DTG)</GlossaryAside> —
+            an open protocol stack being developed by our friends at the{' '}
+            <BlueLink href={LINKS.firstPersonProject}>First Person Project</BlueLink> — in which
+            every relationship, membership, endorsement and vouch is issued as a{' '}
+            <GlossaryAside term="VC">verifiable credential</GlossaryAside>: a small signed
+            statement from one party about another. Together these statements form
+            the trust graph: a web of verified relationships between people and communities that no
+            single organisation owns or controls. Anyone can prove their place in it. Nobody can
+            fake it.
           </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ mb: 3.5, fontSize: '1.05rem' }}>
-            <BlueLink href={LINKS.openCoop}>The Open Co-op</BlueLink> is the member-owned
-            initiative specifying and building the tools and network to make it real. Below
-            are working demos of the concept.
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 2, fontSize: '1.05rem' }}>
+            The demo follows Sarah, a co-op member with a vault on her phone. It holds her credentials: memberships, endorsements and a proof that she's a real
+            human. No platform owns it, and she can take it anywhere. See how she uses them to:
           </Typography>
-
-          <Typography
-            variant="overline"
-            sx={{ color: 'text.secondary', fontWeight: 700, display: 'block', mb: 1 }}
-          >
-            Built on open standards
-          </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75 }}>
-            <StandardLink href={LINKS.w3cDids}>W3C Decentralised Identifiers</StandardLink>
-            <StandardLink href={LINKS.w3cVc}>W3C Verifiable Credentials 2.0</StandardLink>
-            <StandardLink href={LINKS.toipDtgSpec}>Trust over IP — DTG spec</StandardLink>
-            <StandardLink href={LINKS.myTermsSdBase}>IEEE 7012-2025 (MyTerms)</StandardLink>
-            <StandardLink href={LINKS.ayra}>Ayra Trust Registry Fabric</StandardLink>
+          <Box component="ol" sx={{ m: 0, mb: 2.5, pl: 3, color: 'text.secondary', fontSize: '1.05rem' }}>
+            {[
+              ['Join a community', 'skipping the waiting list by proving she\'s already a member elsewhere.'],
+              ['Unlock member discounts', 'without revealing personal details.'],
+              ['Get vouched in', 'with endorsements she already holds, checked automatically against the community\'s own rules.'],
+              ['Find and access new communities', 'matched on the trusted relationships she already has.'],
+            ].map(([lead, rest]) => (
+              <Typography key={lead} component="li" variant="body1" color="text.secondary" sx={{ mb: 0.75, fontSize: '1.05rem' }}>
+                <Box component="span" sx={{ fontWeight: 600, color: 'text.primary' }}>{lead}</Box> — {rest}
+              </Typography>
+            ))}
           </Box>
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 3.5, fontSize: '1.05rem' }}>
+            Each step shows her phone screen alongside what's happening underneath — the
+            credentials, signatures and trust graph doing the work.
+          </Typography>
 
           <Box
             onClick={() =>
               document.getElementById('vault')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
             }
             sx={{
-              mt: 6,
+              mt: 4,
               display: 'inline-flex',
               alignItems: 'center',
               gap: 1,
@@ -129,7 +134,9 @@ const TrustLayerDemoPage = () => {
           <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
             Everyone in the network has a vault — a personal, encrypted store for all your
             stuff: your identity, your data, your settings, and your credentials. It works
-            across your devices and only you hold the keys. Here's Sarah's, opened at{' '}
+            across your devices, run by your own agent with a hosting provider you choose — or
+            hosted by you. Nobody can lock you in, and you can switch host at any time. Here's
+            Sarah's, opened at{' '}
             <Box component="span" sx={{ fontWeight: 600, color: 'text.primary' }}>My Credentials</Box>{' '}
             — the memberships, relationships and endorsements that make up her reputation.
             Tap a card to see its details, share it, or inspect the raw data model.
@@ -145,9 +152,12 @@ const TrustLayerDemoPage = () => {
             backend={
               <>
                 Each credential is signed by its issuer's <GlossaryAside term="DID" /> (Decentralised
-                Identifier). Communities sign with their <GlossaryAside term="C-DID" />; individuals
-                sign with their <GlossaryAside term="M-DID" />. Sarah controls her own M-DID and
-                vault — no third party holds her keys.
+                Identifier): a community issues under its <GlossaryAside term="C-DID" />, a person
+                under one of their <GlossaryAside term="M-DID">M-DIDs</GlossaryAside> — people hold
+                several, and use different ones in different contexts. Her vault is operated by her personal agent, which holds the vault keys so it can act
+                on her behalf; Sarah holds the keys to the agent. The agent runs with a hosting
+                provider she chooses — or on her own infrastructure — and she can move it to
+                another at any time.
               </>
             }
           >
@@ -155,11 +165,6 @@ const TrustLayerDemoPage = () => {
               <VaultScreen initialView="credentials" />
             </PhoneFrame>
           </FlankedPhone>
-
-          <OrgValueLine>
-            members arrive with verifiable history. No forms. No chasing references. No
-            personal data liability.
-          </OrgValueLine>
 
           {/* First place signatures appear (Signed by / proofValue) — note goes here. */}
           <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
@@ -210,9 +215,8 @@ const TrustLayerDemoPage = () => {
         <JourneyFoundry />
         <JourneyManchester />
 
-        {/* Developers · Know teaser · Closing */}
+        {/* Developers · Closing */}
         <DevelopersSection />
-        <KnowSection />
         <ClosingSection />
       </SectionTrackerProvider>
     </Box>

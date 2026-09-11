@@ -52,7 +52,7 @@ export default function JourneyGreens() {
       <SectionHeading>Joining a Community</SectionHeading>
 
       <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-        Sarah wants to join Greens Grocery Co-op, a member-owned grocery in Bristol — membership
+        Sarah wants to join Greens Grocery Co-op, a member-owned grocery store in Bristol — membership
         gets her a vote on what they stock and member pricing. Greens Grocery is open to anyone, but
         members of other cooperative organisations get fast-tracked past the waiting list.
       </Typography>
@@ -88,7 +88,7 @@ export default function JourneyGreens() {
               cooperative organisations get fast-track approval.
             </Typography>
             <Button variant="contained" fullWidth startIcon={<Check />} sx={primaryBtnSx}>
-              Join with my co-op membership
+              Verify my co-op membership
             </Button>
             <Button variant="outlined" fullWidth startIcon={<Add />} sx={secondaryBtnSx}>
               Apply as a new member
@@ -103,7 +103,7 @@ export default function JourneyGreens() {
       </Typography>
 
       <Typography variant="body1" color="text.secondary" sx={{ mb: 1 }}>
-        Sarah taps “Join with my co-op membership.” Her vault opens and offers her existing
+        Sarah taps “Verify my co-op membership.” Her vault opens and offers her existing
         Bristol Tech Co-op membership — the one credential that satisfies Greens Grocery's
         fast-track rule — and she chooses to present it.
       </Typography>
@@ -209,15 +209,15 @@ export default function JourneyGreens() {
         backend={
           <>
             Greens Grocery issues Sarah a new VMC signed with their <GlossaryAside term="C-DID" />. It
-            appears in her vault immediately. Verification required NO personal data to be stored by
-            Greens Grocery — only the outcome: member approved.
+            appears in her vault moments later. Verification required NO personal data to be stored by
+            Greens Grocery — only the outcome: new member verified.
           </>
         }
       />
 
       <OrgValueLine>
-        Greens Grocery gains verified members in seconds, with zero admin overhead and no excess
-        personal data stored. It also sidesteps the cost of <GlossaryAside term="KYC" />: those
+        Greens Grocery gains verified members in seconds — no forms, no chasing references, zero
+        admin overhead and no excess personal data stored. It also sidesteps the cost of <GlossaryAside term="KYC" />: those
         identity checks are slow, expensive and create data liabilities — a mid-sized co-op can
         spend thousands of pounds a year on manual verification, onboarding forms and
         reference-chasing. Verifiable credentials do away with all of it — the work has already

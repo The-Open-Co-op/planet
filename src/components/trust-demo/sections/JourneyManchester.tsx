@@ -57,6 +57,7 @@ export default function JourneyManchester() {
       </Typography>
 
       <Typography variant="body1" sx={{ color: 'text.secondary', mt: 2 }}>
+        Sarah's vault lives in PLANET — the app The Open Co-op is building on the trust layer.
         Communities on PLANET publish a structured public profile to the open{' '}
         <BlueLink href="https://murmurations.network">Murmurations</BlueLink> index — a shared,
         open directory of organisations. Their details, and even their membership criteria, are
@@ -118,10 +119,9 @@ export default function JourneyManchester() {
       </Typography>
 
       <Typography variant="body1" sx={{ color: 'text.secondary', mb: 1 }}>
-        Sarah opens Mossley's listing. PLANET renders it from Mossley's published Murmurations
-        profile — the room, and the membership criteria as structured fields. Because PLANET holds
-        her vault, it checks those criteria against her credentials as it draws the page, and flags
-        that she'd be a priority applicant. Mossley sees none of it — the whole check happens on
+        Sarah opens Mossley's listing. Because PLANET holds her vault, it checks Mossley's
+        membership criteria against her credentials as it draws the page, and flags that she'd be
+        a priority applicant. Mossley sees none of it — the whole check happens on
         Sarah's device.
       </Typography>
 

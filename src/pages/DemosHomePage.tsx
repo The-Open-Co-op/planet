@@ -112,8 +112,8 @@ const DemosHomePage = () => {
       <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 3, maxWidth: 1100, width: '100%' }}>
         <DemoCard
           title="Trust Layer"
-          subtitle="The whole story, end to end"
-          description="A trust layer for the internet, told through four journeys: Sarah's vault of verifiable credentials, joining a co-op with trust, member discounts with no data handed over, getting vouched in, and finding your people somewhere new."
+          subtitle="Trust that travels with you"
+          description="A trust layer for the internet, built on the Decentralised Trust Graph. Follow Sarah as she uses the verifiable credentials in her vault to join a community, unlock member discounts, get vouched in and find new communities — sharing only what she chooses, with whom she chooses."
           icon={<VerifiedUser sx={{ fontSize: 40, color: 'primary.main' }} />}
           path="/demo/trust-layer"
           parentSlug="planet-trust-layer"

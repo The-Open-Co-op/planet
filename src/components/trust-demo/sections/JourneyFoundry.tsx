@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { Check, VerifiedUser } from '@mui/icons-material';
 import { Section } from '@/components/trust-demo/SectionTracker';
@@ -39,15 +40,15 @@ const noop = () => {};
 /** Same vouch icon the real Alerts screen uses. */
 const vouchIcon = () => <VerifiedUser sx={{ fontSize: 18, color: '#0066CC' }} />;
 
-/** Marcus's incoming vouches — rendered with the real Alerts NotificationItem card. */
-const MARCUS_VOUCHES: Notification[] = [
+/** Sarah's incoming vouches — rendered with the real Alerts NotificationItem card. */
+const SARAH_VOUCHES: Notification[] = [
   {
     id: 'vouch-priya',
     type: 'vouch',
     title: 'New vouch',
     message: 'Vouched for you — Foundry Worker Co-op application',
     fromUserName: 'Priya Kumar',
-    targetUserId: 'marcus',
+    targetUserId: 'sarah',
     isRead: false,
     isActionable: true,
     status: 'pending',
@@ -61,7 +62,7 @@ const MARCUS_VOUCHES: Notification[] = [
     title: 'New vouch',
     message: 'Vouched for you — Foundry Worker Co-op application',
     fromUserName: 'Tom Ellis',
-    targetUserId: 'marcus',
+    targetUserId: 'sarah',
     isRead: false,
     isActionable: true,
     status: 'pending',
@@ -75,18 +76,18 @@ const rawVc = (type: string, issuer: string, claim: Record<string, unknown>) => 
   '@context': ['https://www.w3.org/ns/credentials/v2', 'https://firstperson.network/credentials/dtg/v1'],
   type: ['VerifiableCredential', type],
   issuer,
-  credentialSubject: { id: 'did:key:z6MkMarcus...', ...claim },
+  credentialSubject: { id: 'did:key:z6MkSarah...', ...claim },
   proof: { type: 'DataIntegrityProof', cryptosuite: 'eddsa-rdfc-2022', proofValue: 'z3FXQj...' },
 });
 
-/** What Marcus shares in his application — same card graphics as My Credentials. */
-const MARCUS_SHARING: DemoCredential[] = [
+/** What Sarah shares in her application — same card graphics as My Credentials. */
+const SARAH_SHARING: DemoCredential[] = [
   {
     id: 'm-vrc-priya',
     type: 'VRC',
     title: 'Priya Kumar (Foundry)',
     subtitle: 'Verifiable Relationship Credential',
-    detail: '“I know Marcus and vouch for him as a trustworthy collaborator.”',
+    detail: '“I know Sarah and vouch for her as a trustworthy collaborator.”',
     signedBy: 'Priya Kumar',
     active: true,
     rawJson: rawVc('RelationshipCredential', 'did:key:z6MkPriya...', { relationshipType: 'vouch', context: 'Foundry Worker Co-op application' }),
@@ -96,7 +97,7 @@ const MARCUS_SHARING: DemoCredential[] = [
     type: 'VRC',
     title: 'Tom Ellis (Foundry)',
     subtitle: 'Verifiable Relationship Credential',
-    detail: '“I worked alongside Marcus at Bristol Tech Co-op. Reliable and skilled.”',
+    detail: '“I worked alongside Sarah at Bristol Tech Co-op. Reliable and skilled.”',
     signedBy: 'Tom Ellis',
     active: true,
     rawJson: rawVc('RelationshipCredential', 'did:key:z6MkTom...', { relationshipType: 'vouch', context: 'Foundry Worker Co-op application' }),
@@ -149,17 +150,24 @@ const AuditRow = ({ text }: { text: string }) => (
   </Box>
 );
 
+const REQUIRED = SARAH_SHARING.slice(0, 2);
+const OPTIONAL = SARAH_SHARING.slice(2);
+
 export default function JourneyFoundry() {
+  // Step 3 — the extra context Sarah chooses to share; she can drop any of it.
+  const [optional, setOptional] = useState<DemoCredential[]>(OPTIONAL);
+  const presented = [...REQUIRED, ...optional];
+
   return (
     <Section slug="journey-foundry" title="Journey 3 · Getting Vouched In" bg="default">
       <SectionHeading>Getting Vouched In</SectionHeading>
 
       <Typography variant="body1" sx={{ color: 'text.secondary' }}>
         When you join a new platform today you start from zero — years of reputation and
-        relationships are ignored, and you have to earn trust all over again. PLANET changes
-        this: your credentials, and the trust they carry, travel with you. Marcus wants to
-        join the Foundry Worker Co-op — and rather than showing up as a stranger, he can
-        arrive with evidence of who he already is.
+        relationships are ignored, and you have to earn trust all over again. The trust layer changes
+        this: your credentials, and the trust they carry, travel with you. Sarah wants to
+        join the Foundry Worker Co-op — and rather than showing up as a stranger, she can
+        arrive with evidence of who she already is.
       </Typography>
 
       {/* STEP 1 */}
@@ -208,37 +216,37 @@ export default function JourneyFoundry() {
       </FlankedPhone>
 
       <Typography variant="body1" color="text.secondary" sx={{ mt: 3 }}>
-        When Marcus taps{' '}
+        When Sarah taps{' '}
         <Box component="span" sx={{ fontWeight: 600, color: 'text.primary' }}>Apply for membership</Box>,
-        the Foundry site hands off to his PLANET vault — his own app opens to gather what the
+        the Foundry site hands off to her vault — her own app opens to gather what the
         application needs.
       </Typography>
 
       {/* STEP 2 */}
       <Typography variant="overline" sx={stepLabelSx}>
-        Step 2 — Priya and Tom vouch for Marcus
+        Step 2 — Priya and Tom vouch for Sarah
       </Typography>
 
       <Typography variant="body1" color="text.secondary" sx={{ mb: 1 }}>
-        Marcus already knows Priya and Tom — both current Foundry members — so he asks them to
-        vouch for him. Vouching is how PLANET members issue VRCs to each other: a couple of taps,
-        and a signed relationship credential is on its way. Both vouches arrive in Marcus's{' '}
-        <Box component="span" sx={{ fontWeight: 600, color: 'text.primary' }}>Alerts</Box>, where he
-        accepts them — and they're then held in his vault, ready to include in his Foundry
+        Sarah already knows Priya and Tom — both current Foundry members — so she asks them to
+        vouch for her. Vouching is how members of the network issue VRCs to each other: a couple of taps,
+        and a signed relationship credential is on its way. Both vouches arrive in Sarah's{' '}
+        <Box component="span" sx={{ fontWeight: 600, color: 'text.primary' }}>Alerts</Box>, where she
+        accepts them — and they're then held in her vault, ready to include in her Foundry
         application.
       </Typography>
 
       <FlankedPhone
         ux={
           <>
-            The vouches arrive in Marcus's alerts. He taps Accept on each, and it becomes a
-            signed relationship credential held in his vault.
+            The vouches from Priya and Tom arrive in Sarah's alerts. She taps Accept on each, and it becomes a
+            signed relationship credential held in her vault.
           </>
         }
         backend={
           <>
             Each VRC is signed by the issuer's <GlossaryAside term="M-DID" /> — Priya's and
-            Tom's personal identifiers. Marcus holds them in his vault. Foundry never needs to
+            Tom's personal identifiers. Sarah holds them in her vault. Foundry never needs to
             contact Priya or Tom to verify: the cryptographic signature is sufficient. No
             intermediary.
           </>
@@ -251,14 +259,14 @@ export default function JourneyFoundry() {
             </Box>
             <Box sx={{ flex: 1, overflow: 'auto', p: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
               <NotificationItem
-                notification={MARCUS_VOUCHES[0]}
+                notification={SARAH_VOUCHES[0]}
                 onClick={noop}
                 onAccept={noop}
                 onReject={noop}
                 getNotificationIcon={vouchIcon}
               />
               <NotificationItem
-                notification={MARCUS_VOUCHES[1]}
+                notification={SARAH_VOUCHES[1]}
                 onClick={noop}
                 onAccept={noop}
                 onReject={noop}
@@ -272,25 +280,24 @@ export default function JourneyFoundry() {
 
       {/* STEP 3 */}
       <Typography variant="overline" sx={stepLabelSx}>
-        Step 3 — Marcus presents his application bundle
+        Step 3 — Sarah presents her application bundle
       </Typography>
 
       <Typography variant="body1" color="text.secondary" sx={{ mb: 1 }}>
-        Back on the Foundry website, Marcus reviews his application. The two required vouches are
-        in place, and he chooses to share some extra context — the same credentials from his
-        vault, presented to Foundry.
+        Back on the Foundry website, Sarah reviews her application. The two required vouches are
+        in place, and she chooses to share some extra context.
       </Typography>
 
       <FlankedPhone
         ux={
           <>
-            Marcus reviews exactly what he's about to share — the two required vouches, plus
-            extra context he chooses to include.
+            Sarah reviews exactly what she's about to share — the two required vouches, plus
+            extra context she chooses to include.
           </>
         }
         backend={
           <>
-            The bundle is a signed presentation. Foundry receives only what Marcus selects,
+            The bundle is a signed presentation. Foundry receives only what Sarah selects,
             and every credential in it carries its issuer's signature.
           </>
         }
@@ -301,12 +308,33 @@ export default function JourneyFoundry() {
               Your application
             </Typography>
             <ListLabel>Required</ListLabel>
-            <CredentialCard credential={MARCUS_SHARING[0]} />
-            <CredentialCard credential={MARCUS_SHARING[1]} />
-            <ListLabel>Also sharing (your choice)</ListLabel>
-            <CredentialCard credential={MARCUS_SHARING[2]} />
-            <CredentialCard credential={MARCUS_SHARING[3]} />
-            <CredentialCard credential={MARCUS_SHARING[4]} />
+            {REQUIRED.map((c) => (
+              <CredentialCard key={c.id} credential={c} />
+            ))}
+            <Box sx={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+              <ListLabel>Also sharing (your choice)</ListLabel>
+              {optional.length < OPTIONAL.length && (
+                <Typography
+                  variant="caption"
+                  onClick={() => setOptional(OPTIONAL)}
+                  sx={{ color: 'primary.main', cursor: 'pointer', fontWeight: 600 }}
+                >
+                  Restore
+                </Typography>
+              )}
+            </Box>
+            {optional.length === 0 && (
+              <Typography variant="caption" color="text.secondary">
+                Nothing extra — just the required vouches.
+              </Typography>
+            )}
+            {optional.map((c) => (
+              <CredentialCard
+                key={c.id}
+                credential={c}
+                onRemove={() => setOptional((cur) => cur.filter((x) => x.id !== c.id))}
+              />
+            ))}
             <Button variant="contained" fullWidth sx={{ ...primaryBtnSx, mt: 1 }}>
               Submit application
             </Button>
@@ -324,12 +352,12 @@ export default function JourneyFoundry() {
           Membership application
         </Typography>
         <Typography variant="h6" sx={{ fontWeight: 800, mb: 2 }}>
-          Marcus
+          Sarah
         </Typography>
 
         <ListLabel>Credentials presented</ListLabel>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75, mt: 0.75, mb: 2.5 }}>
-          {MARCUS_SHARING.map((c) => (
+          {presented.map((c) => (
             <Box key={c.id} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Box
                 sx={{
@@ -370,8 +398,8 @@ export default function JourneyFoundry() {
       <AnnotationPair
         ux={
           <>
-            Marcus chose to share his existing reputation alongside the required vouches — he
-            didn't start from zero. He arrived with evidence of who he already is.
+            Sarah chose to share her existing reputation alongside the required vouches — she
+            didn't start from zero. She arrived with evidence of who she already is.
           </>
         }
         backend={
@@ -389,7 +417,7 @@ export default function JourneyFoundry() {
         community's own trust graph. Every community defines its own governance however it likes;{' '}
         <BlueLink href={LINKS.openPolicyAgent}>Open Policy Agent</BlueLink> (OPA) expresses those
         rules as machine-readable JSON so they can be applied automatically. Foundry's own rule —
-        two vouches from current members — is what evaluates Marcus's application here, with no
+        two vouches from current members — is what evaluates Sarah's application here, with no
         admin in the loop and every check logged and auditable.
       </OrgValueLine>
     </Section>
