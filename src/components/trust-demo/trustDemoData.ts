@@ -68,6 +68,11 @@ export const GLOSSARY: Record<string, { full: string; plain: string }> = {
     plain:
       'The underlying data structure of the network — a graph of verified relationships between people and communities.',
   },
+  ZKP: {
+    full: 'Zero-Knowledge Proof',
+    plain:
+      "A way to prove something is true — you're a member, you're over 18, you haven't voted yet — without revealing the underlying facts. The verifier learns that the statement holds, and nothing else.",
+  },
   KYC: {
     full: 'Know Your Customer',
     plain:
@@ -94,7 +99,7 @@ export const LINKS = {
 } as const;
 
 export const CRYPTO_SIMULATED_NOTE =
-  'Cryptographic signatures simulated in this demo. Real implementation uses W3C Data Integrity Proofs.';
+  'Cryptographic signatures and proofs simulated in this demo. Real implementation uses W3C Data Integrity Proofs.';
 
 export interface DemoCredential {
   id: string;

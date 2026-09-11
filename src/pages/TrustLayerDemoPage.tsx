@@ -13,6 +13,7 @@ import JourneyGreens from '@/components/trust-demo/sections/JourneyGreens';
 import JourneyHarvest from '@/components/trust-demo/sections/JourneyHarvest';
 import JourneyFoundry from '@/components/trust-demo/sections/JourneyFoundry';
 import JourneyManchester from '@/components/trust-demo/sections/JourneyManchester';
+import JourneyVote from '@/components/trust-demo/sections/JourneyVote';
 import { DevelopersSection, ClosingSection } from '@/components/trust-demo/sections/KnowDevClosing';
 
 /** Google Doc explaining personhood credentials in depth. */
@@ -96,6 +97,7 @@ const TrustLayerDemoPage = () => {
               ['Unlock member discounts', 'without revealing personal details.'],
               ['Get vouched in', 'with endorsements she already holds, checked automatically against the community\'s own rules.'],
               ['Find and access new communities', 'matched on the trusted relationships she already has.'],
+              ['Vote anonymously', 'a secret ballot without revealing who she is or how she voted.'],
             ].map(([lead, rest]) => (
               <Typography key={lead} component="li" variant="body1" color="text.secondary" sx={{ mb: 0.75, fontSize: '1.05rem' }}>
                 <Box component="span" sx={{ fontWeight: 600, color: 'text.primary' }}>{lead}</Box> — {rest}
@@ -209,11 +211,12 @@ const TrustLayerDemoPage = () => {
           </Typography>
         </Section>
 
-        {/* Journeys 1–4 */}
+        {/* Journeys 1–5 */}
         <JourneyGreens />
         <JourneyHarvest />
         <JourneyFoundry />
         <JourneyManchester />
+        <JourneyVote />
 
         {/* Developers · Closing */}
         <DevelopersSection />

@@ -39,7 +39,7 @@ const result = await planet.verify({
 );
 
 export const DevelopersSection = () => (
-  <Section slug="developers" title="For Developers" bg="default">
+  <Section slug="developers" title="For Developers" bg="paper">
     <SectionHeading>For Developers</SectionHeading>
     <Typography variant="body1" color="text.secondary" sx={{ mb: 2.5 }}>
       The trust layer is built entirely on open, recognised standards — no proprietary
@@ -107,7 +107,7 @@ const CtaCard = ({ prompt, action, href }: { prompt: string; action: string; hre
 );
 
 export const ClosingSection = () => (
-  <Section slug="closing" title="Closing" bg="paper" sx={{ pb: 12 }}>
+  <Section slug="closing" title="Closing" bg="default" sx={{ pb: 12 }}>
     <SectionHeading>Get involved</SectionHeading>
     <Typography variant="body1" color="text.secondary" sx={{ mb: 2.5 }}>
       Today's web runs on platforms that hijack our attention, harvest our data and lock our
