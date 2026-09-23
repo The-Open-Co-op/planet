@@ -277,7 +277,7 @@ export default function JourneyVote() {
         backend={
           <>
             Every ballot — proof, nullifier, choice — is published, so anyone can re-verify each
-            proof and re-run the tally. Completeness is a separate question, settled by the voters:
+            proof and re-run the tally. Completeness is a separate question, checked by voters:
             each finds their own nullifier, so a dropped ballot is spotted by whoever cast it.
             Duplicates are rejected at submission. No one has to be trusted with the count, and the
             platform never needs a name — though submission metadata (IP, timing) needs the same
