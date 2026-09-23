@@ -179,10 +179,10 @@ export default function JourneyVote() {
         backend={
           <>
             Mossley publishes the poll: a poll ID, the candidates, the closing time, and the
-            eligibility rule, to all holders of an active Mossley VMC. From the VMCs it has issued,
-            Mossley builds a list of member commitments (one-way hashes, not names) and publishes
-            only the root of that list. Nobody, Mossley included, can work back from the root to a
-            member.
+            eligibility rule, to all holders of an active Mossley VMC. Each member's vault derives
+            a secret only it holds; Mossley publishes the root of the list of commitments to those
+            secrets — one-way hashes, never of names. Mossley knows its own members, of course;
+            what it can't do is link a member to a ballot.
           </>
         }
       >
@@ -223,12 +223,13 @@ export default function JourneyVote() {
         }
         backend={
           <>
-            Her agent generates a zero-knowledge proof: “I know a secret that belongs to a
-            commitment in Mossley's published list, and I haven't used it in poll #2027-steward
-            before.” Alongside the proof it sends her vote and a nullifier — a hash of her secret
-            and the poll ID. The nullifier is unique per member per poll, so a second ballot from
-            Sarah would be rejected; but it can't be linked back to her commitment, let alone her
-            name.
+            Her agent sends her vote, a nullifier — her secret hashed with the poll ID — and a
+            zero-knowledge proof that the secret behind it is one of the published commitments, and
+            that the nullifier was derived correctly. Enforcement is the system's job: a nullifier
+            already used is rejected. One vote per member holds as long as that nullifier stays
+            fixed for the poll — and it does: the commitment list is built from the VMCs Mossley
+            has issued, one per member, and closed before voting opens. Neither the proof nor the
+            nullifier reveals her commitment or her name.
           </>
         }
       >
@@ -253,7 +254,7 @@ export default function JourneyVote() {
               Cast vote anonymously
             </Button>
             <Typography variant="caption" color="text.secondary" sx={{ display: 'block', textAlign: 'center' }}>
-              One vote per member. Yours can't be traced back to you — by anyone.
+              One vote per member. Your ballot isn't linked to your name.
             </Typography>
           </PlanetScreen>
         </PhoneFrame>
@@ -275,10 +276,12 @@ export default function JourneyVote() {
         }
         backend={
           <>
-            Every ballot — proof, nullifier, choice — is published. Anyone with the poll definition
-            and Mossley's list root can re-verify each proof and re-tally. Duplicate nullifiers are
-            rejected at submission. There's no one to trust with the count, and no platform that
-            ever saw a name.
+            Every ballot — proof, nullifier, choice — is published, so anyone can re-verify each
+            proof and re-run the tally. Completeness is a separate question, settled by the voters:
+            each finds their own nullifier, so a dropped ballot is spotted by whoever cast it.
+            Duplicates are rejected at submission. No one has to be trusted with the count, and the
+            platform never needs a name — though submission metadata (IP, timing) needs the same
+            care.
           </>
         }
       >
@@ -308,7 +311,8 @@ export default function JourneyVote() {
               <Box component="span" sx={{ color: OC_BLUE, fontWeight: 600 }}>Verify the count →</Box>
             </BluePanel>
             <Typography variant="caption" color="text.secondary" sx={{ display: 'block', textAlign: 'center' }}>
-              Anyone can re-check every proof and re-run the count.
+              Anyone can re-check the proofs and the count, and find their own nullifier to
+              confirm their vote was registered.
             </Typography>
           </PlanetScreen>
         </PhoneFrame>
@@ -374,7 +378,7 @@ export default function JourneyVote() {
 
       <OrgValueLine>
         For Mossley: a binding secret ballot with no one to trust with the count, no polling platform, no
-        membership list handed to anyone, and a result every member can independently verify — for
+        membership list handed to an outside platform, and a result every member can independently verify — for
         a Steward election, a rent-setting vote, or a rule change.
       </OrgValueLine>
 
