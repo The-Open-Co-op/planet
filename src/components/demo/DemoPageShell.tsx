@@ -99,13 +99,21 @@ export const DemoPageShell = ({
   const stageRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
   const hasStory = steps.some((s) => s.annotations.some((a) => a.variant === 'story'));
+
+  // Layout of the scaled row, left to right.
+  const STORY_W = 270;
+  const STORY_GAP = 24;
+  const ANNOTATION_W = 345;
+  // Nothing sits on the right until the protocol annotations are shown, so the
+  // reserve collapses and the whole row moves right, giving the story room.
+  const rightReserve = protocolVisible ? ANNOTATION_W : 120;
+  const leftOfPhone = hasStory ? STORY_W + STORY_GAP + ANNOTATION_W : ANNOTATION_W;
+  // How far the phone sits right of the row's centre, so the dots can follow.
+  const phoneOffset = ((leftOfPhone - (hasStory ? rightReserve : ANNOTATION_W)) / 2) * scale;
   useEffect(() => {
     const el = stageRef.current;
     if (!el) return;
-    // phone (375) + two 345px annotation columns, plus a 270px story column
-    // when the step has one. No spacer on the right: the bottom nav shifts to
-    // sit under the phone instead, so nothing has to scale down for it.
-    const DESIGN_W = hasStory ? 1365 : 950;
+    const DESIGN_W = hasStory ? leftOfPhone + 375 + rightReserve : 950;
     const DESIGN_H = 700; // phone height (667) + breathing room
     const fit = () => {
       const { width, height } = el.getBoundingClientRect();
@@ -116,7 +124,7 @@ export const DemoPageShell = ({
     const ro = new ResizeObserver(fit);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [hasStory]);
+  }, [hasStory, leftOfPhone, rightReserve]);
 
   useEffect(() => {
     if (stepSlug) {
@@ -193,7 +201,7 @@ export const DemoPageShell = ({
       )}
       {/* Keeps the dots under the phone, which sits half a story column right
           of centre when a step carries narrative text. */}
-      <Box sx={{ width: hasStory ? (270 + 24) * scale : 0, flexShrink: 0 }} />
+      <Box sx={{ width: hasStory ? phoneOffset * 2 : 0, flexShrink: 0 }} />
       <IconButton
         onClick={goBack}
         disabled={currentIndex === 0}
@@ -353,7 +361,7 @@ export const DemoPageShell = ({
               flexShrink: 0,
               // The annotations sit outside this box, so their width is
               // reserved here when a story column shares the row.
-              ...(hasStory && { mx: '345px' }),
+              ...(hasStory && { ml: `${ANNOTATION_W}px`, mr: `${rightReserve}px` }),
             }}
           >
             <PhoneFrame key={step.slug}>
