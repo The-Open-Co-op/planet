@@ -102,9 +102,10 @@ export const DemoPageShell = ({
   useEffect(() => {
     const el = stageRef.current;
     if (!el) return;
-    // phone (375) + two 270px annotation columns + gaps. The story column is
-    // positioned in the margin beside the cluster, so it isn't part of this.
-    const DESIGN_W = 950;
+    // phone (375) + two 345px annotation columns. With story text there is
+    // also a 270px story column and a matching spacer, so the phone stays
+    // centred and nothing has to squeeze when the frame is narrow.
+    const DESIGN_W = hasStory ? 1653 : 950;
     const DESIGN_H = 700; // phone height (667) + breathing room
     const fit = () => {
       const { width, height } = el.getBoundingClientRect();
@@ -309,20 +310,15 @@ export const DemoPageShell = ({
         minHeight: 0,
         overflow: 'hidden',
       }}>
-        {/* The story sits in the margin beside the phone, far enough out that
-            it can never reach the annotation column. */}
-        {hasStory && (
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 16,
-              left: 24,
-              // half the phone + annotation cluster, scaled, plus a gutter
-              right: `calc(50% + ${532 * scale + 32}px)`,
-              maxWidth: 320,
-              display: { xs: 'none', md: 'block' },
-            }}
-          >
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: 3,
+          transform: `scale(${scale})`,
+          transformOrigin: 'center center',
+        }}>
+          {hasStory && (
+            <Box sx={{ width: 270, flexShrink: 0, pt: 1 }}>
             {storyNotes.map((note, i) => (
               <Box key={`story-${i}`} sx={{ mb: 3 }}>
                 {/* A scene marker rather than a heading, so it carries place
@@ -348,21 +344,26 @@ export const DemoPageShell = ({
           </Box>
         )}
 
-        <Box
-          sx={{
-            position: 'relative',
-            flexShrink: 0,
-            transform: `scale(${scale})`,
-            transformOrigin: 'center center',
-          }}
-        >
-          <PhoneFrame key={step.slug}>
-            {typeof step.screen === 'function' ? step.screen({ goToStep, setDynamicAnnotations, reportStep }) : step.screen}
-          </PhoneFrame>
+          <Box
+            sx={{
+              position: 'relative',
+              flexShrink: 0,
+              // The annotations sit outside this box, so their width is
+              // reserved here when a story column shares the row.
+              ...(hasStory && { mx: '345px' }),
+            }}
+          >
+            <PhoneFrame key={step.slug}>
+              {typeof step.screen === 'function' ? step.screen({ goToStep, setDynamicAnnotations, reportStep }) : step.screen}
+            </PhoneFrame>
 
-          {visibleAnnotations.map((annotation, i) => (
-            <Annotation key={`${step.id}-${i}`} annotation={annotation} category={annotation.category} />
-          ))}
+            {visibleAnnotations.map((annotation, i) => (
+              <Annotation key={`${step.id}-${i}`} annotation={annotation} category={annotation.category} />
+            ))}
+          </Box>
+
+          {/* Balances the story column so the phone stays centred. */}
+          {hasStory && <Box sx={{ width: 270, flexShrink: 0 }} />}
         </Box>
       </Box>
 
