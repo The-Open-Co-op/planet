@@ -14,6 +14,11 @@ export interface AnnotationItem {
   tag?: string;
   /** If true, shows a downward arrow indicating content is below the fold */
   pointDown?: boolean;
+  /**
+   * 'story' is narrative setup rather than a note about the screen: larger
+   * type, wider column, set further out, and no connector to the phone.
+   */
+  variant?: 'note' | 'story';
 }
 
 interface AnnotationProps {

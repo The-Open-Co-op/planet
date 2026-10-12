@@ -25,9 +25,18 @@ interface DemoTabBarProps {
   active?: DemoTab;
   /** If provided, tabs are clickable (interactive shells). Omit for static screens. */
   onSelect?: (tab: DemoTab) => void;
+  /** Colour for the active tab. Defaults to the app's primary. */
+  activeColor?: string;
+  /** Unread counts shown as a badge on a tab, e.g. { alerts: 2 }. */
+  badges?: Partial<Record<DemoTab, number>>;
 }
 
-export const DemoTabBar = ({ active, onSelect }: DemoTabBarProps) => (
+export const DemoTabBar = ({
+  active,
+  onSelect,
+  activeColor = 'primary.main',
+  badges,
+}: DemoTabBarProps) => (
   <Box
     sx={{
       display: 'flex',
@@ -50,12 +59,37 @@ export const DemoTabBar = ({ active, onSelect }: DemoTabBarProps) => (
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            color: isActive ? 'primary.main' : 'text.secondary',
+            color: isActive ? activeColor : 'text.secondary',
             cursor: onSelect ? 'pointer' : 'default',
-            '&:hover': onSelect ? { color: 'primary.main' } : undefined,
+            '&:hover': onSelect ? { color: activeColor } : undefined,
           }}
         >
-          {item.icon}
+          <Box sx={{ position: 'relative', display: 'flex' }}>
+            {item.icon}
+            {!!badges?.[item.key] && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: -4,
+                  right: -7,
+                  minWidth: 14,
+                  height: 14,
+                  px: '3px',
+                  borderRadius: 7,
+                  bgcolor: '#D32F2F',
+                  color: '#fff',
+                  fontSize: '0.55rem',
+                  fontWeight: 800,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  lineHeight: 1,
+                }}
+              >
+                {badges[item.key]}
+              </Box>
+            )}
+          </Box>
           <Typography sx={{ fontSize: '0.55rem', mt: 0.25, fontWeight: isActive ? 600 : 400 }}>
             {item.label}
           </Typography>

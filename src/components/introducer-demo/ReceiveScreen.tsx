@@ -1,81 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Box, Typography, Avatar, Card, CardContent, Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, alpha, useTheme } from '@mui/material';
-import { Handshake, VerifiedUser, Group, Close } from '@mui/icons-material';
+import { Handshake, Close } from '@mui/icons-material';
+import { NotificationItem } from '@/components/notifications/NotificationItem/NotificationItem';
 import { notificationService } from '@/services/notificationService';
 import type { Notification } from '@/types/notification';
 import { StandardPage } from '@/components/layout/StandardPage';
 import { personas, introMessage } from './mockData';
 import { DemoNav } from './DemoNav';
 
-const getNotificationIcon = (type: string) => {
-  switch (type) {
-    case 'vouch': return <VerifiedUser sx={{ fontSize: 18, color: '#0066CC' }} />;
-    case 'connection': return <Group sx={{ fontSize: 18, color: '#059669' }} />;
-    default: return null;
-  }
-};
-
-/** Renders a real notification in the same style as NotificationItem */
-const RealNotificationCard = ({ notification, onClick }: { notification: Notification; onClick?: () => void }) => {
-  const theme = useTheme();
-  return (
-    <Card
-      onClick={onClick}
-      sx={{
-        cursor: onClick ? 'pointer' : 'default',
-        transition: 'all 0.2s',
-        border: 1,
-        borderColor: notification.type === 'vouch' ? '#0066CC' : notification.type === 'connection' ? '#059669' : 'divider',
-        backgroundColor: notification.isRead ? 'background.paper' : alpha(theme.palette.primary.main, 0.02),
-        position: 'relative',
-        ...(onClick && {
-          '&:hover': { borderColor: 'primary.main', boxShadow: theme.shadows[2], transform: 'none' },
-        }),
-      }}
-    >
-      <CardContent sx={{ p: '8px 12px', '&:last-child': { pb: 1.5 } }}>
-        <Box sx={{ position: 'absolute', top: 8, right: 12, opacity: 0.5 }}>
-          {getNotificationIcon(notification.type)}
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5, pr: 4 }}>
-          <Avatar sx={{ width: 24, height: 24, fontSize: '0.75rem' }}>
-            {notification.fromUserName?.charAt(0)}
-          </Avatar>
-          <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-            {notification.fromUserName}
-          </Typography>
-        </Box>
-        <Typography variant="body2" sx={{ mb: 0.5, pr: 4 }}>
-          {notification.message}
-        </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="caption" color="text.secondary">
-            {notification.createdAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
-          </Typography>
-          {notification.isActionable && notification.status === 'pending' ? (
-            <Box sx={{ display: 'flex', gap: 0.5 }}>
-              <Box component="button" onClick={(e: React.MouseEvent) => e.stopPropagation()} sx={{
-                minWidth: 50, fontSize: '0.7rem', fontWeight: 500, py: 0.4, px: 1,
-                border: '1px solid', borderColor: 'divider', borderRadius: '4px',
-                bgcolor: 'transparent', color: 'text.secondary', cursor: 'pointer', fontFamily: 'inherit',
-              }}>Decline</Box>
-              <Box component="button" onClick={(e: React.MouseEvent) => e.stopPropagation()} sx={{
-                minWidth: 50, fontSize: '0.7rem', fontWeight: 600, py: 0.4, px: 1,
-                border: '1px solid', borderColor: 'text.disabled', borderRadius: '4px',
-                bgcolor: 'action.selected', color: 'text.primary', cursor: 'pointer', fontFamily: 'inherit',
-              }}>Accept</Box>
-            </Box>
-          ) : (
-            <Typography variant="caption" sx={{
-              fontSize: '0.7rem', fontWeight: 600, textTransform: 'capitalize',
-              color: notification.status === 'accepted' ? 'success.main' : notification.status === 'rejected' ? 'error.main' : 'text.secondary',
-            }}>{notification.status}</Typography>
-          )}
-        </Box>
-      </CardContent>
-    </Card>
-  );
-};
 
 export const ReceiveScreen = () => {
   const theme = useTheme();
@@ -159,7 +91,7 @@ export const ReceiveScreen = () => {
 
             {/* Real notifications */}
             {notifications.map((n) => (
-              <RealNotificationCard key={n.id} notification={n} />
+              <NotificationItem key={n.id} notification={n} onClick={() => undefined} />
             ))}
           </Box>
         </StandardPage>

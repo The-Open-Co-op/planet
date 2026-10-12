@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Card, Button, useMediaQuery } from '@mui/material';
-import { DesktopWindows, PhoneIphone, Handshake, Apps, InstallMobile, PersonAdd, Article, DynamicFeed, VerifiedUser } from '@mui/icons-material';
+import { DesktopWindows, PhoneIphone, Handshake, Apps, InstallMobile, PersonAdd, Article, DynamicFeed, VerifiedUser, FamilyRestroom } from '@mui/icons-material';
 
 interface DemoCardProps {
   title: string;
@@ -117,6 +117,15 @@ const DemosHomePage = () => {
           icon={<VerifiedUser sx={{ fontSize: 40, color: 'primary.main' }} />}
           path="/demo/trust-layer"
           parentSlug="planet-trust-layer"
+          stepCount={10}
+        />
+        <DemoCard
+          title="Family Vault"
+          subtitle="Records that move with the family"
+          description="The Rivera family moves from Denver to Seattle. Signed school and clinic records arrive in the family's vault; Alice's learner profile moves between math apps; the new school and clinic get exactly what they ask for, for a set time; and at 18 the whole thing becomes Alice's."
+          icon={<FamilyRestroom sx={{ fontSize: 40, color: 'primary.main' }} />}
+          path="/demo/family-vault"
+          parentSlug="family-vault"
           stepCount={10}
         />
         <DemoCard

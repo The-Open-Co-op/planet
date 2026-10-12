@@ -1,47 +1,13 @@
-import { Box, Typography } from '@mui/material';
-import { Public, People, ChatBubble, Notifications } from '@mui/icons-material';
+import { DemoTabBar } from '@/components/onboarding/DemoTabBar';
+import type { DemoTab } from '@/components/onboarding/DemoTabBar';
 
 interface DemoNavProps {
-  active?: 'home' | 'contacts' | 'chat' | 'alerts';
+  active?: DemoTab;
 }
 
-const navItems = [
-  { key: 'home', label: 'Home', icon: Public },
-  { key: 'contacts', label: 'Contacts', icon: People },
-  { key: 'chat', label: 'Chat', icon: ChatBubble },
-  { key: 'alerts', label: 'Alerts', icon: Notifications },
-] as const;
-
-export const DemoNav = ({ active }: DemoNavProps) => (
-  <Box sx={{
-    display: 'flex',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    borderTop: '1px solid',
-    borderColor: 'divider',
-    bgcolor: 'background.default',
-    py: 0.75,
-    flexShrink: 0,
-  }}>
-    {navItems.map((item) => {
-      const Icon = item.icon;
-      const isActive = item.key === active;
-      return (
-        <Box
-          key={item.key}
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            color: isActive ? 'primary.main' : 'text.secondary',
-          }}
-        >
-          <Icon sx={{ fontSize: 20 }} />
-          <Typography sx={{ fontSize: '0.55rem', mt: 0.25, fontWeight: isActive ? 600 : 400 }}>
-            {item.label}
-          </Typography>
-        </Box>
-      );
-    })}
-  </Box>
-);
+/**
+ * Thin wrapper over the canonical app nav, kept so the demos that imported
+ * DemoNav don't all have to change. One nav everywhere means the Vault tab
+ * can't go missing from some demos and not others.
+ */
+export const DemoNav = ({ active }: DemoNavProps) => <DemoTabBar active={active} />;

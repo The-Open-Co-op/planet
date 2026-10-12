@@ -1,72 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Box, Typography, Avatar, Card, CardContent, alpha, useTheme } from '@mui/material';
-import { Waves, VerifiedUser, Group } from '@mui/icons-material';
+import { Box, Typography, Card, CardContent, alpha } from '@mui/material';
+import { Waves } from '@mui/icons-material';
 import { notificationService } from '@/services/notificationService';
 import type { Notification } from '@/types/notification';
+import { NotificationItem } from '@/components/notifications/NotificationItem/NotificationItem';
 import { StandardPage } from '@/components/layout/StandardPage';
 import { personas } from './mockData';
 import { DemoNav } from './DemoNav';
 
-const getNotificationIcon = (type: string) => {
-  switch (type) {
-    case 'vouch': return <VerifiedUser sx={{ fontSize: 18, color: '#0066CC' }} />;
-    case 'connection': return <Group sx={{ fontSize: 18, color: '#059669' }} />;
-    default: return null;
-  }
-};
 
-const RealNotificationCard = ({ notification }: { notification: Notification }) => {
-  const theme = useTheme();
-  return (
-    <Card sx={{
-      border: 1,
-      borderColor: notification.type === 'vouch' ? '#0066CC' : notification.type === 'connection' ? '#059669' : 'divider',
-      backgroundColor: notification.isRead ? 'background.paper' : alpha(theme.palette.primary.main, 0.02),
-      position: 'relative',
-    }}>
-      <CardContent sx={{ p: '8px 12px', '&:last-child': { pb: 1.5 } }}>
-        <Box sx={{ position: 'absolute', top: 8, right: 12, opacity: 0.5 }}>
-          {getNotificationIcon(notification.type)}
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5, pr: 4 }}>
-          <Avatar sx={{ width: 24, height: 24, fontSize: '0.75rem' }}>
-            {notification.fromUserName?.charAt(0)}
-          </Avatar>
-          <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-            {notification.fromUserName}
-          </Typography>
-        </Box>
-        <Typography variant="body2" sx={{ mb: 0.5, pr: 4 }}>
-          {notification.message}
-        </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="caption" color="text.secondary">
-            {notification.createdAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
-          </Typography>
-          {notification.isActionable && notification.status === 'pending' ? (
-            <Box sx={{ display: 'flex', gap: 0.5 }}>
-              <Box component="button" sx={{
-                minWidth: 50, fontSize: '0.7rem', fontWeight: 500, py: 0.4, px: 1,
-                border: '1px solid', borderColor: 'divider', borderRadius: '4px',
-                bgcolor: 'transparent', color: 'text.secondary', cursor: 'pointer', fontFamily: 'inherit',
-              }}>Decline</Box>
-              <Box component="button" sx={{
-                minWidth: 50, fontSize: '0.7rem', fontWeight: 600, py: 0.4, px: 1,
-                border: '1px solid', borderColor: 'text.disabled', borderRadius: '4px',
-                bgcolor: 'action.selected', color: 'text.primary', cursor: 'pointer', fontFamily: 'inherit',
-              }}>Accept</Box>
-            </Box>
-          ) : (
-            <Typography variant="caption" sx={{
-              fontSize: '0.7rem', fontWeight: 600, textTransform: 'capitalize',
-              color: notification.status === 'accepted' ? 'success.main' : notification.status === 'rejected' ? 'error.main' : 'text.secondary',
-            }}>{notification.status}</Typography>
-          )}
-        </Box>
-      </CardContent>
-    </Card>
-  );
-};
+/** Ripple VECs get their own colour, alongside the shared alert kinds. */
+const RIPPLE = '#8B5CF6';
 
 export const RippleScreen = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -94,32 +38,53 @@ export const RippleScreen = () => {
         >
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
             {/* Ripple notification — top of the list */}
-            <Card sx={{
-              border: 1,
-              borderColor: '#8B5CF6',
-              backgroundColor: alpha('#8B5CF6', 0.03),
-              position: 'relative',
-            }}>
-              <CardContent sx={{ p: '8px 12px', '&:last-child': { pb: 1.5 } }}>
-                <Box sx={{ position: 'absolute', top: 8, right: 12, opacity: 0.5 }}>
-                  <Waves sx={{ fontSize: 18, color: '#8B5CF6' }} />
+            {/* Laid out like every other alert: kind chip, label row, one line of text. */}
+            <Card sx={{ border: 1, borderColor: 'divider', backgroundColor: alpha(RIPPLE, 0.04) }}>
+              <CardContent sx={{ p: '8px 10px', '&:last-child': { pb: '8px' } }}>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Box
+                    sx={{
+                      width: 26,
+                      height: 26,
+                      mt: '1px',
+                      borderRadius: '50%',
+                      flexShrink: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      bgcolor: alpha(RIPPLE, 0.12),
+                      color: RIPPLE,
+                    }}
+                  >
+                    <Waves sx={{ fontSize: 16 }} />
+                  </Box>
+                  <Box sx={{ minWidth: 0, flex: 1 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6, mb: 0.15 }}>
+                      <Typography
+                        sx={{ fontSize: '0.58rem', fontWeight: 800, letterSpacing: '0.06em', color: RIPPLE }}
+                      >
+                        RIPPLE
+                      </Typography>
+                      <Box sx={{ width: 5, height: 5, borderRadius: '50%', bgcolor: RIPPLE }} />
+                      <Typography sx={{ fontSize: '0.65rem', color: 'text.secondary', ml: 'auto' }}>
+                        Just now
+                      </Typography>
+                    </Box>
+                    <Typography sx={{ fontSize: '0.8rem', color: 'text.secondary', lineHeight: 1.35 }}>
+                      <Box component="span" sx={{ fontWeight: 700, color: 'text.primary' }}>
+                        {personas.sarah.name}
+                      </Box>{' '}
+                      introduced {personas.michael.name} to {personas.emily.name} — a ripple from your
+                      introduction
+                    </Typography>
+                  </Box>
                 </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5, pr: 4 }}>
-                  <Avatar sx={{ width: 24, height: 24, fontSize: '0.75rem', bgcolor: 'grey.300', color: 'text.secondary' }}>S</Avatar>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                    {personas.sarah.name}
-                  </Typography>
-                </Box>
-                <Typography variant="body2" sx={{ mb: 0.5, pr: 4 }}>
-                  Introduced {personas.michael.name} to {personas.emily.name} — a ripple from your introduction
-                </Typography>
-                <Typography variant="caption" color="text.secondary">Just now</Typography>
               </CardContent>
             </Card>
 
             {/* Real notifications */}
             {notifications.map((n) => (
-              <RealNotificationCard key={n.id} notification={n} />
+              <NotificationItem key={n.id} notification={n} onClick={() => undefined} />
             ))}
           </Box>
         </StandardPage>

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import type { ReactNode } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, IconButton, useMediaQuery } from '@mui/material';
 import { ChevronLeft, ChevronRight, DesktopWindows, ArrowBack } from '@mui/icons-material';
@@ -36,9 +37,26 @@ interface DemoPageShellProps {
   subtitle: string;
   basePath: string;
   steps: DemoStep[];
+  /** Extra controls for the right of the top bar (e.g. Reset, trust-layer toggle). */
+  topBarExtra?: ReactNode;
+  /** Extra controls pinned to the left of the bottom bar. */
+  bottomBarExtra?: ReactNode;
+  /** When false, 'protocol' annotations are hidden — plain English only. */
+  protocolVisible?: boolean;
+  /** Colour for the step number and title in the top bar. */
+  accent?: string;
 }
 
-export const DemoPageShell = ({ title: _title, subtitle: _subtitle, basePath, steps }: DemoPageShellProps) => {
+export const DemoPageShell = ({
+  title: _title,
+  subtitle: _subtitle,
+  basePath,
+  steps,
+  topBarExtra,
+  bottomBarExtra,
+  protocolVisible = true,
+  accent,
+}: DemoPageShellProps) => {
   const isMobile = useMediaQuery('(max-width:600px)');
   const { step: stepSlug } = useParams<{ step?: string }>();
   const navigate = useNavigate();
@@ -77,10 +95,13 @@ export const DemoPageShell = ({ title: _title, subtitle: _subtitle, basePath, st
   // side annotations never clip. 1:1 on wide screens, shrinks to fit below that.
   const stageRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
+  const hasStory = steps.some((s) => s.annotations.some((a) => a.variant === 'story'));
   useEffect(() => {
     const el = stageRef.current;
     if (!el) return;
-    const DESIGN_W = 950; // phone (375) + two 270px annotation columns + gaps
+    // phone (375) + two 270px annotation columns + gaps, plus a 300px story
+    // column when the step has narrative text beside it.
+    const DESIGN_W = hasStory ? 1400 : 950;
     const DESIGN_H = 700; // phone height (667) + breathing room
     const fit = () => {
       const { width, height } = el.getBoundingClientRect();
@@ -91,7 +112,7 @@ export const DemoPageShell = ({ title: _title, subtitle: _subtitle, basePath, st
     const ro = new ResizeObserver(fit);
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [hasStory]);
 
   useEffect(() => {
     if (stepSlug) {
@@ -143,10 +164,16 @@ export const DemoPageShell = ({ title: _title, subtitle: _subtitle, basePath, st
     } catch (_) { /* not in iframe */ }
   }, []);
 
-  const visibleAnnotations = dynamicAnnotations || step.annotations;
+  const allAnnotations = (dynamicAnnotations || step.annotations).filter(
+    (a) => protocolVisible || a.category !== 'protocol'
+  );
+  const storyNotes = allAnnotations.filter((a) => a.variant === 'story');
+  const visibleAnnotations = allAnnotations.filter((a) => a.variant !== 'story');
+
 
   const bottomNav = (
     <Box sx={{
+      position: 'relative',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -155,6 +182,11 @@ export const DemoPageShell = ({ title: _title, subtitle: _subtitle, basePath, st
       flexShrink: 0,
       bgcolor: step.fullPage ? 'background.default' : undefined,
     }}>
+      {bottomBarExtra && (
+        <Box sx={{ position: 'absolute', left: 24, display: 'flex', alignItems: 'center', gap: 1 }}>
+          {bottomBarExtra}
+        </Box>
+      )}
       <IconButton
         onClick={goBack}
         disabled={currentIndex === 0}
@@ -239,10 +271,20 @@ export const DemoPageShell = ({ title: _title, subtitle: _subtitle, basePath, st
           </IconButton>
           <Box>
             <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
-              <Typography variant="caption" sx={{ color: 'primary.main', fontWeight: 700 }}>
+              <Typography
+                variant="caption"
+                sx={{
+                  fontWeight: 800,
+                  px: 0.75,
+                  py: 0.2,
+                  borderRadius: 1,
+                  color: accent || 'primary.main',
+                  bgcolor: accent ? `${accent}14` : 'transparent',
+                }}
+              >
                 {step.id}
               </Typography>
-              <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              <Typography variant="body2" sx={{ fontWeight: 700, color: accent || 'text.primary' }}>
                 {step.title}
               </Typography>
               <Typography variant="caption" color="text.secondary">
@@ -251,29 +293,71 @@ export const DemoPageShell = ({ title: _title, subtitle: _subtitle, basePath, st
             </Box>
           </Box>
         </Box>
+        {topBarExtra}
       </Box>
 
       {/* Phone + Annotations */}
       <Box ref={stageRef} sx={{
         flex: 1,
+        position: 'relative',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: hasStory ? 'flex-start' : 'center',
+        pl: hasStory ? 3 : 0,
         minHeight: 0,
         overflow: 'hidden',
       }}>
         <Box sx={{
-          position: 'relative',
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: 3,
           transform: `scale(${scale})`,
-          transformOrigin: 'center center',
+          transformOrigin: hasStory ? 'left center' : 'center center',
         }}>
-          <PhoneFrame key={step.slug}>
-            {typeof step.screen === 'function' ? step.screen({ goToStep, setDynamicAnnotations, reportStep }) : step.screen}
-          </PhoneFrame>
+          {hasStory && (
+            <Box sx={{ width: 270, flexShrink: 0, pt: 1 }}>
+              {storyNotes.map((note, i) => (
+                <Box key={`story-${i}`} sx={{ mb: 3 }}>
+                  {/* A scene marker rather than a heading, so it carries place
+                      and time without competing with the step title above. */}
+                  <Typography
+                    sx={{
+                      fontSize: '0.7rem',
+                      fontWeight: 800,
+                      letterSpacing: '0.12em',
+                      color: 'text.disabled',
+                      mb: 1.25,
+                    }}
+                  >
+                    {note.title}
+                  </Typography>
+                  <Typography
+                    sx={{ fontSize: '1rem', lineHeight: 1.6, color: 'text.primary', whiteSpace: 'pre-line' }}
+                  >
+                    {note.description}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
+          )}
 
-          {visibleAnnotations.map((annotation, i) => (
-            <Annotation key={`${step.id}-${i}`} annotation={annotation} category={annotation.category} />
-          ))}
+          <Box
+            sx={{
+              position: 'relative',
+              flexShrink: 0,
+              // The annotations are positioned outside this box, so when a story
+              // column shares the row we reserve their width here.
+              ...(hasStory && { mx: '345px' }),
+            }}
+          >
+            <PhoneFrame key={step.slug}>
+              {typeof step.screen === 'function' ? step.screen({ goToStep, setDynamicAnnotations, reportStep }) : step.screen}
+            </PhoneFrame>
+
+            {visibleAnnotations.map((annotation, i) => (
+              <Annotation key={`${step.id}-${i}`} annotation={annotation} category={annotation.category} />
+            ))}
+          </Box>
         </Box>
       </Box>
 

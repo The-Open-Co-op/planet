@@ -43,7 +43,8 @@ export interface NotificationAction {
 
 export interface Notification {
   id: string;
-  type: 'vouch' | 'connection' | 'system';
+  /** 'record' = a signed record issued into a vault (transcript, immunization, certificate). */
+  type: 'vouch' | 'connection' | 'system' | 'record';
   title: string;
   message: string;
   fromUserId?: string;

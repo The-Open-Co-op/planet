@@ -38,8 +38,6 @@ const primaryBtnSx = {
 
 const noop = () => {};
 /** Same vouch icon the real Alerts screen uses. */
-const vouchIcon = () => <VerifiedUser sx={{ fontSize: 18, color: '#0066CC' }} />;
-
 /** Sarah's incoming vouches — rendered with the real Alerts NotificationItem card. */
 const SARAH_VOUCHES: Notification[] = [
   {
@@ -263,14 +261,12 @@ export default function JourneyFoundry() {
                 onClick={noop}
                 onAccept={noop}
                 onReject={noop}
-                getNotificationIcon={vouchIcon}
               />
               <NotificationItem
                 notification={SARAH_VOUCHES[1]}
                 onClick={noop}
                 onAccept={noop}
                 onReject={noop}
-                getNotificationIcon={vouchIcon}
               />
             </Box>
             <DemoTabBar active="alerts" />
