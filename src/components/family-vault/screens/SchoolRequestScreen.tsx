@@ -52,9 +52,6 @@ export const SchoolRequestScreen = () => {
           <Typography variant="body2" sx={{ fontWeight: 700, lineHeight: 1.35 }}>
             Asks to see some of Alice’s records
           </Typography>
-          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.25 }}>
-            Tap to see what they want, and why
-          </Typography>
         </Box>
 
 
@@ -78,7 +75,7 @@ export const SchoolRequestScreen = () => {
             </Typography>
           </Box>
           <Typography variant="caption" color="text.secondary">
-            {chosen.length} items shared with {SCHOOL_REQUEST.org}, ending {duration.toLowerCase()}.
+            {chosen.length} items shared with {SCHOOL_REQUEST.org}.
           </Typography>
         </VaultCard>
 

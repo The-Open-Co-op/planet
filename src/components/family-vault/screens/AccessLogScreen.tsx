@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import { Schedule, Visibility, Block } from '@mui/icons-material';
 import { VaultScreen, VaultCard, GroupLabel, Pill, TermsLink, FV_BLUE } from '../familyVaultKit';
-import { ACCESS_LOG, SCHOOL_REQUEST, CLINIC_REQUEST } from '../familyVaultData';
 import type { AccessEntry } from '../familyVaultData';
+import { buildAccessEntries } from '../accessEntries';
 import { useFamilyVault } from '../familyVaultContext';
 import { useVaultNav } from '../vaultNav';
 
@@ -20,40 +20,7 @@ export const AccessLogScreen = () => {
   const { setView } = useVaultNav();
   const [who, setWho] = useState<'Everyone' | 'Maria' | 'Alice' | 'Ethan'>('Everyone');
 
-  // Grants made earlier in the demo appear here alongside the standing ones.
-  const fromThisSession: AccessEntry[] = [
-    ...(approval === 'complete'
-      ? [
-          {
-            id: 'acc-school',
-            about: 'alice' as const,
-            who: SCHOOL_REQUEST.org,
-            what: "Placed Alice using her transcript and learner profile",
-            when: 'Today',
-            state: 'active' as const,
-            until: `Ends ${duration.toLowerCase()}`,
-          },
-        ]
-      : []),
-    ...(clinicChoice
-      ? [
-          {
-            id: 'acc-clinic',
-            about: 'ethan' as const,
-            who: CLINIC_REQUEST.org,
-            what:
-              clinicChoice === 'answer'
-                ? 'Checked that Ethan meets school entry requirements'
-                : "Read Ethan's full immunization record",
-            when: 'Today',
-            state: 'active' as const,
-            until: `Ends in ${CLINIC_REQUEST.duration}`,
-          },
-        ]
-      : []),
-  ];
-
-  const all = [...fromThisSession, ...ACCESS_LOG];
+  const all = buildAccessEntries({ approval, clinicChoice, duration });
   const entries = who === 'Everyone' ? all : all.filter((e) => e.about === who.toLowerCase());
 
   // Split so the annotation can point at a section that is always there,
@@ -67,7 +34,6 @@ export const AccessLogScreen = () => {
   return (
     <VaultScreen
       title="Shared"
-      subtitle={`${entries.length} in the last year`}
       tab="vault"
       onBack={() => setView('home')}
       chips={
@@ -160,9 +126,6 @@ export const AccessLogScreen = () => {
         )
       )}
 
-      <Typography variant="caption" color="text.secondary">
-        Nothing here was granted forever. Each one ends on its own, or when you end it.
-      </Typography>
     </VaultScreen>
   );
 };

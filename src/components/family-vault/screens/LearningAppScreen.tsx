@@ -44,7 +44,7 @@ export const LearningAppScreen = () => {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 0.25 }}>
             <TrendingUp sx={{ fontSize: 18, color: FV_BLUE }} />
             <Typography variant="caption" sx={{ fontWeight: 800, color: FV_BLUE }}>
-              Written back to her profile
+              Added to her own profile
             </Typography>
           </Box>
           <Typography variant="caption" sx={{ color: 'text.primary', display: 'block' }}>

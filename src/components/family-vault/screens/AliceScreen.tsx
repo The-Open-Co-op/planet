@@ -30,7 +30,6 @@ export const AliceScreen = () => {
   return (
     <VaultScreen
       title="Alice’s vault"
-      subtitle="Everything that’s shared about me"
       tab="home"
       tint="#F2F7F5"
       onBack={() => setView('home')}

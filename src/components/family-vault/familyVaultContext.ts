@@ -5,6 +5,14 @@ import type { MemoryEntry, MemoryCategory, PersonId } from './familyVaultData';
 
 export type ApprovalStage = 'pending' | 'parent' | 'complete';
 
+export interface CircleInvite {
+  id: string;
+  name: string;
+  /** The role they were given, e.g. 'View only'. */
+  role: string;
+  duration: string;
+}
+
 export interface FamilyVaultContextValue {
   /** Records the family has accepted into the vault (step 2). */
   acceptedRecordIds: string[];
@@ -39,6 +47,12 @@ export interface FamilyVaultContextValue {
   appGranted: boolean;
   grantApp: () => void;
 
+  /** The trusted circle (step 8) — invites and removals persist across steps. */
+  invitedCircle: CircleInvite[];
+  inviteToCircle: (invite: CircleInvite) => void;
+  circleRemovedIds: string[];
+  removeFromCircle: (id: string) => void;
+
   /** Grants ended by hand in the access log (step 7). */
   revokedIds: string[];
   revokeAccess: (id: string) => void;
@@ -48,9 +62,12 @@ export interface FamilyVaultContextValue {
   askAssistant: () => void;
   assistantShared: boolean;
   shareAssistantDraft: () => void;
-  /** The inferred line the family corrected out of the draft. */
+  /** What the family did with the assistant's one inferred line. */
   inferenceDropped: boolean;
   dropInference: () => void;
+  /** The corrected wording, once a parent has rewritten it. */
+  inferenceCorrection: string | null;
+  correctInference: (text: string) => void;
 
   reset: () => void;
 }

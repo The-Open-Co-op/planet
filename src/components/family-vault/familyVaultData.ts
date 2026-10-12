@@ -571,7 +571,7 @@ export const LEARNING_APP = {
     'Short sessions: 25 minutes on weeknights',
     'Large text and high contrast already on',
   ],
-  /** What flows back when she works. */
+  /** What her own profile gains as she works. */
   flowsBack: 'Rational expressions 0.55 → 0.71 after three sessions',
 };
 

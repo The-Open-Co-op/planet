@@ -44,22 +44,22 @@ const STEPS: DemoStep[] = [
     screen: <VaultRouter initial="home" />,
     annotations: [
       story(
-        'DENVER · BEFORE THE MOVE',
-        'Maria and Daniel Rivera are moving to Seattle with Alice, 16, and Ethan, 10. Everything either child has done — school, clinic, swim club — sits in records held by institutions they are about to leave.\n\nFamily Vault turns that around. Records are issued to the family and kept by the family; each person holds their own keys, and a parent acts for a child through a guardianship credential rather than by owning their account.',
+        'DENVER · THE RIVERA FAMILY',
+        'Maria and Daniel Rivera are moving to Seattle with Alice, 16, and Ethan, 10. Everything either child has done so far — school, clinic, swim club — sits in records held by the institutions they are about to leave.\n\nFamily Vault turns that around: the records are issued to the family and kept by the family. Each person has their own keys, and a parent acts for a child by holding a credential that says so, rather than by owning the child’s account.',
       ),
       ui({
         side: 'left',
         top: 45,
         title: 'Everyone is a real, verified person',
         description:
-          'Each member of the family holds their own keys. A parent acts for a child by holding a guardianship credential — not by owning the child’s account.',
+          'Not an account someone opened — a person who has been vetted and vouched for, with their own agent and their own keys. The blue tick is the proof.',
       }),
       ui({
         side: 'left',
         top: 78,
         title: 'The circle matters as much as the vault',
         description:
-          'A grandmother can view. A tutor sees one learning plan, until June. Both are verified people, and either can be removed in a tap.',
+          'Each person’s line says what they can do, not just that they are here — a grandmother who can view, a tutor with one record for one term.',
       }),
       protocol({
         side: 'right',
@@ -86,15 +86,15 @@ const STEPS: DemoStep[] = [
     screen: <VaultRouter initial="alerts" />,
     annotations: [
       story(
-        'DENVER · THE LAST WEEK',
-        'Alice’s old school sends her transcript and learner profile. Normally those move school to school, and the family never sees what went.\n\nHere they arrive in the family’s own alerts, signed by the issuer. A parent checks who issued it and whether it has been altered before accepting it into the vault — Maria or Daniel, since both hold guardianship, and at 16 Alice can accept her own.',
+        'DENVER · BEFORE THE MOVE',
+        'Alice’s old school sends her transcript and her learner profile. Normally those pass from school to school, and the family never sees what was sent.\n\nHere they arrive in the family’s Alerts instead. Whoever opens one can see who issued it and whether it has been altered, and nothing is kept until someone accepts it. Either parent can; so can Alice, now she is 16.',
       ),
       ui({
         side: 'left',
         top: 45,
         title: 'Tap to check, then accept or decline',
         description:
-          'Records arrive in Alerts alongside everything else the family is asked to act on. Tapping one opens it for checking — nothing enters the vault until a parent accepts it. Maria or Daniel can, since both hold guardianship; at 16 Alice can accept her own.',
+          'Declining is a real option: the record simply isn’t held, and nothing goes back to the issuer but the decision. Records share this list with vouches, connections and data requests, each marked by kind.',
       }),
       ui({
         side: 'left',
@@ -129,21 +129,21 @@ const STEPS: DemoStep[] = [
     annotations: [
       story(
         'DENVER · PACKING UP',
-        'A transcript records what Alice did. It doesn’t record how she learns — worked examples first, 25 minutes on a weeknight, large text — and that is the part a move usually destroys.\n\nThe vault keeps that as memory, separate from records. Every entry shows where it came from and when, whether the family said it or an assistant inferred it, and anyone in the family can correct it or mark it no longer true.',
+        'Alice’s transcript shows her grades. It says nothing about how she actually learns: that she needs a worked example before she can start, that she does better in short sessions after school, that she reads large text. Her old teachers knew all of that. Her new ones will have to work it out again.\n\nSo the vault keeps that as well, as memory rather than as a record. Each entry says where it came from, when, and whether a person said it or software worked it out. A parent can change any of it, and so can Alice.',
       ),
       ui({
         side: 'left',
         top: 45,
-        title: 'Records are documents',
+        title: 'Every entry shows its working',
         description:
-          'Records come from schools, clinics, employers, programs and councils, and do not change. Memory is what builds up over time — goals, preferences, constraints. What the family said is kept separate from what an assistant worked out, and inferences carry a confidence.',
+          'Where it came from, when, and how sure. Two entries that disagree are surfaced rather than silently merged — the family decides which is right.',
       }),
       ui({
         side: 'left',
         top: 80,
         title: 'Anything can be corrected',
         description:
-          'Correct it, or mark it no longer true. Alice can see and change what is held about her, even where a parent is looking at it.',
+          'Memory rots if nobody can fix it. Correcting an entry replaces it and records who changed it; marking one no longer true retires it without rewriting the past.',
       }),
       protocol({
         side: 'right',
@@ -171,14 +171,14 @@ const STEPS: DemoStep[] = [
     annotations: [
       story(
         'SEATTLE · THREE WEEKS LATER',
-        'Term starts in three weeks and Cedar Park High needs to place Alice in the right classes — the moment a parent would normally be chasing the old district for paperwork.\n\nInstead the school asks the family, and the family answers item by item: Alice’s learning and support needs, but not her health records, for this school year only. Maria approves, and so does Alice.',
+        'Term starts in three weeks, and Cedar Park High needs to place Alice in the right classes. This is the point where a parent would normally be emailing the old district and waiting.\n\nInstead the school asks the family directly, and the family answers item by item: her learning and support needs, but not her health records, for this school year only. Maria approves it, and because it is about Alice, so does she.',
       ),
       ui({
         side: 'left',
         top: 45,
         title: 'The request arrives in Alerts',
         description:
-          'Like records do. Opening it shows what the school wants and what for; the family then chooses item by item — e.g. Alice’s learning and support needs, but not her health records.',
+          'Like records do. The family then chooses item by item — e.g. Alice’s learning and support needs, but not her health records.',
       }),
       ui({
         side: 'left',
@@ -200,7 +200,7 @@ const STEPS: DemoStep[] = [
         top: 64,
         title: 'Co-approval at 16',
         description:
-          'Records about Alice need Alice’s approval as well as a parent’s. At 18 control passes to her by default, with nothing to migrate.',
+          'Records about Alice need Alice’s approval as well as a parent’s — a delegation credential that narrows as she gets older.',
         tag: 'Delegation credentials: not built',
       }),
     ],
@@ -214,7 +214,7 @@ const STEPS: DemoStep[] = [
     annotations: [
       story(
         'SEATTLE · ENROLLING ETHAN',
-        'Ethan’s new clinic needs to confirm he meets the state’s entry requirements. The usual way is to email or fax the record — and copies then sit on mail servers, in outboxes and in backups, for years.\n\nThe vault answers the question instead of handing over the file: meets school entry requirements, yes, for 30 days — nothing else revealed, and nothing for the clinic to keep.',
+        'Ethan’s new clinic needs to know he meets the state’s entry requirements. The usual way is to email or fax the record across — and copies of it then sit on mail servers, in outboxes and in backups for years.\n\nThe vault answers the question instead of sending the file: yes, he meets them. The answer holds for 30 days, and there is nothing for the clinic to file away.',
       ),
       ui({
         side: 'left',
@@ -228,7 +228,7 @@ const STEPS: DemoStep[] = [
         top: 80,
         title: 'And it still expires',
         description:
-          'Shared for 30 days. The clinic keeps nothing, because it was never given anything to keep.',
+          'The clinic keeps nothing when it lapses, because it was never given anything to keep — only an answer it was allowed to ask for.',
       }),
       protocol({
         side: 'right',
@@ -244,24 +244,24 @@ const STEPS: DemoStep[] = [
     id: '6',
     slug: 'app',
     title: 'A new learning app',
-    subtitle: 'Her profile moves, her progress flows back',
+    subtitle: 'Her profile moves, her progress flows with her',
     screen: <VaultRouter initial="app" />,
     annotations: [
       story(
         'SEATTLE · FIRST WEEK OF TERM',
-        'Alice has used Math Kingdom for months; her new school uses Fantasy Academy. Normally that means starting at lesson one and re-earning everything she has already proved.\n\nFantasy Academy requests her learning data, and because the profile is hers rather than Math Kingdom’s she can grant a slice of it — mastery, error patterns, how she learns — with no name attached. What she does there flows back to her own profile.',
+        'Alice has been using Math Kingdom for months. Her new school uses Fantasy Academy, which normally means starting at lesson one and proving herself all over again.\n\nThis time the new app asks her for what it needs, and she grants a slice of her profile: what she has mastered, the mistakes she tends to make, and how she learns best. No name attached. As she works, Fantasy Academy writes her progress back to that profile, so it stays hers when she moves on.',
       ),
       ui({
         side: 'left',
         top: 45,
         title: 'A slice, not the profile',
         description:
-          'Fantasy Academy gets mastery, error patterns, preferences and accessibility needs. Not her name, not her other grades. It personalises for a learner it never identifies.',
+          'Mastery scores, the mistakes she tends to make, how she likes to learn, and what she needs to read comfortably — the four things an app needs to teach her well.',
       }),
       ui({
         side: 'left',
         top: 80,
-        title: 'Progress flows back',
+        title: 'Progress flows with her',
         description:
           'What she learns there updates her own profile, so the next app — or the next school — starts from the truth rather than from zero.',
       }),
@@ -284,7 +284,7 @@ const STEPS: DemoStep[] = [
     annotations: [
       story(
         'SEATTLE · A MONTH IN',
-        'The family has shared with a school, a clinic and a learning app. In most systems this is the point where nobody can say who holds what any more.\n\nHere it is one list: what each service can see, on what terms, and when it ends. Mesa Valley’s access ended by itself when Alice left the district; anything still active ends with one tap.',
+        'The family has now shared with a school, a clinic and a learning app. This is usually the point where nobody could tell you who holds what.\n\nHere it is one list: who has access, what they can see, and when it runs out. Mesa Valley’s access ended by itself when Alice left the district, and anything still running can be stopped in a tap.',
       ),
       ui({
         // Sits level with the ENDED section, which the text names.
@@ -313,21 +313,21 @@ const STEPS: DemoStep[] = [
     annotations: [
       story(
         'SEATTLE · HALF TERM',
-        'A family is rarely just the household. Rosa wants to see how the children are doing; Ms. Okafor needs Alice’s learning plan for one term.\n\nEach joins as a verified person with a single role — view only, view and add, or guardian. A role is a grant like any other: scoped, time-boxed, and removed in a tap.',
+        'A family is rarely just the household. Rosa wants to see how her grandchildren are getting on; Ms. Okafor needs Alice’s learning plan for one term.\n\nEach of them joins as a verified person with a single role. The role says what they can see, carries an end date, and can be withdrawn at any time — the same as any other share the family makes.',
       ),
       ui({
         side: 'left',
         top: 45,
         title: 'A role is a grant',
         description:
-          'Can view. Learning plan only, until June. Joint guardian. Each one says what the person sees and for how long.',
+          'View only, view and add, or guardian — chosen with an end date, and recorded in Shared alongside every other grant the family has made.',
       }),
       ui({
         side: 'left',
         top: 80,
-        title: 'And it comes off in a tap',
+        title: 'Removing someone is clean',
         description:
-          'Removing someone ends their access immediately — no account to delete, nothing left behind.',
+          'Their access stops the moment they are removed. There is no account to close and nothing of the family’s left on their side — they were only ever reading what the vault allowed.',
       }),
       protocol({
         side: 'right',
@@ -348,7 +348,7 @@ const STEPS: DemoStep[] = [
     annotations: [
       story(
         'SEATTLE · SUNDAY NIGHT',
-        'Maria wants a summary for the new school. Any assistant could write one; the question is whose assistant it is, what it read, and whether she can see where each line came from.\n\nThis one runs inside the family’s own vault. It names the record behind each line, marks what it inferred so she can correct it, and sends nothing until she has chosen who, for how long, and on what terms.',
+        'Maria wants a summary of where Alice is for the new school. Any assistant could write one. The questions are whose assistant it is, what it was allowed to read, and whether she can see where each line came from.\n\nThis one runs inside the family’s own vault. It shows the record behind every line, flags the one thing it worked out for itself so she can correct it, and sends nothing until she has said who to, for how long, and on what terms.',
       ),
       ui({
         side: 'left',
@@ -362,7 +362,7 @@ const STEPS: DemoStep[] = [
         top: 80,
         title: 'Inference is labelled, and correctable',
         description:
-          'The geometry suggestion is marked as inferred. Correcting it removes it from the draft and from the memory it came from.',
+          'The geometry suggestion is the assistant’s own reading of her mastery scores, not something anyone said — so it is marked, and a parent or Alice can overrule it.',
       }),
       protocol({
         side: 'right',
@@ -383,21 +383,21 @@ const STEPS: DemoStep[] = [
     annotations: [
       story(
         'SEATTLE · A YEAR ON',
-        'The same vault, seen by the person it is about. Alice can see what is shared about her, and who approved it.\n\nAt 18 control passes to her by default — not at a parent’s discretion, and with nothing to migrate. And because families are not always safe, a record can be sealed from a named family member, visible to her and an advocate, with its own log.',
+        'The same vault, from Alice’s phone. She can see everything shared about her and who approved it, and she can end any of it herself.\n\nAt 18 it becomes hers by default — not when a parent decides, and with nothing to move. And because families are not always safe, a record can be sealed from a named family member, visible only to Alice and an advocate, with its own log.',
       ),
       ui({
         side: 'left',
         top: 45,
-        title: 'She already co-approves',
+        title: 'She can see every grant',
         description:
-          'At 16 nothing about her is shared without her. The hand-over at 18 is a change of control, not a change of system.',
+          'Each one shows who has it and that she approved it — and she can end any of them herself, without asking a parent to do it.',
       }),
       ui({
         side: 'left',
         top: 80,
         title: 'Families are not always safe',
         description:
-          'A record can be sealed from a named family member, visible to the young person and an advocate, with its own access log. Designing for that from the start is the point.',
+          'A record can be sealed from a named family member, visible to the young person and an advocate, with its own access log.',
       }),
       protocol({
         side: 'right',
@@ -427,6 +427,7 @@ const DemoBody = () => {
         basePath="/demo/family-vault"
         steps={STEPS}
         accent={FV_BLUE}
+        storyColor="#660000"
         protocolVisible={trustOn}
         bottomBarExtra={
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

@@ -132,9 +132,6 @@ export const ClinicScreen = () => {
         Share with the clinic
       </Button>
 
-      <Typography variant="caption" color="text.secondary">
-        The clinic asked for the record. It only needs the answer.
-      </Typography>
     </VaultScreen>
   );
 };

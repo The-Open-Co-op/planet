@@ -43,8 +43,10 @@ interface DemoPageShellProps {
   bottomBarExtra?: ReactNode;
   /** When false, 'protocol' annotations are hidden — plain English only. */
   protocolVisible?: boolean;
-  /** Colour for the step number and title in the top bar. */
+  /** Colour for the step number in the top bar. */
   accent?: string;
+  /** Colour for the scene markers above the story text. */
+  storyColor?: string;
 }
 
 export const DemoPageShell = ({
@@ -56,6 +58,7 @@ export const DemoPageShell = ({
   bottomBarExtra,
   protocolVisible = true,
   accent,
+  storyColor = 'text.disabled',
 }: DemoPageShellProps) => {
   const isMobile = useMediaQuery('(max-width:600px)');
   const { step: stepSlug } = useParams<{ step?: string }>();
@@ -99,9 +102,9 @@ export const DemoPageShell = ({
   useEffect(() => {
     const el = stageRef.current;
     if (!el) return;
-    // phone (375) + two 270px annotation columns + gaps, plus a 300px story
-    // column when the step has narrative text beside it.
-    const DESIGN_W = hasStory ? 1400 : 950;
+    // phone (375) + two 270px annotation columns + gaps. The story column is
+    // positioned in the margin beside the cluster, so it isn't part of this.
+    const DESIGN_W = 950;
     const DESIGN_H = 700; // phone height (667) + breathing room
     const fit = () => {
       const { width, height } = el.getBoundingClientRect();
@@ -284,7 +287,7 @@ export const DemoPageShell = ({
               >
                 {step.id}
               </Typography>
-              <Typography variant="body2" sx={{ fontWeight: 700, color: accent || 'text.primary' }}>
+              <Typography variant="body2" sx={{ fontWeight: 700 }}>
                 {step.title}
               </Typography>
               <Typography variant="caption" color="text.secondary">
@@ -302,62 +305,64 @@ export const DemoPageShell = ({
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: hasStory ? 'flex-start' : 'center',
-        pl: hasStory ? 3 : 0,
+        justifyContent: 'center',
         minHeight: 0,
         overflow: 'hidden',
       }}>
-        <Box sx={{
-          display: 'flex',
-          alignItems: 'flex-start',
-          gap: 3,
-          transform: `scale(${scale})`,
-          transformOrigin: hasStory ? 'left center' : 'center center',
-        }}>
-          {hasStory && (
-            <Box sx={{ width: 270, flexShrink: 0, pt: 1 }}>
-              {storyNotes.map((note, i) => (
-                <Box key={`story-${i}`} sx={{ mb: 3 }}>
-                  {/* A scene marker rather than a heading, so it carries place
-                      and time without competing with the step title above. */}
-                  <Typography
-                    sx={{
-                      fontSize: '0.7rem',
-                      fontWeight: 800,
-                      letterSpacing: '0.12em',
-                      color: 'text.disabled',
-                      mb: 1.25,
-                    }}
-                  >
-                    {note.title}
-                  </Typography>
-                  <Typography
-                    sx={{ fontSize: '1rem', lineHeight: 1.6, color: 'text.primary', whiteSpace: 'pre-line' }}
-                  >
-                    {note.description}
-                  </Typography>
-                </Box>
-              ))}
-            </Box>
-          )}
-
+        {/* The story sits in the margin beside the phone, far enough out that
+            it can never reach the annotation column. */}
+        {hasStory && (
           <Box
             sx={{
-              position: 'relative',
-              flexShrink: 0,
-              // The annotations are positioned outside this box, so when a story
-              // column shares the row we reserve their width here.
-              ...(hasStory && { mx: '345px' }),
+              position: 'absolute',
+              top: 16,
+              left: 24,
+              // half the phone + annotation cluster, scaled, plus a gutter
+              right: `calc(50% + ${532 * scale + 32}px)`,
+              maxWidth: 320,
+              display: { xs: 'none', md: 'block' },
             }}
           >
-            <PhoneFrame key={step.slug}>
-              {typeof step.screen === 'function' ? step.screen({ goToStep, setDynamicAnnotations, reportStep }) : step.screen}
-            </PhoneFrame>
-
-            {visibleAnnotations.map((annotation, i) => (
-              <Annotation key={`${step.id}-${i}`} annotation={annotation} category={annotation.category} />
+            {storyNotes.map((note, i) => (
+              <Box key={`story-${i}`} sx={{ mb: 3 }}>
+                {/* A scene marker rather than a heading, so it carries place
+                    and time without competing with the step title above. */}
+                <Typography
+                  sx={{
+                    fontSize: '0.7rem',
+                    fontWeight: 800,
+                    letterSpacing: '0.12em',
+                    color: storyColor,
+                    mb: 1.25,
+                  }}
+                >
+                  {note.title}
+                </Typography>
+                <Typography
+                  sx={{ fontSize: '1rem', lineHeight: 1.6, color: 'text.primary', whiteSpace: 'pre-line' }}
+                >
+                  {note.description}
+                </Typography>
+              </Box>
             ))}
           </Box>
+        )}
+
+        <Box
+          sx={{
+            position: 'relative',
+            flexShrink: 0,
+            transform: `scale(${scale})`,
+            transformOrigin: 'center center',
+          }}
+        >
+          <PhoneFrame key={step.slug}>
+            {typeof step.screen === 'function' ? step.screen({ goToStep, setDynamicAnnotations, reportStep }) : step.screen}
+          </PhoneFrame>
+
+          {visibleAnnotations.map((annotation, i) => (
+            <Annotation key={`${step.id}-${i}`} annotation={annotation} category={annotation.category} />
+          ))}
         </Box>
       </Box>
 

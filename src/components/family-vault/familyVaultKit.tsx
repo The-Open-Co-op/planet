@@ -50,7 +50,7 @@ export const VaultScreen = ({
         </IconButton>
       )}
       <Box sx={{ minWidth: 0 }}>
-        <Typography sx={{ fontWeight: 800, lineHeight: 1.2, color: FV_BLUE }} noWrap>
+        <Typography sx={{ fontWeight: 800, lineHeight: 1.2 }} noWrap>
           {title}
         </Typography>
         {subtitle && (

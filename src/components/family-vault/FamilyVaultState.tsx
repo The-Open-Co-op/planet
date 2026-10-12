@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { MEMORY, SCHOOL_REQUEST, LEARNING_APP } from './familyVaultData';
 import type { MemoryEntry, MemoryCategory, PersonId } from './familyVaultData';
 import { FamilyVaultContext } from './familyVaultContext';
+import type { CircleInvite } from './familyVaultContext';
 
 const defaultSelected = SCHOOL_REQUEST.items.filter((i) => i.defaultOn).map((i) => i.id);
 const defaultAppItems = LEARNING_APP.items.filter((i) => i.defaultOn).map((i) => i.id);
@@ -25,9 +26,22 @@ export const FamilyVaultProvider = ({ children }: { children: ReactNode }) => {
   const [appItemIds, setAppItems] = useState<string[]>(defaultAppItems);
   const [appGranted, setAppGranted] = useState(false);
   const [revokedIds, setRevoked] = useState<string[]>([]);
+  const [invitedCircle, setInvited] = useState<CircleInvite[]>([]);
+  const [circleRemovedIds, setCircleRemoved] = useState<string[]>([]);
+
+  const inviteToCircle = useCallback(
+    (invite: CircleInvite) =>
+      setInvited((prev) => (prev.some((i) => i.id === invite.id) ? prev : [...prev, invite])),
+    []
+  );
+  const removeFromCircle = useCallback(
+    (id: string) => setCircleRemoved((prev) => (prev.includes(id) ? prev : [...prev, id])),
+    []
+  );
   const [assistantAsked, setAssistantAsked] = useState(false);
   const [assistantShared, setAssistantShared] = useState(false);
   const [inferenceDropped, setInferenceDropped] = useState(false);
+  const [inferenceCorrection, setInferenceCorrection] = useState<string | null>(null);
 
   const toggleAppItem = useCallback((id: string) => {
     setAppItems((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
@@ -40,6 +54,7 @@ export const FamilyVaultProvider = ({ children }: { children: ReactNode }) => {
   const askAssistant = useCallback(() => setAssistantAsked(true), []);
   const shareAssistantDraft = useCallback(() => setAssistantShared(true), []);
   const dropInference = useCallback(() => setInferenceDropped(true), []);
+  const correctInference = useCallback((text: string) => setInferenceCorrection(text), []);
 
   const acceptRecord = useCallback((id: string) => {
     setAccepted((prev) => (prev.includes(id) ? prev : [...prev, id]));
@@ -96,9 +111,12 @@ export const FamilyVaultProvider = ({ children }: { children: ReactNode }) => {
     setAppItems(defaultAppItems);
     setAppGranted(false);
     setRevoked([]);
+    setInvited([]);
+    setCircleRemoved([]);
     setAssistantAsked(false);
     setAssistantShared(false);
     setInferenceDropped(false);
+    setInferenceCorrection(null);
   }, []);
 
   const value = useMemo(
@@ -127,12 +145,18 @@ export const FamilyVaultProvider = ({ children }: { children: ReactNode }) => {
       grantApp,
       revokedIds,
       revokeAccess,
+      invitedCircle,
+      inviteToCircle,
+      circleRemovedIds,
+      removeFromCircle,
       assistantAsked,
       askAssistant,
       assistantShared,
       shareAssistantDraft,
       inferenceDropped,
       dropInference,
+      inferenceCorrection,
+      correctInference,
       reset,
     }),
     [
@@ -157,12 +181,18 @@ export const FamilyVaultProvider = ({ children }: { children: ReactNode }) => {
       grantApp,
       revokedIds,
       revokeAccess,
+      invitedCircle,
+      inviteToCircle,
+      circleRemovedIds,
+      removeFromCircle,
       assistantAsked,
       askAssistant,
       assistantShared,
       shareAssistantDraft,
       inferenceDropped,
       dropInference,
+      inferenceCorrection,
+      correctInference,
       reset,
     ]
   );

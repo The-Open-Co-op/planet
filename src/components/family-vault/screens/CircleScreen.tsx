@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
-import { PersonAdd, CheckCircle } from '@mui/icons-material';
+import { PersonAdd, CheckCircle, Schedule } from '@mui/icons-material';
 import { ContactPicker } from '../ContactPicker';
 import { useContacts, contactName } from '../contacts';
 import { VaultScreen, VaultCard, GroupLabel, PersonChip, Pill, FV_BLUE } from '../familyVaultKit';
-import { FAMILY, CIRCLE_ROLES } from '../familyVaultData';
+import { FAMILY, CIRCLE_ROLES, SHARE_DURATIONS } from '../familyVaultData';
+import { useFamilyVault } from '../familyVaultContext';
 import { useVaultNav } from '../vaultNav';
 
 /**
@@ -19,14 +20,15 @@ const trusted = FAMILY.filter((p) => p.circle === 'trusted');
 
 export const CircleScreen = () => {
   const { setView } = useVaultNav();
-  const [removed, setRemoved] = useState<string[]>([]);
+  const { invitedCircle, inviteToCircle, circleRemovedIds, removeFromCircle } = useFamilyVault();
   const [inviting, setInviting] = useState(false);
   const contacts = useContacts();
   const [pickedId, setPickedId] = useState<string | null>(null);
   const [roleId, setRoleId] = useState<string | null>(null);
+  const [duration, setDuration] = useState('Until I end it');
   const [sent, setSent] = useState(false);
 
-  const people = trusted.filter((p) => !removed.includes(p.id));
+  const people = trusted.filter((p) => !circleRemovedIds.includes(p.id));
   const picked = contacts.find((c) => (c['@id'] || '') === pickedId);
   const role = CIRCLE_ROLES.find((r) => r.id === roleId);
 
@@ -41,7 +43,6 @@ export const CircleScreen = () => {
     return (
       <VaultScreen
         title="Add to the circle"
-        subtitle={sent ? 'Done' : 'Choose a person, then what they can see'}
         tab="contacts"
         onBack={closeInvite}
       >
@@ -55,7 +56,7 @@ export const CircleScreen = () => {
                 </Typography>
               </Box>
               <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.25 }}>
-                They join as a verified person with one role — {role?.label.toLowerCase()} — and nothing more.
+                They join as a verified person with one role — {role?.label.toLowerCase()}, {duration.toLowerCase()} — and nothing more.
               </Typography>
             </VaultCard>
             <Button
@@ -122,11 +123,54 @@ export const CircleScreen = () => {
               </Typography>
             )}
 
+            <GroupLabel>FOR HOW LONG</GroupLabel>
+            <Box sx={{ display: 'flex', gap: 0.75, flexWrap: 'wrap', opacity: pickedId ? 1 : 0.55 }}>
+              {SHARE_DURATIONS.filter((d) => d !== 'Once').map((d) => {
+                const on = duration === d;
+                return (
+                  <Box
+                    key={d}
+                    onClick={() => setDuration(d)}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 0.5,
+                      px: 1,
+                      py: 0.5,
+                      borderRadius: 10,
+                      border: '1.5px solid',
+                      borderColor: on ? FV_BLUE : 'divider',
+                      bgcolor: on ? `${FV_BLUE}12` : 'transparent',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <Schedule sx={{ fontSize: 13, color: on ? FV_BLUE : 'text.disabled' }} />
+                    <Typography sx={{ fontSize: '0.7rem', fontWeight: on ? 700 : 500 }}>{d}</Typography>
+                  </Box>
+                );
+              })}
+            </Box>
+
+            <Typography variant="caption" color="text.secondary">
+              The role and its end date are recorded in Shared, like any other grant, and can be ended
+              at any time.
+            </Typography>
+
             <Button
               variant="contained"
               fullWidth
               disabled={!pickedId || !roleId}
-              onClick={() => setSent(true)}
+              onClick={() => {
+                if (picked && role) {
+                  inviteToCircle({
+                    id: pickedId as string,
+                    name: contactName(picked),
+                    role: role.label,
+                    duration,
+                  });
+                }
+                setSent(true);
+              }}
               sx={{ textTransform: 'none', fontWeight: 700, bgcolor: FV_BLUE, '&:hover': { bgcolor: '#0055AA' } }}
             >
               Send invitation
@@ -140,7 +184,6 @@ export const CircleScreen = () => {
   return (
     <VaultScreen
       title="Trusted circle"
-      subtitle={`${people.length} people`}
       tab="contacts"
       onBack={() => setView('home')}
     >
@@ -152,7 +195,7 @@ export const CircleScreen = () => {
             <Button
               size="small"
               variant="outlined"
-              onClick={() => setRemoved((prev) => [...prev, p.id])}
+              onClick={() => removeFromCircle(p.id)}
               sx={{
                 textTransform: 'none',
                 fontWeight: 700,
@@ -168,7 +211,23 @@ export const CircleScreen = () => {
         </VaultCard>
       ))}
 
-      {people.length === 0 && (
+      {invitedCircle.map((i) => (
+        <VaultCard key={i.id}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
+            <Box sx={{ minWidth: 0 }}>
+              <Typography variant="body2" sx={{ fontWeight: 700 }} noWrap>
+                {i.name}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                {i.role} · {i.duration.toLowerCase()}
+              </Typography>
+            </Box>
+            <Pill label="INVITED" color="#B45309" />
+          </Box>
+        </VaultCard>
+      ))}
+
+      {people.length === 0 && invitedCircle.length === 0 && (
         <Typography variant="caption" color="text.secondary">
           Nobody outside the household can see anything.
         </Typography>

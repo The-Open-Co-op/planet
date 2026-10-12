@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import { AutoAwesome, Lock, CheckCircle, Send } from '@mui/icons-material';
 import { VaultScreen, VaultCard, Pill, FV_BLUE } from '../familyVaultKit';
 import { ShareSheet } from '../ShareSheet';
@@ -22,9 +22,13 @@ export const AssistantScreen = () => {
     shareAssistantDraft,
     inferenceDropped,
     dropInference,
+    inferenceCorrection,
+    correctInference,
   } = useFamilyVault();
   const { setView } = useVaultNav();
   const [sharing, setSharing] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState('');
   const [terms, setTerms] = useState<ShareTerms | null>(null);
 
   const facts = ASSISTANT.facts.filter((f) => f.declared || !inferenceDropped);
@@ -65,37 +69,123 @@ export const AssistantScreen = () => {
             </Typography>
 
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.25 }}>
-              {facts.map((f) => (
-                <Box key={f.text}>
-                  <Typography variant="caption" sx={{ color: 'text.primary', display: 'block', lineHeight: 1.45 }}>
-                    {f.text}
-                  </Typography>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mt: 0.5, flexWrap: 'wrap' }}>
-                    <Pill
-                      label={f.declared ? 'FROM A RECORD' : 'INFERRED'}
-                      color={f.declared ? '#2E7D32' : '#B45309'}
-                    />
-                    <Typography variant="caption" sx={{ color: 'text.disabled' }}>
-                      {f.source}
-                    </Typography>
+              {facts.map((f) => {
+                const corrected = !f.declared && inferenceCorrection;
+                const isEditing = !f.declared && editing;
+                return (
+                  <Box key={f.text}>
+                    {isEditing ? (
+                      <TextField
+                        value={draft}
+                        onChange={(e) => setDraft(e.target.value)}
+                        size="small"
+                        fullWidth
+                        autoFocus
+                        multiline
+                        sx={{ '& .MuiInputBase-input': { fontSize: '0.75rem' } }}
+                      />
+                    ) : (
+                      <Typography
+                        variant="caption"
+                        sx={{ color: 'text.primary', display: 'block', lineHeight: 1.45 }}
+                      >
+                        {corrected || f.text}
+                      </Typography>
+                    )}
+
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mt: 0.5, flexWrap: 'wrap' }}>
+                      <Pill
+                        label={f.declared ? 'FROM A RECORD' : corrected ? 'CORRECTED BY MARIA' : 'INFERRED'}
+                        color={f.declared || corrected ? '#2E7D32' : '#B45309'}
+                      />
+                      <Typography variant="caption" sx={{ color: 'text.disabled' }}>
+                        {corrected ? 'Said by Maria · today' : f.source}
+                      </Typography>
+                    </Box>
+
+                    {!f.declared && !corrected && (
+                      <Box sx={{ display: 'flex', gap: 1, mt: 0.5, flexWrap: 'wrap' }}>
+                        {isEditing ? (
+                          <>
+                            <Button
+                              size="small"
+                              variant="contained"
+                              disabled={!draft.trim()}
+                              onClick={() => {
+                                correctInference(draft.trim());
+                                setEditing(false);
+                              }}
+                              sx={{
+                                textTransform: 'none',
+                                fontWeight: 700,
+                                py: 0.15,
+                                fontSize: '0.7rem',
+                                bgcolor: FV_BLUE,
+                              }}
+                            >
+                              Save
+                            </Button>
+                            <Button
+                              size="small"
+                              onClick={() => setEditing(false)}
+                              sx={{ textTransform: 'none', py: 0.15, fontSize: '0.7rem', color: 'text.secondary' }}
+                            >
+                              Cancel
+                            </Button>
+                          </>
+                        ) : (
+                          <>
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              onClick={() => {
+                                setDraft(f.text);
+                                setEditing(true);
+                              }}
+                              sx={{
+                                textTransform: 'none',
+                                fontWeight: 700,
+                                py: 0.15,
+                                fontSize: '0.7rem',
+                                color: FV_BLUE,
+                                borderColor: FV_BLUE,
+                              }}
+                            >
+                              Correct this
+                            </Button>
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              onClick={dropInference}
+                              sx={{
+                                textTransform: 'none',
+                                fontWeight: 700,
+                                py: 0.15,
+                                fontSize: '0.7rem',
+                                color: 'text.secondary',
+                                borderColor: 'divider',
+                              }}
+                            >
+                              Take it out
+                            </Button>
+                          </>
+                        )}
+                      </Box>
+                    )}
                   </Box>
-                  {!f.declared && (
-                    <Button
-                      size="small"
-                      onClick={dropInference}
-                      sx={{ textTransform: 'none', fontWeight: 700, px: 0, mt: 0.25, minWidth: 0 }}
-                    >
-                      Correct this
-                    </Button>
-                  )}
-                </Box>
-              ))}
+                );
+              })}
             </Box>
           </VaultCard>
 
           {inferenceDropped && (
             <Typography variant="caption" color="text.secondary">
               Taken out of the draft, and marked as not true in Family Memory.
+            </Typography>
+          )}
+          {inferenceCorrection && (
+            <Typography variant="caption" color="text.secondary">
+              Your wording replaces the assistant’s, in the draft and in Family Memory.
             </Typography>
           )}
 

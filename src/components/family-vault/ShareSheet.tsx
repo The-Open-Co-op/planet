@@ -84,7 +84,7 @@ export const ShareSheet = ({
       </Box>
 
       <GroupLabel>ON WHAT TERMS</GroupLabel>
-      <MyTermsChip compact />
+      <MyTermsChip />
       <Box
         onClick={() => setOnward((v) => !v)}
         sx={{

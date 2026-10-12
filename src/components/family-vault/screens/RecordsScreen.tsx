@@ -13,6 +13,8 @@ import {
   FV_BLUE,
 } from '../familyVaultKit';
 import { RECORDS, FAMILY } from '../familyVaultData';
+import { useEffect, useState } from 'react';
+import { notificationService } from '@/services/notificationService';
 import { useFamilyVault } from '../familyVaultContext';
 import { useVaultNav } from '../vaultNav';
 
@@ -41,6 +43,14 @@ const toNotification = (id: string, title: string, issuer: string): Notification
 export const RecordsScreen = () => {
   const { acceptedRecordIds, acceptRecord, checkingRecordId, setCheckingRecordId } = useFamilyVault();
   const { setView } = useVaultNav();
+  // The rest of the family's alerts — vouches and connections from the shared
+  // demo data — so Alerts looks like the one list it is, not a records inbox.
+  const [others, setOthers] = useState<Notification[]>([]);
+  useEffect(() => {
+    notificationService.getNotifications('current-user').then((data) =>
+      setOthers([...data].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, 4))
+    );
+  }, []);
 
   const checking = RECORDS.find((r) => r.id === checkingRecordId);
   const waitingCount = incoming.filter((r) => !acceptedRecordIds.includes(r.id)).length;
@@ -49,7 +59,6 @@ export const RecordsScreen = () => {
     return (
       <VaultScreen
         title="Check this record"
-        subtitle={checking.title}
         tab="alerts"
         onBack={() => setCheckingRecordId(null)}
       >
@@ -137,7 +146,6 @@ export const RecordsScreen = () => {
   return (
     <VaultScreen
       title="Alerts"
-      subtitle="Things that need you"
       tab="alerts"
       onBack={() => setView('home')}
       badges={waitingCount ? { alerts: waitingCount } : undefined}
@@ -174,6 +182,10 @@ export const RecordsScreen = () => {
             />
           );
         })}
+
+        {others.map((n) => (
+          <NotificationItem key={n.id} notification={n} onClick={() => undefined} />
+        ))}
       </Box>
 
 

@@ -12,10 +12,11 @@ import {
   PersonAddAlt,
 } from '@mui/icons-material';
 import type { ReactNode } from 'react';
-import { VaultScreen, VaultCard, GroupLabel, PersonChip, FV_BLUE } from '../familyVaultKit';
+import { VaultScreen, VaultCard, GroupLabel, PersonChip, Pill, FV_BLUE } from '../familyVaultKit';
 import { FAMILY, RECORDS, ASSISTANT } from '../familyVaultData';
 import { useFamilyVault } from '../familyVaultContext';
 import { useVaultNav } from '../vaultNav';
+import { buildAccessEntries, countActiveGrants } from '../accessEntries';
 
 const CATEGORY_ICON = {
   Learning: <MenuBook sx={{ fontSize: 18 }} />,
@@ -91,11 +92,20 @@ const SectionHead = ({ label, action, onAction }: { label: string; action: strin
 
 /** Step 1 — the family's own view of their vault, and the way in to everything else. */
 export const HomeScreen = () => {
-  const { acceptedRecordIds, memory, approval, clinicChoice, appGranted } = useFamilyVault();
+  const {
+    acceptedRecordIds,
+    memory,
+    approval,
+    clinicChoice,
+    invitedCircle,
+    circleRemovedIds,
+    duration,
+    revokedIds,
+  } = useFamilyVault();
   const { setView } = useVaultNav();
 
   const household = FAMILY.filter((p) => p.circle === 'household');
-  const trusted = FAMILY.filter((p) => p.circle === 'trusted');
+  const trusted = FAMILY.filter((p) => p.circle === 'trusted' && !circleRemovedIds.includes(p.id));
   const inVault = RECORDS.filter((r) => !r.incoming || acceptedRecordIds.includes(r.id));
   const waiting = RECORDS.filter((r) => r.incoming && !acceptedRecordIds.includes(r.id));
 
@@ -104,9 +114,10 @@ export const HomeScreen = () => {
     n: inVault.filter((r) => r.category === c).length,
   }));
 
-  // One standing grant (the tutor), plus anything shared earlier in the demo.
-  const sharedCount =
-    1 + (approval === 'complete' ? 1 : 0) + (clinicChoice ? 1 : 0) + (appGranted ? 1 : 0);
+  const sharedCount = countActiveGrants(
+    buildAccessEntries({ approval, clinicChoice, duration }),
+    revokedIds
+  );
 
   return (
     <VaultScreen
@@ -154,6 +165,21 @@ export const HomeScreen = () => {
         {trusted.map((p) => (
           <VaultCard key={p.id}>
             <PersonChip person={p} />
+          </VaultCard>
+        ))}
+        {invitedCircle.map((i) => (
+          <VaultCard key={i.id}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
+              <Box sx={{ minWidth: 0 }}>
+                <Typography variant="body2" sx={{ fontWeight: 700 }} noWrap>
+                  {i.name}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {i.role} · {i.duration.toLowerCase()}
+                </Typography>
+              </Box>
+              <Pill label="INVITED" color="#B45309" />
+            </Box>
           </VaultCard>
         ))}
       </Box>
