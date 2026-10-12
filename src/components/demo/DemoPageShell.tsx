@@ -102,10 +102,10 @@ export const DemoPageShell = ({
   useEffect(() => {
     const el = stageRef.current;
     if (!el) return;
-    // phone (375) + two 345px annotation columns. With story text there is
-    // also a 270px story column and a matching spacer, so the phone stays
-    // centred and nothing has to squeeze when the frame is narrow.
-    const DESIGN_W = hasStory ? 1653 : 950;
+    // phone (375) + two 345px annotation columns, plus a 270px story column
+    // when the step has one. No spacer on the right: the bottom nav shifts to
+    // sit under the phone instead, so nothing has to scale down for it.
+    const DESIGN_W = hasStory ? 1365 : 950;
     const DESIGN_H = 700; // phone height (667) + breathing room
     const fit = () => {
       const { width, height } = el.getBoundingClientRect();
@@ -191,6 +191,9 @@ export const DemoPageShell = ({
           {bottomBarExtra}
         </Box>
       )}
+      {/* Keeps the dots under the phone, which sits half a story column right
+          of centre when a step carries narrative text. */}
+      <Box sx={{ width: hasStory ? (270 + 24) * scale : 0, flexShrink: 0 }} />
       <IconButton
         onClick={goBack}
         disabled={currentIndex === 0}
@@ -362,8 +365,6 @@ export const DemoPageShell = ({
             ))}
           </Box>
 
-          {/* Balances the story column so the phone stays centred. */}
-          {hasStory && <Box sx={{ width: 270, flexShrink: 0 }} />}
         </Box>
       </Box>
 
