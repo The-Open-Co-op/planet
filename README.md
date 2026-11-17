@@ -1,5 +1,7 @@
 # PLANET
 
+> 🚧 **Work in progress.** This is an early prototype of the PLANET interface. Most screens are interactive design mock-ups, not a working product: data is simulated, cryptography is mocked, and things will change or break. Shared in the open so you can follow along and give feedback.
+
 **A Co-Operating System to support collaboration at scale.**
 
 PLANET is the flagship project of [The Open Co-op](https://open.coop) — a personal data vault and trust network client built on the [First Person Network](https://firstperson.network) trust infrastructure stack.
@@ -17,7 +19,16 @@ PLANET is a private, trusted digital space where everyone is verifiable, everyth
 
 ## Status
 
-🟡 **Pre-launch** — Building toward a beta launch in late 2026.
+🟡 **Pre-launch prototype.** Building toward a beta launch in late 2026.
+
+This repo holds the UI prototype and the interactive demos (React + Vite + MUI). Try them at [planet-sepia.vercel.app/#/demo](https://planet-sepia.vercel.app/#/demo) or on [collab.open.coop](https://collab.open.coop/).
+
+### Run it locally
+
+```sh
+bun install
+bun run dev
+```
 
 ## Get Involved
 
